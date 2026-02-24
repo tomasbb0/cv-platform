@@ -1880,7 +1880,7 @@
             // Update display
             updateStyleValDisplay(prop, val);
             // Mark auto button as inactive
-            const btnId = {bulletGap:'btn-auto-para', sectionGap:'btn-auto-section', margins:'btn-auto-margins', lineHeight:'btn-auto-lineheight'}[prop];
+            const btnId = {bodySize:'btn-auto-fontsize', bulletGap:'btn-auto-para', sectionGap:'btn-auto-section', margins:'btn-auto-margins', lineHeight:'btn-auto-lineheight'}[prop];
             if (btnId) document.getElementById(btnId).classList.remove('active');
             cv.style = JSON.parse(JSON.stringify(userStyle));
             renderPreview();
@@ -1890,12 +1890,12 @@
           function toggleAuto(prop) {
             if (userStyle[prop] === null) {
               // Switch from auto to manual: use current BASE value as starting point
-              const defaults = {bulletGap: 0.5, sectionGap: 5, margins: 10, lineHeight: 1.35};
+              const defaults = {bodySize: 7.5, bulletGap: 0.5, sectionGap: 5, margins: 10, lineHeight: 1.35};
               userStyle[prop] = defaults[prop];
-              document.getElementById({bulletGap:'btn-auto-para', sectionGap:'btn-auto-section', margins:'btn-auto-margins', lineHeight:'btn-auto-lineheight'}[prop]).classList.remove('active');
+              document.getElementById({bodySize:'btn-auto-fontsize', bulletGap:'btn-auto-para', sectionGap:'btn-auto-section', margins:'btn-auto-margins', lineHeight:'btn-auto-lineheight'}[prop]).classList.remove('active');
             } else {
               userStyle[prop] = null;
-              document.getElementById({bulletGap:'btn-auto-para', sectionGap:'btn-auto-section', margins:'btn-auto-margins', lineHeight:'btn-auto-lineheight'}[prop]).classList.add('active');
+              document.getElementById({bodySize:'btn-auto-fontsize', bulletGap:'btn-auto-para', sectionGap:'btn-auto-section', margins:'btn-auto-margins', lineHeight:'btn-auto-lineheight'}[prop]).classList.add('active');
             }
             updateStyleValDisplay(prop, userStyle[prop]);
             cv.style = JSON.parse(JSON.stringify(userStyle));
@@ -1905,6 +1905,7 @@
 
           function updateStyleValDisplay(prop, val) {
             const map = {
+              bodySize: 'style-font-size-val',
               bulletGap: 'style-para-gap-val',
               sectionGap: 'style-section-gap-val',
               margins: 'style-margins-val',
@@ -1917,6 +1918,8 @@
               el.textContent = 'auto';
             } else if (prop === 'letterSpacing') {
               el.textContent = val.toFixed(2) + 'px';
+            } else if (prop === 'bodySize') {
+              el.textContent = val.toFixed(1) + 'pt';
             } else if (prop === 'lineHeight') {
               el.textContent = val.toFixed(2);
             } else if (prop === 'margins') {
@@ -1949,6 +1952,7 @@
                 updateStyleValDisplay(prop, null);
               }
             };
+            syncSlider('bodySize', 'style-font-size', 'btn-auto-fontsize', 7.5);
             syncSlider('bulletGap', 'style-para-gap', 'btn-auto-para', 0.5);
             syncSlider('sectionGap', 'style-section-gap', 'btn-auto-section', 5);
             syncSlider('margins', 'style-margins', 'btn-auto-margins', 10);
@@ -2209,7 +2213,7 @@
           });
 
           // Start
-          init();
+          try { init(); } catch(e) { document.body.innerHTML = '<pre style="color:red;padding:20px;">INIT ERROR: ' + e.message + '\n\n' + e.stack + '</pre>'; }
     </script>
   </body>
 </html>
