@@ -847,12 +847,19 @@
               <input type="range" min="-50" max="100" value="0" step="5" id="style-letter-spacing" oninput="setStyleVal('letterSpacing', this.value / 100)"/>
               <span class="style-val" id="style-letter-spacing-val">0px</span>
             </div>
-            <!-- Row 3b: Font Size -->
+            <!-- Row 3b: Body Font Size -->
             <div class="style-row">
-              <label>Font Size</label>
+              <label>Body Size</label>
               <input type="range" min="60" max="100" value="75" step="1" id="style-font-size" oninput="setStyleVal('bodySize', this.value / 10)"/>
               <span class="style-val" id="style-font-size-val">auto</span>
               <button class="auto-btn active" id="btn-auto-fontsize" onclick="toggleAuto('bodySize')">A</button>
+            </div>
+            <!-- Row 3c: Title Font Size -->
+            <div class="style-row">
+              <label>Title Size</label>
+              <input type="range" min="70" max="130" value="95" step="1" id="style-title-size" oninput="setStyleVal('titleSize', this.value / 10)"/>
+              <span class="style-val" id="style-title-size-val">auto</span>
+              <button class="auto-btn active" id="btn-auto-titlesize" onclick="toggleAuto('titleSize')">A</button>
             </div>
             <!-- Row 4: Paragraph Spacing -->
             <div class="style-row">
@@ -1058,6 +1065,7 @@
             titleFont: "'Helvetica Neue', Helvetica, Arial, sans-serif",
             letterSpacing: 0,
             bodySize: null,     // null = auto (autoFit controls it)
+            titleSize: null,    // null = auto (autoFit controls it)
             sectionGap: null,   // null = auto (autoFit controls it)
             bulletGap: null,
             margins: null,      // null = auto
@@ -1337,6 +1345,7 @@
 
             // Apply user-locked values as overrides to BASE
             const locked = {};
+            if (userStyle.titleSize !== null) { BASE.sectionTitleSize = userStyle.titleSize; BASE.companySize = userStyle.titleSize - 1; BASE.roleSize = userStyle.titleSize - 1.5; locked.sectionTitleSize = true; locked.companySize = true; locked.roleSize = true; }
             if (userStyle.bodySize !== null) { BASE.bodySize = userStyle.bodySize; locked.bodySize = true; }
             if (userStyle.sectionGap !== null) { BASE.sectionGap = userStyle.sectionGap; locked.sectionGap = true; }
             if (userStyle.bulletGap !== null) { BASE.bulletGap = userStyle.bulletGap; locked.bulletGap = true; }
