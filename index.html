@@ -1059,14 +1059,7 @@
           // userStyle: values the user has explicitly set; null = auto
           let userStyle = JSON.parse(JSON.stringify(STYLE_DEFAULTS));
 
-          //// Restore style from CV data
-            if (cv.style) {
-              userStyle = Object.assign(JSON.parse(JSON.stringify(STYLE_DEFAULTS)), cv.style);
-            } else {
-              userStyle = JSON.parse(JSON.stringify(STYLE_DEFAULTS));
-            }
-            syncStyleUI();
-             ═══════════════════════════════════════════════════════
+          // ═══════════════════════════════════════════════════════
           // INIT
           // ═══════════════════════════════════════════════════════
           function init() {
@@ -1079,6 +1072,11 @@
               if (saved) {
                 try { cv = JSON.parse(saved); } catch (e) { cv = JSON.parse(JSON.stringify(DEFAULT_CV)); }
               }
+              // Restore style from CV data
+              if (cv.style) {
+                userStyle = Object.assign(JSON.parse(JSON.stringify(STYLE_DEFAULTS)), cv.style);
+              }
+              syncStyleUI();
             }
             renderEditor();
             renderPreview();
@@ -1832,7 +1830,13 @@
             zoomLevel = parseInt(val);
             document.getElementById("zoom-val").textContent = zoomLevel + "%";
             document.querySelector(".zoom-slider").value = zoomLevel;
-            documestylePanel = document.getElementById('style-panel');
+            document.getElementById("paper").style.transform = `scale(${zoomLevel / 100})`;
+          }
+
+          function autoZoom() {
+            const panel = document.getElementById('paper-wrapper');
+            const toolbar = document.querySelector('.toolbar');
+            const stylePanel = document.getElementById('style-panel');
             const paperW = 793.7; // 210mm in px
             const paperH = 1122.5; // 297mm in px
             const availW = panel.clientWidth - 40;
