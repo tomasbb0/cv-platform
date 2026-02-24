@@ -847,6 +847,13 @@
               <input type="range" min="-50" max="100" value="0" step="5" id="style-letter-spacing" oninput="setStyleVal('letterSpacing', this.value / 100)"/>
               <span class="style-val" id="style-letter-spacing-val">0px</span>
             </div>
+            <!-- Row 3b: Font Size -->
+            <div class="style-row">
+              <label>Font Size</label>
+              <input type="range" min="60" max="100" value="75" step="1" id="style-font-size" oninput="setStyleVal('bodySize', this.value / 10)"/>
+              <span class="style-val" id="style-font-size-val">auto</span>
+              <button class="auto-btn active" id="btn-auto-fontsize" onclick="toggleAuto('bodySize')">A</button>
+            </div>
             <!-- Row 4: Paragraph Spacing -->
             <div class="style-row">
               <label>Para. Gap</label>
@@ -1050,6 +1057,7 @@
             bodyFont: "'Helvetica Neue', Helvetica, Arial, sans-serif",
             titleFont: "'Helvetica Neue', Helvetica, Arial, sans-serif",
             letterSpacing: 0,
+            bodySize: null,     // null = auto (autoFit controls it)
             sectionGap: null,   // null = auto (autoFit controls it)
             bulletGap: null,
             margins: null,      // null = auto
@@ -1328,7 +1336,8 @@
             };
 
             // Apply user-locked values as overrides to BASE
-            const locked = {};
+            const locked =bodySize !== null) { BASE.bodySize = userStyle.bodySize; locked.bodySize = true; }
+            if (userStyle. {};
             if (userStyle.sectionGap !== null) { BASE.sectionGap = userStyle.sectionGap; locked.sectionGap = true; }
             if (userStyle.bulletGap !== null) { BASE.bulletGap = userStyle.bulletGap; locked.bulletGap = true; }
             if (userStyle.lineHeight !== null) { BASE.lineHeight = userStyle.lineHeight; locked.lineHeight = true; }
