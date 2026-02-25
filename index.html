@@ -462,6 +462,18 @@
         box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
         position: relative;
       }
+      /* ═══ Semantic HTML resets (ATS-friendly) ═══ */
+      .paper h1, .paper h2, .paper h3, .paper p, .paper ul, .paper li {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        font-size: inherit;
+        font-weight: inherit;
+        font-style: inherit;
+        color: inherit;
+        line-height: inherit;
+        list-style: none;
+      }
       .paper .cv-name {
         text-align: center;
         font-size: 15pt;
@@ -492,12 +504,28 @@
         font-size: 8.5pt;
         font-weight: 700;
         margin-top: 3px;
+        position: relative;
+      }
+      .paper .cv-location {
+        position: absolute;
+        right: 0;
+        font-weight: 400;
+        font-size: 7.5pt;
+        color: #555;
       }
       .paper .cv-role {
         font-size: 8pt;
         font-style: italic;
         color: #333;
         margin-bottom: 1px;
+        position: relative;
+      }
+      .paper .cv-dates {
+        position: absolute;
+        right: 0;
+        font-style: normal;
+        font-size: 7.5pt;
+        color: #555;
       }
       .paper .cv-bullet {
         font-size: 7.5pt;
@@ -509,6 +537,7 @@
       }
       .paper .cv-leadership {
         font-size: 7.5pt;
+        margin-top: 3px;
         margin-bottom: 1px;
         line-height: 1.35;
       }
@@ -1124,6 +1153,7 @@
       </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
     <script>
                 // ═══════════════════════════════════════════════════════
                 // CV DATA MODEL
@@ -1157,8 +1187,8 @@
                           ],
                         },
                         {
-                          company: "Google | Lisbon, Portugal",
-                          role: "Business Analyst Intern, Large Customer Sales | May 2024 – August 2024",
+                          company: "Google, Large Customer Sales | Lisbon, Portugal",
+                          role: "Business Analyst Intern | May 2024 – August 2024",
                           bullets: [
                             'Led the "Future Trends" segment at Google\'s flagship partner event, presenting personally researched insights on Peak Season activation and media readiness to 237+ senior advertising clients',
                             "Designed and automated three globally scalable dashboards using Apps Script and GMP tools to analyze ROAS vs. profit and CPA vs. conversions, projecting $1.41M in annual savings for media spend decisions",
@@ -1166,8 +1196,8 @@
                           ],
                         },
                         {
-                          company: "Amazon | Madrid, Spain",
-                          role: "Business Development Intern, Amazon Business | May 2022 – November 2022",
+                          company: "Amazon, Amazon Business | Madrid, Spain",
+                          role: "Business Development Intern | May 2022 – November 2022",
                           bullets: [
                             "Led the B2B retail expansion into Portugal, managing a portfolio of 2,311 companies through prospecting, outreach, and account activation",
                             "Outperformed KPI benchmarks by 21x in company account configurations during the Portugal B2B rollout",
@@ -1176,8 +1206,8 @@
                           ],
                         },
                         {
-                          company: "Ernst & Young (EY) | Lisbon, Portugal",
-                          role: "Assurance Associate, Financial Services | February 2022 – April 2022",
+                          company: "Ernst & Young, Financial Services | Lisbon, Portugal",
+                          role: "Assurance Associate | February 2022 – April 2022",
                           bullets: [
                             "Audited asset portfolios worth €41.3 billion across 3 insurance firms, developing rigorous data verification and attention to detail",
                           ],
@@ -1267,6 +1297,7 @@
                 let zoomLevel = 65;
                 let debounceTimer = null;
                 let resizeTimer = null;
+                let lastAutoFitState = null;
 
                 // ═══ PROFILE / TAG SYSTEM ═══
                 const PROFILES_KEY = "cv-profiles";
@@ -1485,44 +1516,69 @@
                 // ═══════════════════════════════════════════════════════
                 function renderPreview() {
                   const paper = document.getElementById('paper');
-                  let html = `<div class="cv-name">${esc(cv.name)}</div>`;
-                  html += `<div class="cv-contact">${esc(cv.contact)}</div>`;
+                  // ATS-friendly: use semantic HTML (h1/h2/h3/p/ul/li)
+                  let html = `<h1 class="cv-name">${esc(cv.name)}</h1>`;
+                  html += `<p class="cv-contact">${esc(cv.contact)}</p>`;
+
+                  // Helper: split "Name | Location" or "Title | Dates" on pipe
+                  function splitPipe(text) {
+                    const idx = text.indexOf(' | ');
+                    if (idx > -1) return [text.substring(0, idx), text.substring(idx + 3)];
+                    return [text, ''];
+                  }
 
                   cv.sections.forEach(sec => {
                     if (sec.hidden) return;
-                    html += `<div class="cv-section-title">${esc(sec.title)}</div>`;
+                    html += `<h2 class="cv-section-title">${esc(sec.title)}</h2>`;
 
                     if (sec.type === "summary") {
-                      html += `<div class="cv-summary">${esc(sec.content)}</div>`;
+                      html += `<p class="cv-summary">${esc(sec.content)}</p>`;
                     } else if (sec.type === "jobs") {
                       sec.jobs.forEach((job) => {
                         if (job.hidden) return;
-                        html += `<div class="cv-company">${esc(job.company)}</div>`;
-                        html += `<div class="cv-role">${esc(job.role)}</div>`;
+                        const [companyName, companyLoc] = splitPipe(job.company);
+                        const [roleTitle, roleDates] = splitPipe(job.role);
+                        html += `<h3 class="cv-company">${esc(companyName)}${companyLoc ? `<span class="cv-location">${esc(companyLoc)}</span>` : ''}</h3>`;
+                        html += `<p class="cv-role">${esc(roleTitle)}${roleDates ? `<span class="cv-dates">${esc(roleDates)}</span>` : ''}</p>`;
+                        html += `<ul>`;
                         job.bullets.forEach((b, bi) => {
                           if ((job.hiddenBullets||[]).includes(bi)) return;
-                          html += `<div class="cv-bullet">- ${esc(b)}</div>`;
+                          html += `<li class="cv-bullet">- ${esc(b)}</li>`;
                         });
+                        html += `</ul>`;
                       });
                     } else if (sec.type === "education") {
                       sec.schools.forEach((sch) => {
                         if (sch.hidden) return;
-                        html += `<div class="cv-company">${esc(sch.institution)}</div>`;
-                        html += `<div class="cv-role">${esc(sch.degree)}</div>`;
+                        const [instName, instLoc] = splitPipe(sch.institution);
+                        const [degName, degExtra] = splitPipe(sch.degree);
+                        html += `<h3 class="cv-company">${esc(instName)}${instLoc ? `<span class="cv-location">${esc(instLoc)}</span>` : ''}</h3>`;
+                        html += `<p class="cv-role">${esc(degName)}${degExtra ? `<span class="cv-dates">${esc(degExtra)}</span>` : ''}</p>`;
+                        html += `<ul>`;
                         (sch.details || []).forEach((d, di) => {
                           if ((sch.hiddenDetails||[]).includes(di)) return;
-                          html += `<div class="cv-edu-detail">- ${esc(d)}</div>`;
+                          html += `<li class="cv-edu-detail">- ${esc(d)}</li>`;
                         });
+                        html += `</ul>`;
                       });
                     } else if (sec.type === "leadership") {
                       sec.items.forEach((item) => {
                         if (item.hidden) return;
-                        html += `<div class="cv-leadership">${esc(item.name)} — ${esc(item.desc)}</div>`;
+                        html += `<h3 class="cv-company">${esc(item.name)}</h3>`;
+                        const colonIdx = item.desc.indexOf(': ');
+                        if (colonIdx > -1) {
+                          const role = item.desc.substring(0, colonIdx);
+                          const detail = item.desc.substring(colonIdx + 2);
+                          html += `<p class="cv-role">${esc(role)}</p>`;
+                          html += `<ul><li class="cv-bullet">- ${esc(detail)}</li></ul>`;
+                        } else {
+                          html += `<ul><li class="cv-bullet">- ${esc(item.desc)}</li></ul>`;
+                        }
                       });
                     } else if (sec.type === "skills") {
                       sec.skills.forEach((sk) => {
                         if (sk.hidden) return;
-                        html += `<div class="cv-skill"><strong>${esc(sk.label)}</strong> ${esc(sk.value)}</div>`;
+                        html += `<p class="cv-skill"><strong>${esc(sk.label)}</strong> ${esc(sk.value)}</p>`;
                       });
                     }
                   });
@@ -1599,6 +1655,9 @@
                       el.style.lineHeight = String(state.lineHeight);
                       el.style.marginBottom = state.bulletGap + 'px';
                     });
+                    paper.querySelectorAll('.cv-location, .cv-dates').forEach(el => {
+                      el.style.fontSize = state.bodySize + 'pt';
+                    });
                   };
 
                   // Filter expansion/compression steps to exclude locked properties
@@ -1674,6 +1733,7 @@
                   }
 
                   // ── UPDATE MARGIN GUIDES ──
+                  lastAutoFitState = { ...state };
                   updateMarginGuides(state);
 
                   // ── STATUS BAR ──
@@ -2358,12 +2418,148 @@
                 }
 
                 function exportPDF() {
-                  // Tip: In Chrome/Safari print dialog, set Margins to "None" and uncheck "Headers and footers"
-                  // This ensures only the CV content appears in the PDF
-                  const origTitle = document.title;
-                  document.title = activeProfile ? activeProfile : 'draft';
-                  window.print();
-                  document.title = origTitle;
+                  const { jsPDF } = window.jspdf;
+                  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+                  const W = 210, H = 297;
+                  const s = lastAutoFitState || { padV: 10, padH: 14, nameSize: 15, contactSize: 7.5, contactMargin: 6, sectionTitleSize: 9.5, companySize: 8.5, roleSize: 8, bodySize: 7.5, sectionGap: 5, companyGap: 3, bulletGap: 0.5, lineHeight: 1.35 };
+                  const left = s.padH;
+                  const cW = W - 2 * s.padH;
+                  let y = s.padV;
+                  const ptToMm = 0.353;
+                  const lh = (sz) => sz * ptToMm * s.lineHeight;
+
+                  // NAME
+                  doc.setFont('helvetica', 'bold');
+                  doc.setFontSize(s.nameSize);
+                  y += s.nameSize * ptToMm;
+                  doc.text(cv.name, W / 2, y, { align: 'center' });
+                  y += 2;
+
+                  // CONTACT
+                  doc.setFont('helvetica', 'normal');
+                  doc.setFontSize(s.contactSize);
+                  doc.setTextColor(85, 85, 85);
+                  y += s.contactSize * ptToMm;
+                  doc.text(cv.contact, W / 2, y, { align: 'center' });
+                  y += s.contactMargin * ptToMm + 2;
+                  doc.setTextColor(0, 0, 0);
+
+                  // SECTIONS
+                  cv.sections.forEach(sec => {
+                    if (sec.hidden) return;
+
+                    // Section title
+                    y += s.sectionGap * ptToMm;
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(s.sectionTitleSize);
+                    y += s.sectionTitleSize * ptToMm;
+                    doc.text(sec.title.toUpperCase(), left, y);
+                    y += 0.5;
+                    doc.setLineWidth(0.2);
+                    doc.line(left, y, W - s.padH, y);
+                    y += 2;
+
+                    if (sec.type === 'summary') {
+                      doc.setFont('helvetica', 'normal');
+                      doc.setFontSize(s.bodySize);
+                      const lines = doc.splitTextToSize(sec.content, cW);
+                      const lineH = lh(s.bodySize);
+                      lines.forEach(line => { y += lineH; doc.text(line, left, y); });
+                      y += 1;
+                    } else if (sec.type === 'jobs') {
+                      sec.jobs.forEach(job => {
+                        if (job.hidden) return;
+                        // Company
+                        y += s.companyGap * ptToMm;
+                        doc.setFont('helvetica', 'bold');
+                        doc.setFontSize(s.companySize);
+                        y += s.companySize * ptToMm;
+                        doc.text(job.company, left, y);
+                        // Role
+                        doc.setFont('helvetica', 'bolditalic');
+                        doc.setFontSize(s.roleSize);
+                        doc.setTextColor(51, 51, 51);
+                        y += s.roleSize * ptToMm;
+                        doc.text(job.role, left, y);
+                        doc.setTextColor(0, 0, 0);
+                        y += 0.5;
+                        // Bullets
+                        doc.setFont('helvetica', 'normal');
+                        doc.setFontSize(s.bodySize);
+                        const lineH = lh(s.bodySize);
+                        job.bullets.forEach((b, bi) => {
+                          if ((job.hiddenBullets || []).includes(bi)) return;
+                          const wrapped = doc.splitTextToSize('- ' + b, cW - 5);
+                          wrapped.forEach((line, li) => {
+                            y += lineH;
+                            doc.text(line, left + (li === 0 ? 0 : 3), y);
+                          });
+                          y += s.bulletGap * ptToMm;
+                        });
+                      });
+                    } else if (sec.type === 'education') {
+                      sec.schools.forEach(sch => {
+                        if (sch.hidden) return;
+                        y += s.companyGap * ptToMm;
+                        doc.setFont('helvetica', 'bold');
+                        doc.setFontSize(s.companySize);
+                        y += s.companySize * ptToMm;
+                        doc.text(sch.institution, left, y);
+                        doc.setFont('helvetica', 'bolditalic');
+                        doc.setFontSize(s.roleSize);
+                        doc.setTextColor(51, 51, 51);
+                        y += s.roleSize * ptToMm;
+                        doc.text(sch.degree, left, y);
+                        doc.setTextColor(0, 0, 0);
+                        y += 0.5;
+                        doc.setFont('helvetica', 'normal');
+                        doc.setFontSize(s.bodySize);
+                        const lineH = lh(s.bodySize);
+                        (sch.details || []).forEach((d, di) => {
+                          if ((sch.hiddenDetails || []).includes(di)) return;
+                          const wrapped = doc.splitTextToSize('- ' + d, cW - 5);
+                          wrapped.forEach((line, li) => {
+                            y += lineH;
+                            doc.text(line, left + (li === 0 ? 0 : 3), y);
+                          });
+                          y += s.bulletGap * ptToMm;
+                        });
+                      });
+                    } else if (sec.type === 'leadership') {
+                      doc.setFont('helvetica', 'normal');
+                      doc.setFontSize(s.bodySize);
+                      const lineH = lh(s.bodySize);
+                      sec.items.forEach(item => {
+                        if (item.hidden) return;
+                        const text = item.name + ' \u2014 ' + item.desc;
+                        const wrapped = doc.splitTextToSize(text, cW);
+                        wrapped.forEach(line => { y += lineH; doc.text(line, left, y); });
+                        y += s.bulletGap * ptToMm;
+                      });
+                    } else if (sec.type === 'skills') {
+                      doc.setFontSize(s.bodySize);
+                      const lineH = lh(s.bodySize);
+                      sec.skills.forEach(sk => {
+                        if (sk.hidden) return;
+                        doc.setFont('helvetica', 'bold');
+                        const labelW = doc.getTextWidth(sk.label + ' ');
+                        doc.text(sk.label, left, y + lineH);
+                        doc.setFont('helvetica', 'normal');
+                        const valLines = doc.splitTextToSize(' ' + sk.value, cW - labelW);
+                        doc.text(valLines[0], left + labelW, y + lineH);
+                        y += lineH;
+                        for (let i = 1; i < valLines.length; i++) {
+                          y += lineH;
+                          doc.text(valLines[i], left, y);
+                        }
+                        y += s.bulletGap * ptToMm;
+                      });
+                    }
+                  });
+
+                  const filename = (activeProfile || 'cv-draft') + '.pdf';
+                  doc.save(filename);
+                  showToast('PDF exported: ' + filename);
                 }
 
                 /* ═══ PROFILE EXPORT / IMPORT ═══ */
