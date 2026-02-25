@@ -502,14 +502,10 @@
       .paper .cv-bullet {
         font-size: 7.5pt;
         padding-left: 10px;
-        position: relative;
+        text-indent: -8px;
+        margin-left: 8px;
         margin-bottom: 0.5px;
         line-height: 1.35;
-      }
-      .paper .cv-bullet::before {
-        content: "-";
-        position: absolute;
-        left: 2px;
       }
       .paper .cv-leadership {
         font-size: 7.5pt;
@@ -530,14 +526,10 @@
       .paper .cv-edu-detail {
         font-size: 7.5pt;
         padding-left: 10px;
-        position: relative;
+        text-indent: -8px;
+        margin-left: 8px;
         margin-bottom: 0.5px;
         line-height: 1.35;
-      }
-      .paper .cv-edu-detail::before {
-        content: "-";
-        position: absolute;
-        left: 2px;
       }
 
       /* Page overflow indicator */
@@ -734,9 +726,7 @@
         body {
           margin: 0 !important;
           padding: 0 !important;
-          background:
-            ,
-            .print-border #fff !important;
+          background: #fff !important;
           width: 210mm !important;
           height: 297mm !important;
           overflow: hidden !important;
@@ -751,7 +741,8 @@
         .status-bar,
         .toolbar,
         .overflow-line,
-        .margin-guide {
+        .margin-guide,
+        .print-border {
           display: none !important;
         }
         .preview-panel {
@@ -1510,7 +1501,7 @@
                         html += `<div class="cv-role">${esc(job.role)}</div>`;
                         job.bullets.forEach((b, bi) => {
                           if ((job.hiddenBullets||[]).includes(bi)) return;
-                          html += `<div class="cv-bullet">${esc(b)}</div>`;
+                          html += `<div class="cv-bullet">- ${esc(b)}</div>`;
                         });
                       });
                     } else if (sec.type === "education") {
@@ -1520,7 +1511,7 @@
                         html += `<div class="cv-role">${esc(sch.degree)}</div>`;
                         (sch.details || []).forEach((d, di) => {
                           if ((sch.hiddenDetails||[]).includes(di)) return;
-                          html += `<div class="cv-edu-detail">${esc(d)}</div>`;
+                          html += `<div class="cv-edu-detail">- ${esc(d)}</div>`;
                         });
                       });
                     } else if (sec.type === "leadership") {
