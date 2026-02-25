@@ -1140,9 +1140,15 @@
           <label>AI Provider</label>
           <select id="ai-provider" onchange="onProviderChange()">
             <option value="groq" selected>Groq — Free (Llama 3.3 70B)</option>
-            <option value="openrouter">OpenRouter — Free (Llama 3.3 / Gemini / Qwen)</option>
-            <option value="cerebras">Cerebras — Free (Llama 3.3 70B, ultra-fast)</option>
-            <option value="gemini">Google Gemini — Free tier (2.5 Flash)</option>
+            <option value="openrouter">
+              OpenRouter — Free (Llama 3.3 / Gemini / Qwen)
+            </option>
+            <option value="cerebras">
+              Cerebras — Free (Llama 3.3 70B, ultra-fast)
+            </option>
+            <option value="gemini">
+              Google Gemini — Free tier (2.5 Flash)
+            </option>
             <option value="openai">OpenAI (GPT-4o)</option>
             <option value="claude">Anthropic Claude (Sonnet 4)</option>
           </select>
@@ -3442,13 +3448,32 @@
       let aiStreaming = false;
       let pendingChanges = []; // diff suggestions
 
-      const AI_MODELS = {
-        openai: "gpt-4o",
+      // Dual-model system: CHAT model (fast) for conversation, EDIT model (best) for CV changes
+      const AI_CHAT_MODELS = {
+        openai: "gpt-4o-mini",
         gemini: "gemini-2.5-flash",
         claude: "claude-sonnet-4-20250514",
         groq: "llama-3.3-70b-versatile",
         openrouter: "meta-llama/llama-3.3-70b-instruct:free",
         cerebras: "llama-3.3-70b",
+      };
+
+      const AI_EDIT_MODELS = {
+        openai: "gpt-4o",
+        gemini: "gemini-2.5-pro",
+        claude: "claude-opus-4-20250514",
+        groq: "llama-3.3-70b-versatile",
+        openrouter: "meta-llama/llama-3.3-70b-instruct:free",
+        cerebras: "llama-3.3-70b",
+      };
+
+      const AI_MODEL_LABELS = {
+        openai: { chat: "GPT-4o Mini", edit: "GPT-4o" },
+        gemini: { chat: "Gemini 2.5 Flash", edit: "Gemini 2.5 Pro" },
+        claude: { chat: "Sonnet 4", edit: "Opus 4" },
+        groq: { chat: "Llama 3.3 70B", edit: "Llama 3.3 70B" },
+        openrouter: { chat: "Llama 3.3 70B", edit: "Llama 3.3 70B" },
+        cerebras: { chat: "Llama 3.3 70B", edit: "Llama 3.3 70B" },
       };
 
       const AI_ENDPOINTS = {
@@ -3459,6 +3484,13 @@
         openrouter: "https://openrouter.ai/api/v1/chat/completions",
         cerebras: "https://api.cerebras.ai/v1/chat/completions",
       };
+
+      // Detect if message needs CV editing (uses EDIT model) vs general chat
+      function needsEditModel(userMsg) {
+        const editKeywords =
+          /tailor|change|edit|improve|modify|update|rewrite|rephrase|optimize|fix|replace|adjust|bullet|summary|job description|JD|role|position|application|hired|ATS/i;
+        return editKeywords.test(userMsg);
+      }
 
       function toggleChatPanel() {
         const p = document.getElementById("chat-panel");
@@ -3488,7 +3520,14 @@
           return;
         }
         aiConnected = true;
-        updateAIStatus("connected", "● Connected — " + AI_MODELS[aiProvider]);
+        var labels = AI_MODEL_LABELS[aiProvider];
+        var statusText = "● Connected";
+        if (labels.chat === labels.edit) {
+          statusText += " — " + labels.edit;
+        } else {
+          statusText += " — Chat: " + labels.chat + " | Edit: " + labels.edit;
+        }
+        updateAIStatus("connected", statusText);
         document.getElementById("chat-send-btn").disabled = false;
         // Clear chat & send greeting
         chatHistory = [];
@@ -3627,10 +3666,21 @@ RULES:
 
         aiStreaming = true;
         document.getElementById("chat-send-btn").disabled = true;
-        const thinkingDiv = appendChatMsg("assistant", "⏳ Thinking...");
+
+        // Determine which model to use
+        const useEditModel = needsEditModel(text);
+        const modelType = useEditModel ? "edit" : "chat";
+        const modelLabel = AI_MODEL_LABELS[aiProvider][modelType];
+        const thinkingDiv = appendChatMsg(
+          "assistant",
+          "⏳ Thinking with " +
+            modelLabel +
+            (useEditModel ? " (edit mode)" : "") +
+            "...",
+        );
 
         try {
-          const response = await callAI(chatHistory);
+          const response = await callAI(chatHistory, modelType);
           thinkingDiv.remove();
 
           // Parse response for changes
@@ -3753,22 +3803,28 @@ RULES:
       }
 
       // ═══ AI API CALLS ═══
-      async function callAI(history) {
+      async function callAI(history, modelType) {
         const systemPrompt = buildSystemPrompt();
+        const models = modelType === "edit" ? AI_EDIT_MODELS : AI_CHAT_MODELS;
+        const model = models[aiProvider];
 
-        if (aiProvider === "openai" || aiProvider === "groq" || aiProvider === "openrouter" || aiProvider === "cerebras") {
-          return await callOpenAICompatible(systemPrompt, history);
+        if (
+          aiProvider === "openai" ||
+          aiProvider === "groq" ||
+          aiProvider === "openrouter" ||
+          aiProvider === "cerebras"
+        ) {
+          return await callOpenAICompatible(systemPrompt, history, model);
         } else if (aiProvider === "claude") {
-          return await callClaude(systemPrompt, history);
+          return await callClaude(systemPrompt, history, model);
         } else if (aiProvider === "gemini") {
-          return await callGemini(systemPrompt, history);
+          return await callGemini(systemPrompt, history, model);
         }
         throw new Error("Unknown provider");
       }
 
-      async function callOpenAICompatible(systemPrompt, history) {
+      async function callOpenAICompatible(systemPrompt, history, model) {
         const endpoint = AI_ENDPOINTS[aiProvider];
-        const model = AI_MODELS[aiProvider];
         const messages = [{ role: "system", content: systemPrompt }];
         history.forEach(function (m) {
           messages.push({ role: m.role, content: m.content });
@@ -3795,7 +3851,7 @@ RULES:
         return data.choices[0].message.content;
       }
 
-      async function callClaude(systemPrompt, history) {
+      async function callClaude(systemPrompt, history, model) {
         const messages = history.map(function (m) {
           return { role: m.role, content: m.content };
         });
@@ -3808,7 +3864,7 @@ RULES:
             "anthropic-dangerous-direct-browser-access": "true",
           },
           body: JSON.stringify({
-            model: AI_MODELS.claude,
+            model: model,
             system: systemPrompt,
             messages: messages,
             max_tokens: 4096,
@@ -3822,7 +3878,7 @@ RULES:
         return data.content[0].text;
       }
 
-      async function callGemini(systemPrompt, history) {
+      async function callGemini(systemPrompt, history, model) {
         const contents = [];
         contents.push({
           role: "user",
@@ -3843,7 +3899,7 @@ RULES:
         });
         const url =
           "https://generativelanguage.googleapis.com/v1beta/models/" +
-          AI_MODELS.gemini +
+          model +
           ":generateContent?key=" +
           aiApiKey;
         const res = await fetch(url, {
