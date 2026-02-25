@@ -1139,7 +1139,10 @@
         <div class="chat-config" id="chat-config">
           <label>AI Provider</label>
           <select id="ai-provider" onchange="onProviderChange()">
-            <option value="groq" selected>Groq — Free (Llama 3.3 70B)</option>
+            <option value="ollama" selected>
+              🏠 Local / Ollama — Free, No API Key
+            </option>
+            <option value="groq">Groq — Free (Llama 3.3 70B)</option>
             <option value="openrouter">
               OpenRouter — Free (Llama 3.3 / Gemini / Qwen)
             </option>
@@ -1152,12 +1155,47 @@
             <option value="openai">OpenAI (GPT-4o)</option>
             <option value="claude">Anthropic Claude (Sonnet 4)</option>
           </select>
-          <label>API Key</label>
-          <input
-            type="password"
-            id="ai-api-key"
-            placeholder="Paste your API key..."
-          />
+          <div id="ollama-model-row" style="margin-top: 6px">
+            <label style="font-size: 11px">Ollama Model</label>
+            <div style="display: flex; gap: 4px; align-items: center">
+              <select
+                id="ollama-model-select"
+                style="
+                  flex: 1;
+                  font-size: 11px;
+                  padding: 4px 6px;
+                  background: var(--surface);
+                  color: var(--text);
+                  border: 1px solid var(--border);
+                  border-radius: 4px;
+                "
+              >
+                <option value="">Click "Detect Models" →</option>
+              </select>
+              <button
+                class="btn btn-sm"
+                onclick="detectOllamaModels()"
+                style="font-size: 10px; padding: 2px 8px; white-space: nowrap"
+              >
+                🔍 Detect
+              </button>
+            </div>
+            <div
+              id="ollama-status"
+              style="font-size: 9px; color: var(--muted); margin-top: 3px"
+            >
+              Install Ollama: <code>brew install ollama</code> then
+              <code>ollama pull qwen2.5:32b</code>
+            </div>
+          </div>
+          <div id="api-key-row">
+            <label>API Key</label>
+            <input
+              type="password"
+              id="ai-api-key"
+              placeholder="Paste your API key..."
+            />
+          </div>
           <div class="connect-row">
             <button class="btn btn-sm btn-primary" onclick="connectAI()">
               Connect
@@ -1246,15 +1284,20 @@
           </div>
         </div>
         <details class="chat-instructions">
-          <summary>ℹ️ How to get API keys</summary>
+          <summary>ℹ️ How to get started</summary>
           <div class="inst-body">
-            <h4>🟢 Groq (Free — Recommended)</h4>
-            Completely free, no credit card needed.<br />
-            1. Go to <code>console.groq.com</code><br />
-            2. Sign up / log in → API Keys → Create<br />
+            <h4>🏠
+            Run AI models locally on your Mac. Zero cost, full privacy.<br />
+            1. Install: <code>brew install ollama</code><br />
+            2. Start: <code>ollama serve</code><br />
+            3. Pull a model: <code>ollama pull qwen2.5:32b</code><br />
+            4. Click "Detect" above → select model → Connect<br />
+            Recommended: <strong>qwen2.5:32b</strong> (32GB Mac) or <strong>deepseek-r1:32b</strong> 🧠<br />
+            <h4>🟢 Groq (Free — Recommended Cloud)</h4>
+            Completely free, no credit card ne            Completely free, no credit card ne            Completely
+            2. Sign up /             2. Sign up /          />
             3. Copy and paste above. Uses <strong>Llama 3.3 70B</strong>.<br />
-            <h4>� OpenRouter (Free models)</h4>
-            Free models available, no credit card needed.<br />
+            <h4>🌐 OpenRouter (Free models            <h4>🌐 OpenRouter (Frlable, no credit card needed.<br />
             1. Go to <code>openrouter.ai/keys</code><br />
             2. Sign up → Create Key → Copy and paste above<br />
             3. Auto-uses free <strong>Llama 3.3 70B</strong>.<br />
@@ -1273,10 +1316,8 @@
             3. Requires billing setup. ~$0.005/message.<br />
             <h4>🟣 Anthropic (Claude Sonnet 4)</h4>
             1. Go to <code>console.anthropic.com</code><br />
-            2. Settings → API Keys → Create Key<br />
-            3. Requires billing setup. ~$0.003/message.
-          </div>
-        </details>
+            2. Settings → API Keys → Create Key<b            2. Settings → API Keng setup. ~$0.003/message.
+                                 s>
       </div>
       <button
         class="toggle-chat-btn"
@@ -1993,6 +2034,8 @@
           clearTimeout(resizeTimer);
           resizeTimer = setTimeout(autoZoom, 200);
         });
+        // Initialize AI provider UI state (show/hide Ollama row etc.)
+        onProviderChange();
       }
 
       // ═══════════════════════════════════════════════════════
@@ -3474,13 +3517,14 @@
       // AI CHAT ASSISTANT
       // ═══════════════════════════════════════════════════════
       let aiConnected = false;
-      let aiProvider = "groq";
+      let aiProvider = "ollama";
       let aiApiKey = "";
       let chatHistory = []; // {role, content}
       let chatAttachments = []; // {name, text}
       let aiStreaming = false;
       let pendingChanges = []; // diff suggestions
       let premiumThinking = false; // reasoning mode toggle
+      let ollamaModel = ""; // selected Ollama model
 
       // Dual-model system: CHAT model (fast) for conversation, EDIT model (best) for CV changes
       const AI_CHAT_MODELS = {
@@ -3490,6 +3534,7 @@
         groq: "llama-3.3-70b-versatile",
         openrouter: "meta-llama/llama-3.3-70b-instruct:free",
         cerebras: "llama-3.3-70b",
+        ollama: "auto", // resolved at runtime from ollamaModel
       };
 
       const AI_EDIT_MODELS = {
@@ -3499,6 +3544,7 @@
         groq: "llama-3.3-70b-versatile",
         openrouter: "meta-llama/llama-3.3-70b-instruct:free",
         cerebras: "llama-3.3-70b",
+        ollama: "auto",
       };
 
       // 🧠 Premium Thinking: reasoning/extended thinking models
@@ -3509,6 +3555,7 @@
         groq: "deepseek-r1-distill-llama-70b",
         openrouter: "deepseek/deepseek-r1:free",
         cerebras: "llama-3.3-70b", // no reasoning model on cerebras
+        ollama: "auto",
       };
 
       const AI_MODEL_LABELS = {
@@ -3542,6 +3589,11 @@
           edit: "Llama 3.3 70B",
           thinking: "Llama 3.3 70B",
         },
+        ollama: {
+          chat: "Local Model",
+          edit: "Local Model",
+          thinking: "Local Model",
+        },
       };
 
       const AI_ENDPOINTS = {
@@ -3551,7 +3603,91 @@
         groq: "https://api.groq.com/openai/v1/chat/completions",
         openrouter: "https://openrouter.ai/api/v1/chat/completions",
         cerebras: "https://api.cerebras.ai/v1/chat/completions",
+        ollama: "http://localhost:11434/v1/chat/completions",
       };
+
+      // ═══ OLLAMA MODEL DETECTION ═══
+      // Ranked preference for Ollama models (best first)
+      const OLLAMA_MODEL_RANK = [
+        "qwen2.5:72b",
+        "llama3.3:70b",
+        "deepseek-r1:70b",
+        "qwen3:72b",
+        "deepseek-r1:32b",
+        "qwen2.5:32b",
+        "qwen3:32b",
+        "llama3.1:70b",
+        "deepseek-r1:14b",
+        "qwen2.5:14b",
+        "phi4:14b",
+        "gemma2:27b",
+        "mistral-small:22b",
+        "qwen2.5:7b",
+        "llama3.1:8b",
+        "gemma2:9b",
+        "phi3:14b",
+        "llama3.2:3b",
+        "qwen2.5:3b",
+        "phi3:3.8b",
+      ];
+
+      async function detectOllamaModels() {
+        const sel = document.getElementById("ollama-model-select");
+        const status = document.getElementById("ollama-status");
+        status.textContent = "🔄 Detecting...";
+        status.style.color = "#f59e0b";
+        try {
+          const resp = await fetch("http://localhost:11434/api/tags", {
+            signal: AbortSignal.timeout(3000),
+          });
+          if (!resp.ok) throw new Error("Ollama not responding");
+          const data = await resp.json();
+          const models = (data.models || []).map((m) => m.name);
+          if (models.length === 0) {
+            status.textContent =
+              "⚠️ No models installed. Run: ollama pull qwen2.5:32b";
+            status.style.color = "#ef4444";
+            return;
+          }
+          // Sort by preference rank
+          models.sort((a, b) => {
+            const aR = OLLAMA_MODEL_RANK.findIndex((r) => a.startsWith(r));
+            const bR = OLLAMA_MODEL_RANK.findIndex((r) => b.startsWith(r));
+            return (aR === -1 ? 999 : aR) - (bR === -1 ? 999 : bR);
+          });
+          sel.innerHTML = "";
+          models.forEach((m) => {
+            const opt = document.createElement("option");
+            opt.value = m;
+            const sizeTag = m.includes(":")
+              ? m.split(":")[1].toUpperCase()
+              : "";
+            const isReasoning =
+              m.includes("deepseek-r1") || m.includes("qwen3");
+            opt.textContent = m + (isReasoning ? " 🧠" : "");
+            sel.appendChild(opt);
+          });
+          ollamaModel = models[0];
+          sel.value = ollamaModel;
+          sel.onchange = () => {
+            ollamaModel = sel.value;
+          };
+          // Update labels
+          const shortName = ollamaModel.split(":")[0];
+          AI_MODEL_LABELS.ollama = {
+            chat: shortName,
+            edit: shortName,
+            thinking: shortName + " 🧠",
+          };
+          status.textContent =
+            "✅ Found " + models.length + " model(s) — best: " + ollamaModel;
+          status.style.color = "#22c55e";
+        } catch (e) {
+          status.innerHTML =
+            "❌ Ollama not running. Start it: <code>ollama serve</code>";
+          status.style.color = "#ef4444";
+        }
+      }
 
       // Detect if message needs CV editing (uses EDIT model) vs general chat
       function needsEditModel(userMsg) {
@@ -3572,6 +3708,14 @@
         aiConnected = false;
         updateAIStatus("disconnected", "● Not connected");
         onThinkingToggle(); // update label
+        // Show/hide Ollama model selector and API key
+        const isOllama = aiProvider === "ollama";
+        document.getElementById("ollama-model-row").style.display = isOllama
+          ? ""
+          : "none";
+        document.getElementById("api-key-row").style.display = isOllama
+          ? "none"
+          : "";
       }
 
       function onThinkingToggle() {
@@ -3597,16 +3741,39 @@
 
       function connectAI() {
         const keyInput = document.getElementById("ai-api-key");
-        aiApiKey = keyInput.value.trim();
         aiProvider = document.getElementById("ai-provider").value;
-        if (!aiApiKey) {
-          updateAIStatus("error", "● Enter an API key");
-          return;
+
+        if (aiProvider === "ollama") {
+          // Ollama: no API key needed, check model selected
+          aiApiKey = "ollama"; // placeholder
+          if (!ollamaModel) {
+            updateAIStatus("error", "● Click 'Detect' to find models first");
+            return;
+          }
+          // Resolve "auto" model references
+          AI_CHAT_MODELS.ollama = ollamaModel;
+          AI_EDIT_MODELS.ollama = ollamaModel;
+          AI_THINKING_MODELS.ollama = ollamaModel;
+          const shortName = ollamaModel.split(":")[0];
+          AI_MODEL_LABELS.ollama = {
+            chat: shortName,
+            edit: shortName,
+            thinking: shortName + " 🧠",
+          };
+        } else {
+          aiApiKey = keyInput.value.trim();
+          if (!aiApiKey) {
+            updateAIStatus("error", "● Enter an API key");
+            return;
+          }
         }
+
         aiConnected = true;
         var labels = AI_MODEL_LABELS[aiProvider];
         var statusText = "● Connected";
-        if (labels.chat === labels.edit) {
+        if (aiProvider === "ollama") {
+          statusText += " — 🏠 " + ollamaModel;
+        } else if (labels.chat === labels.edit) {
           statusText += " — " + labels.edit;
         } else {
           statusText += " — Chat: " + labels.chat + " | Edit: " + labels.edit;
@@ -3704,7 +3871,8 @@
       }
 
       function buildSystemPrompt() {
-        const isPremium = document.getElementById('ai-thinking-toggle')?.checked;
+        const isPremium =
+          document.getElementById("ai-thinking-toggle")?.checked;
         return (
           `You are a world-class executive CV strategist — the absolute best in the industry. You are not a generic assistant. You are THE expert that Fortune 500 executives pay $5,000/hour to optimize their resumes. You have access to Tomás Batalha's full CV data below.
 
@@ -3783,7 +3951,9 @@ QUALITY STANDARDS (NON-NEGOTIABLE)
    - No orphan bullets — each job should have 3-5 impactful bullets
    - Check for repeated phrases across the entire CV, not just within sections
 
-${isPremium ? `
+${
+  isPremium
+    ? `
 ═══════════════════════════════════════
 🧠 PREMIUM THINKING MODE ACTIVE
 ═══════════════════════════════════════
@@ -3801,7 +3971,9 @@ Then deliver your suggestions ranked by IMPACT (highest impact first).
 For each suggestion, briefly explain WHY this change matters and what signal it sends to the hiring manager.
 
 Your suggestions should be so good that a professional CV writer would be impressed.
-` : ''}
+`
+    : ""
+}
 ═══════════════════════════════════════
 INTERACTION STYLE
 ═══════════════════════════════════════
@@ -3993,7 +4165,8 @@ INTERACTION STYLE
           aiProvider === "openai" ||
           aiProvider === "groq" ||
           aiProvider === "openrouter" ||
-          aiProvider === "cerebras"
+          aiProvider === "cerebras" ||
+          aiProvider === "ollama"
         ) {
           return await callOpenAICompatible(
             systemPrompt,
@@ -4040,12 +4213,14 @@ INTERACTION STYLE
           body.temperature = 0.7;
         }
 
+        const headers = { "Content-Type": "application/json" };
+        if (aiProvider !== "ollama") {
+          headers["Authorization"] = "Bearer " + aiApiKey;
+        }
+
         const res = await fetch(endpoint, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + aiApiKey,
-          },
+          headers: headers,
           body: JSON.stringify(body),
         });
         if (!res.ok) {
