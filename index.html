@@ -589,8 +589,7 @@
         border-radius: 8px;
         margin: 0 16px 10px;
         max-width: 820px;
-        overflow: hidden;
-        transition: max-height 0.3s ease;
+        width: calc(100% - 32px);
       }
       .style-panel.collapsed .style-body {
         display: none;
@@ -620,6 +619,11 @@
         grid-template-columns: 1fr 1fr;
         gap: 6px 16px;
         padding: 6px 12px 10px;
+      }
+      @media (max-width: 600px) {
+        .style-body {
+          grid-template-columns: 1fr;
+        }
       }
       .style-row {
         display: flex;
