@@ -1166,6 +1166,39 @@
               >● Not connected</span
             >
           </div>
+          <div
+            style="
+              margin-top: 8px;
+              display: flex;
+              align-items: center;
+              gap: 8px;
+            "
+          >
+            <label
+              style="
+                display: inline-flex;
+                align-items: center;
+                gap: 5px;
+                cursor: pointer;
+                font-size: 11px;
+                color: var(--text);
+                margin: 0;
+              "
+            >
+              <input
+                type="checkbox"
+                id="ai-premium-thinking"
+                onchange="onThinkingToggle()"
+                style="accent-color: #f59e0b; cursor: pointer"
+              />
+              🧠 Premium Thinking
+            </label>
+            <span
+              id="thinking-label"
+              style="font-size: 9px; color: var(--muted)"
+              >Off — faster responses</span
+            >
+          </div>
         </div>
         <div class="chat-messages" id="chat-messages">
           <div class="chat-msg system">
@@ -3447,6 +3480,7 @@
       let chatAttachments = []; // {name, text}
       let aiStreaming = false;
       let pendingChanges = []; // diff suggestions
+      let premiumThinking = false; // reasoning mode toggle
 
       // Dual-model system: CHAT model (fast) for conversation, EDIT model (best) for CV changes
       const AI_CHAT_MODELS = {
@@ -3467,13 +3501,47 @@
         cerebras: "llama-3.3-70b",
       };
 
+      // 🧠 Premium Thinking: reasoning/extended thinking models
+      const AI_THINKING_MODELS = {
+        openai: "o3",
+        gemini: "gemini-2.5-pro", // same model, but with thinkingConfig
+        claude: "claude-opus-4-20250514", // same model, but with extended thinking
+        groq: "deepseek-r1-distill-llama-70b",
+        openrouter: "deepseek/deepseek-r1:free",
+        cerebras: "llama-3.3-70b", // no reasoning model on cerebras
+      };
+
       const AI_MODEL_LABELS = {
-        openai: { chat: "GPT-4o Mini", edit: "GPT-4o" },
-        gemini: { chat: "Gemini 2.5 Flash", edit: "Gemini 2.5 Pro" },
-        claude: { chat: "Sonnet 4", edit: "Opus 4" },
-        groq: { chat: "Llama 3.3 70B", edit: "Llama 3.3 70B" },
-        openrouter: { chat: "Llama 3.3 70B", edit: "Llama 3.3 70B" },
-        cerebras: { chat: "Llama 3.3 70B", edit: "Llama 3.3 70B" },
+        openai: {
+          chat: "GPT-4o Mini",
+          edit: "GPT-4o",
+          thinking: "o3 (reasoning)",
+        },
+        gemini: {
+          chat: "Gemini 2.5 Flash",
+          edit: "Gemini 2.5 Pro",
+          thinking: "Gemini 2.5 Pro (deep think)",
+        },
+        claude: {
+          chat: "Sonnet 4",
+          edit: "Opus 4",
+          thinking: "Opus 4 (extended thinking)",
+        },
+        groq: {
+          chat: "Llama 3.3 70B",
+          edit: "Llama 3.3 70B",
+          thinking: "DeepSeek R1 70B",
+        },
+        openrouter: {
+          chat: "Llama 3.3 70B",
+          edit: "Llama 3.3 70B",
+          thinking: "DeepSeek R1 (free)",
+        },
+        cerebras: {
+          chat: "Llama 3.3 70B",
+          edit: "Llama 3.3 70B",
+          thinking: "Llama 3.3 70B",
+        },
       };
 
       const AI_ENDPOINTS = {
@@ -3503,6 +3571,22 @@
         aiProvider = document.getElementById("ai-provider").value;
         aiConnected = false;
         updateAIStatus("disconnected", "● Not connected");
+        onThinkingToggle(); // update label
+      }
+
+      function onThinkingToggle() {
+        premiumThinking = document.getElementById(
+          "ai-premium-thinking",
+        ).checked;
+        const label = document.getElementById("thinking-label");
+        if (premiumThinking) {
+          const modelName = AI_MODEL_LABELS[aiProvider].thinking;
+          label.textContent = "ON — " + modelName;
+          label.style.color = "#f59e0b";
+        } else {
+          label.textContent = "Off — faster responses";
+          label.style.color = "var(--muted)";
+        }
       }
 
       function updateAIStatus(cls, text) {
@@ -3620,11 +3704,16 @@
       }
 
       function buildSystemPrompt() {
+        const isPremium = document.getElementById('ai-thinking-toggle')?.checked;
         return (
-          `You are a senior career coach and CV optimization expert helping Tomás Batalha tailor his CV. You have access to his full CV data.
+          `You are a world-class executive CV strategist — the absolute best in the industry. You are not a generic assistant. You are THE expert that Fortune 500 executives pay $5,000/hour to optimize their resumes. You have access to Tomás Batalha's full CV data below.
 
-RULES:
-1. When suggesting changes, ALWAYS use this exact JSON format wrapped in a code block:
+YOUR MISSION: Deliver suggestions so precise, so strategically brilliant, that every single change measurably increases interview callback rates. Do NOT give generic advice. Every suggestion must be surgical, evidence-based, and immediately actionable.
+
+═══════════════════════════════════════
+SUGGESTION FORMAT (MANDATORY)
+═══════════════════════════════════════
+When suggesting changes, ALWAYS use this exact JSON format wrapped in a code block:
 \`\`\`json:changes
 [
   {
@@ -3636,17 +3725,91 @@ RULES:
 ]
 \`\`\`
 
-2. Path format examples:
-   - "sections[0].content" for summary
-   - "sections[1].jobs[0].bullets[2]" for a specific bullet
-   - "sections[1].jobs[0].role" for a job role
-   - "name" for the name field
+Path format:
+- "sections[0].content" → professional summary text
+- "sections[1].jobs[0].bullets[2]" → specific bullet point
+- "sections[1].jobs[0].role" → job title
+- "sections[1].jobs[0].company" → company name
+- "name" → candidate name field
+- "title" → headline/title field
 
-3. Always show a brief explanation BEFORE the changes block.
-4. Keep suggestions concise, impactful, and ATS-optimized.
-5. When user pastes a job description, analyze key requirements and suggest targeted changes.
-6. Maintain quantification — never remove numbers/metrics.
-7. The "before" field MUST exactly match the current CV text.
+CRITICAL: The "before" field MUST be a character-perfect match of the current CV text. Copy it exactly — including punctuation, spacing, and symbols.
+
+═══════════════════════════════════════
+QUALITY STANDARDS (NON-NEGOTIABLE)
+═══════════════════════════════════════
+
+1. QUANTIFICATION IS SACRED
+   - NEVER remove numbers, metrics, percentages, or dollar amounts
+   - ALWAYS preserve or enhance quantified achievements
+   - If a bullet lacks metrics, suggest adding them with a note asking the user to confirm the numbers
+   - Good: "Drove $2.4M pipeline through strategic outbound campaigns across 3 verticals"
+   - Bad: "Drove significant pipeline through outbound campaigns"
+
+2. ACTION VERB MASTERY
+   - First word of every bullet MUST be a powerful, varied action verb
+   - NEVER repeat the same verb within a section. Track verb usage across all bullets.
+   - Tier 1 (leadership): Spearheaded, Orchestrated, Championed, Pioneered, Architected
+   - Tier 2 (execution): Engineered, Accelerated, Negotiated, Captured, Mobilized
+   - Tier 3 (results): Delivered, Generated, Secured, Converted, Exceeded
+   - FORBIDDEN generic verbs: Helped, Worked on, Was responsible for, Assisted, Participated
+
+3. STAR METHOD ENFORCEMENT
+   - Every bullet should follow: [Action Verb] + [What You Did] + [How/Method] + [Quantified Result]
+   - Weak: "Managed sales team that hit targets"
+   - Strong: "Scaled 8-person outbound sales team to 140% of quarterly quota ($1.2M) by implementing structured discovery frameworks and weekly pipeline reviews"
+
+4. ATS OPTIMIZATION
+   - When a job description is provided, extract the TOP 15 keywords and key phrases
+   - Map each keyword to where it can be naturally woven into the CV
+   - Prioritize: exact keyword matches > semantic matches > implied skills
+   - Never keyword-stuff — every keyword must read naturally in context
+   - Flag any critical JD requirements that the CV doesn't currently address
+
+5. STRATEGIC POSITIONING
+   - Tailor the professional summary to mirror the target role's language and priorities
+   - Lead with the most relevant experience for the specific role
+   - Frame startup experience as enterprise-relevant (scrappy → resourceful, wore many hats → cross-functional leadership)
+   - Position Google/Amazon experience prominently for credibility halo effect
+
+6. CONCISION & IMPACT
+   - Maximum 2 lines per bullet point (aim for 1.5 lines when printed)
+   - Cut filler words ruthlessly: "in order to" → "to", "was able to" → delete, "responsible for" → [action verb]
+   - Every word must earn its place. If removing a word doesn't change the meaning, remove it.
+
+7. CONSISTENCY & POLISH
+   - Maintain consistent tense: past tense for previous roles, present for current
+   - Consistent formatting: all bullets start with verb, all end without period, or all with period
+   - No orphan bullets — each job should have 3-5 impactful bullets
+   - Check for repeated phrases across the entire CV, not just within sections
+
+${isPremium ? `
+═══════════════════════════════════════
+🧠 PREMIUM THINKING MODE ACTIVE
+═══════════════════════════════════════
+You are operating in DEEP ANALYSIS mode with extended reasoning. Take your time.
+
+BEFORE suggesting any changes:
+1. ANALYZE the full CV holistically — identify the narrative arc and positioning strategy
+2. COMPARE against best-in-class CVs for the target role level and industry
+3. IDENTIFY the 3 biggest weaknesses and the 3 strongest assets
+4. THINK about what a hiring manager at this specific company would scan for in the first 6 seconds
+5. CONSIDER ATS parsing — will the format and keywords survive automated screening?
+6. EVALUATE competitive positioning — how does this CV differentiate from 200+ other applicants?
+
+Then deliver your suggestions ranked by IMPACT (highest impact first).
+For each suggestion, briefly explain WHY this change matters and what signal it sends to the hiring manager.
+
+Your suggestions should be so good that a professional CV writer would be impressed.
+` : ''}
+═══════════════════════════════════════
+INTERACTION STYLE
+═══════════════════════════════════════
+- Always show a brief strategic explanation BEFORE the changes block
+- Group related changes together (e.g., "Summary Alignment" or "Bullet Impact Boost")
+- If the user pastes a job description, lead with a KEYWORD ANALYSIS table before suggesting changes
+- Be direct and confident. No hedging. No "you might consider..." — say "Change this to X because Y."
+- If a suggestion requires user input (e.g., confirming a metric), flag it clearly with [CONFIRM: ...]
 
 ` + buildCVContext()
         );
@@ -3669,14 +3832,24 @@ RULES:
 
         // Determine which model to use
         const useEditModel = needsEditModel(text);
-        const modelType = useEditModel ? "edit" : "chat";
+        let modelType;
+        if (premiumThinking) {
+          modelType = "thinking";
+        } else if (useEditModel) {
+          modelType = "edit";
+        } else {
+          modelType = "chat";
+        }
         const modelLabel = AI_MODEL_LABELS[aiProvider][modelType];
+        const modeTag =
+          modelType === "thinking"
+            ? " 🧠 deep reasoning"
+            : modelType === "edit"
+              ? " (edit mode)"
+              : "";
         const thinkingDiv = appendChatMsg(
           "assistant",
-          "⏳ Thinking with " +
-            modelLabel +
-            (useEditModel ? " (edit mode)" : "") +
-            "...",
+          "⏳ Thinking with " + modelLabel + modeTag + "...",
         );
 
         try {
@@ -3805,8 +3978,16 @@ RULES:
       // ═══ AI API CALLS ═══
       async function callAI(history, modelType) {
         const systemPrompt = buildSystemPrompt();
-        const models = modelType === "edit" ? AI_EDIT_MODELS : AI_CHAT_MODELS;
+        let models;
+        if (modelType === "thinking") {
+          models = AI_THINKING_MODELS;
+        } else if (modelType === "edit") {
+          models = AI_EDIT_MODELS;
+        } else {
+          models = AI_CHAT_MODELS;
+        }
         const model = models[aiProvider];
+        const isThinking = modelType === "thinking";
 
         if (
           aiProvider === "openai" ||
@@ -3814,21 +3995,50 @@ RULES:
           aiProvider === "openrouter" ||
           aiProvider === "cerebras"
         ) {
-          return await callOpenAICompatible(systemPrompt, history, model);
+          return await callOpenAICompatible(
+            systemPrompt,
+            history,
+            model,
+            isThinking,
+          );
         } else if (aiProvider === "claude") {
-          return await callClaude(systemPrompt, history, model);
+          return await callClaude(systemPrompt, history, model, isThinking);
         } else if (aiProvider === "gemini") {
-          return await callGemini(systemPrompt, history, model);
+          return await callGemini(systemPrompt, history, model, isThinking);
         }
         throw new Error("Unknown provider");
       }
 
-      async function callOpenAICompatible(systemPrompt, history, model) {
+      async function callOpenAICompatible(
+        systemPrompt,
+        history,
+        model,
+        isThinking,
+      ) {
         const endpoint = AI_ENDPOINTS[aiProvider];
-        const messages = [{ role: "system", content: systemPrompt }];
+        const isO3 = model === "o3";
+        const messages = [];
+        if (isO3) {
+          // o3 uses developer role instead of system
+          messages.push({ role: "developer", content: systemPrompt });
+        } else {
+          messages.push({ role: "system", content: systemPrompt });
+        }
         history.forEach(function (m) {
           messages.push({ role: m.role, content: m.content });
         });
+
+        const body = {
+          model: model,
+          messages: messages,
+          max_tokens: isO3 ? 16384 : 4096,
+        };
+        if (isO3) {
+          body.reasoning_effort = "high";
+          // o3 doesn't support temperature
+        } else {
+          body.temperature = 0.7;
+        }
 
         const res = await fetch(endpoint, {
           method: "POST",
@@ -3836,12 +4046,7 @@ RULES:
             "Content-Type": "application/json",
             Authorization: "Bearer " + aiApiKey,
           },
-          body: JSON.stringify({
-            model: model,
-            messages: messages,
-            temperature: 0.7,
-            max_tokens: 4096,
-          }),
+          body: JSON.stringify(body),
         });
         if (!res.ok) {
           const err = await res.text();
@@ -3851,10 +4056,19 @@ RULES:
         return data.choices[0].message.content;
       }
 
-      async function callClaude(systemPrompt, history, model) {
+      async function callClaude(systemPrompt, history, model, isThinking) {
         const messages = history.map(function (m) {
           return { role: m.role, content: m.content };
         });
+        const body = {
+          model: model,
+          system: systemPrompt,
+          messages: messages,
+          max_tokens: isThinking ? 16000 : 4096,
+        };
+        if (isThinking) {
+          body.thinking = { type: "enabled", budget_tokens: 10000 };
+        }
         const res = await fetch("https://api.anthropic.com/v1/messages", {
           method: "POST",
           headers: {
@@ -3863,22 +4077,24 @@ RULES:
             "anthropic-version": "2023-06-01",
             "anthropic-dangerous-direct-browser-access": "true",
           },
-          body: JSON.stringify({
-            model: model,
-            system: systemPrompt,
-            messages: messages,
-            max_tokens: 4096,
-          }),
+          body: JSON.stringify(body),
         });
         if (!res.ok) {
           const err = await res.text();
           throw new Error(res.status + ": " + err.substring(0, 200));
         }
         const data = await res.json();
+        // With extended thinking, find the text block (skip thinking blocks)
+        if (data.content && Array.isArray(data.content)) {
+          const textBlock = data.content.find(function (b) {
+            return b.type === "text";
+          });
+          if (textBlock) return textBlock.text;
+        }
         return data.content[0].text;
       }
 
-      async function callGemini(systemPrompt, history, model) {
+      async function callGemini(systemPrompt, history, model, isThinking) {
         const contents = [];
         contents.push({
           role: "user",
@@ -3902,12 +4118,18 @@ RULES:
           model +
           ":generateContent?key=" +
           aiApiKey;
+        const genConfig = { maxOutputTokens: isThinking ? 16384 : 4096 };
+        if (isThinking) {
+          genConfig.thinkingConfig = { thinkingBudget: 8192 };
+        } else {
+          genConfig.temperature = 0.7;
+        }
         const res = await fetch(url, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             contents: contents,
-            generationConfig: { temperature: 0.7, maxOutputTokens: 4096 },
+            generationConfig: genConfig,
           }),
         });
         if (!res.ok) {
@@ -3915,7 +4137,13 @@ RULES:
           throw new Error(res.status + ": " + err.substring(0, 200));
         }
         const data = await res.json();
-        return data.candidates[0].content.parts[0].text;
+        // Gemini with thinking returns thought + response parts
+        const parts = data.candidates[0].content.parts;
+        const textPart =
+          parts.find(function (p) {
+            return !p.thought;
+          }) || parts[parts.length - 1];
+        return textPart.text;
       }
     </script>
   </body>
