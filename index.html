@@ -1158,7 +1158,7 @@
                         },
                         {
                           company: "Google | Lisbon, Portugal",
-                          role: "Business Analyst Intern (Large Customer Sales) | May 2024 – August 2024",
+                          role: "Business Analyst Intern, Large Customer Sales | May 2024 – August 2024",
                           bullets: [
                             'Led the "Future Trends" segment at Google\'s flagship partner event, presenting personally researched insights on Peak Season activation and media readiness to 237+ senior advertising clients',
                             "Designed and automated three globally scalable dashboards using Apps Script and GMP tools to analyze ROAS vs. profit and CPA vs. conversions, projecting $1.41M in annual savings for media spend decisions",
@@ -1167,7 +1167,7 @@
                         },
                         {
                           company: "Amazon | Madrid, Spain",
-                          role: "Business Development Intern (Amazon Business) | May 2022 – November 2022",
+                          role: "Business Development Intern, Amazon Business | May 2022 – November 2022",
                           bullets: [
                             "Led the B2B retail expansion into Portugal, managing a portfolio of 2,311 companies through prospecting, outreach, and account activation",
                             "Outperformed KPI benchmarks by 21x in company account configurations during the Portugal B2B rollout",
@@ -1176,8 +1176,8 @@
                           ],
                         },
                         {
-                          company: "EY | Lisbon, Portugal",
-                          role: "Assurance Associate (Financial Services) | February 2022 – April 2022",
+                          company: "Ernst & Young (EY) | Lisbon, Portugal",
+                          role: "Assurance Associate, Financial Services | February 2022 – April 2022",
                           bullets: [
                             "Audited asset portfolios worth €41.3 billion across 3 insurance firms, developing rigorous data verification and attention to detail",
                           ],
@@ -1200,7 +1200,7 @@
                         {
                           institution: "National University of Singapore | Singapore",
                           degree:
-                            "MSc Curriculum Term | MBA-aligned coursework in Strategy and Innovation",
+                            "Exchange Semester | MBA-aligned coursework in Strategy and Innovation",
                           details: [
                             "Built a commercial and financial plan for a NUS PhD venture: 70% energy savings, 45% unit margins, 278% ROI in a $1.5B market",
                           ],
@@ -1517,7 +1517,7 @@
                     } else if (sec.type === "leadership") {
                       sec.items.forEach((item) => {
                         if (item.hidden) return;
-                        html += `<div class="cv-leadership"><strong>${esc(item.name)}</strong> — ${esc(item.desc)}</div>`;
+                        html += `<div class="cv-leadership">${esc(item.name)} — ${esc(item.desc)}</div>`;
                       });
                     } else if (sec.type === "skills") {
                       sec.skills.forEach((sk) => {
