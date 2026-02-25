@@ -592,7 +592,9 @@
         overflow: hidden;
         transition: max-height 0.3s ease;
       }
-      .style-panel.collapsed .style-body { display: none; }
+      .style-panel.collapsed .style-body {
+        display: none;
+      }
       .style-toggle {
         display: flex;
         align-items: center;
@@ -603,9 +605,16 @@
         color: var(--muted);
         user-select: none;
       }
-      .style-toggle:hover { color: var(--text); }
-      .style-toggle .chevron { font-size: 8px; transition: transform 0.2s; }
-      .style-panel:not(.collapsed) .style-toggle .chevron { transform: rotate(90deg); }
+      .style-toggle:hover {
+        color: var(--text);
+      }
+      .style-toggle .chevron {
+        font-size: 8px;
+        transition: transform 0.2s;
+      }
+      .style-panel:not(.collapsed) .style-toggle .chevron {
+        transform: rotate(90deg);
+      }
       .style-body {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -623,7 +632,8 @@
         min-width: 75px;
         white-space: nowrap;
       }
-      .style-row select, .style-row input[type="range"] {
+      .style-row select,
+      .style-row input[type="range"] {
         flex: 1;
         min-width: 0;
       }
@@ -658,8 +668,15 @@
         font-family: inherit;
         white-space: nowrap;
       }
-      .style-row .auto-btn:hover { border-color: var(--accent); color: var(--accent); }
-      .style-row .auto-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+      .style-row .auto-btn:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .style-row .auto-btn.active {
+        background: var(--accent);
+        color: #fff;
+        border-color: var(--accent);
+      }
 
       /* ═══ MARGIN GUIDES ═══ */
       .margin-guide {
@@ -672,7 +689,9 @@
         z-index: 5;
         display: none;
       }
-      .margin-guide.visible { display: block; }
+      .margin-guide.visible {
+        display: block;
+      }
       .margin-guide-inner {
         position: absolute;
         border: 1px dashed rgba(59, 130, 246, 0.25);
@@ -692,7 +711,9 @@
         border: 2px solid rgba(239, 68, 68, 0.4);
         border-radius: 2px;
       }
-      .print-border.visible { display: block; }
+      .print-border.visible {
+        display: block;
+      }
 
       /* ═══ PRINT ═══ */
       @page {
@@ -708,8 +729,9 @@
         body {
           margin: 0 !important;
           padding: 0 !important;
-          background:,
-        .print-border #fff !important;
+          background:
+            ,
+            .print-border #fff !important;
           width: 210mm !important;
           height: 297mm !important;
           overflow: hidden !important;
@@ -772,23 +794,54 @@
               max-width: 130px;
             "
           ></select>
-          <button class="btn btn-primary btn-sm" onclick="saveCurrentProfile()" title="Save current profile (⌘S)">
+          <button
+            class="btn btn-primary btn-sm"
+            onclick="saveCurrentProfile()"
+            title="Save current profile (⌘S)"
+          >
             💾
           </button>
-          <button class="btn btn-secondary btn-sm" onclick="saveAsProfile()" title="Save as new tag">
+          <button
+            class="btn btn-secondary btn-sm"
+            onclick="saveAsProfile()"
+            title="Save as new tag"
+          >
             Save As…
           </button>
-          <button class="btn btn-secondary btn-sm" onclick="deleteProfile()" title="Delete selected profile">
+          <button
+            class="btn btn-secondary btn-sm"
+            onclick="deleteProfile()"
+            title="Delete selected profile"
+          >
             🗑
           </button>
-          <span id="profile-indicator" style="font-size:10px;color:#3b82f6;font-weight:600;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+          <span
+            id="profile-indicator"
+            style="
+              font-size: 10px;
+              color: #3b82f6;
+              font-weight: 600;
+              max-width: 120px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+            "
+          ></span>
           <button class="btn btn-primary btn-sm" onclick="exportPDF()">
             📄 PDF
           </button>
-          <button class="btn btn-secondary btn-sm" onclick="exportProfiles()" title="Export all profiles as JSON">
+          <button
+            class="btn btn-secondary btn-sm"
+            onclick="exportProfiles()"
+            title="Export all profiles as JSON"
+          >
             ⬇ Backup
           </button>
-          <button class="btn btn-secondary btn-sm" onclick="importProfiles()" title="Import profiles from JSON">
+          <button
+            class="btn btn-secondary btn-sm"
+            onclick="importProfiles()"
+            title="Import profiles from JSON"
+          >
             ⬆ Restore
           </button>
           <button class="btn btn-secondary btn-sm" onclick="addSection()">
@@ -832,87 +885,231 @@
             <!-- Row 1: Body Font -->
             <div class="style-row">
               <label>Body Font</label>
-              <select id="style-body-font" onchange="setStyleFont('bodyFont', this.value)">
-                <option value="'Helvetica Neue', Helvetica, Arial, sans-serif">Helvetica Neue</option>
-                <option value="'Times New Roman', Times, serif">Times New Roman</option>
+              <select
+                id="style-body-font"
+                onchange="setStyleFont('bodyFont', this.value)"
+              >
+                <option value="'Helvetica Neue', Helvetica, Arial, sans-serif">
+                  Helvetica Neue
+                </option>
+                <option value="'Times New Roman', Times, serif">
+                  Times New Roman
+                </option>
                 <option value="Garamond, 'EB Garamond', serif">Garamond</option>
-                <option value="Calibri, 'Gill Sans', sans-serif">Calibri</option>
+                <option value="Calibri, 'Gill Sans', sans-serif">
+                  Calibri
+                </option>
                 <option value="Georgia, serif">Georgia</option>
                 <option value="Cambria, serif">Cambria</option>
                 <option value="Arial, sans-serif">Arial</option>
-                <option value="'Palatino Linotype', Palatino, serif">Palatino</option>
+                <option value="'Palatino Linotype', Palatino, serif">
+                  Palatino
+                </option>
               </select>
             </div>
             <!-- Row 2: Title Font -->
             <div class="style-row">
               <label>Title Font</label>
-              <select id="style-title-font" onchange="setStyleFont('titleFont', this.value)">
-                <option value="'Helvetica Neue', Helvetica, Arial, sans-serif">Helvetica Neue</option>
-                <option value="'Times New Roman', Times, serif">Times New Roman</option>
+              <select
+                id="style-title-font"
+                onchange="setStyleFont('titleFont', this.value)"
+              >
+                <option value="'Helvetica Neue', Helvetica, Arial, sans-serif">
+                  Helvetica Neue
+                </option>
+                <option value="'Times New Roman', Times, serif">
+                  Times New Roman
+                </option>
                 <option value="Garamond, 'EB Garamond', serif">Garamond</option>
-                <option value="Calibri, 'Gill Sans', sans-serif">Calibri</option>
+                <option value="Calibri, 'Gill Sans', sans-serif">
+                  Calibri
+                </option>
                 <option value="Georgia, serif">Georgia</option>
                 <option value="Cambria, serif">Cambria</option>
                 <option value="Arial, sans-serif">Arial</option>
-                <option value="'Palatino Linotype', Palatino, serif">Palatino</option>
+                <option value="'Palatino Linotype', Palatino, serif">
+                  Palatino
+                </option>
               </select>
             </div>
             <!-- Row 3: Letter Spacing -->
             <div class="style-row">
               <label>Letter Sp.</label>
-              <input type="range" min="-50" max="100" value="0" step="5" id="style-letter-spacing" oninput="setStyleVal('letterSpacing', this.value / 100)"/>
+              <input
+                type="range"
+                min="-50"
+                max="100"
+                value="0"
+                step="5"
+                id="style-letter-spacing"
+                oninput="setStyleVal('letterSpacing', this.value / 100)"
+              />
               <span class="style-val" id="style-letter-spacing-val">0px</span>
             </div>
             <!-- Row 3b: Body Font Size -->
             <div class="style-row">
               <label>Body Size</label>
-              <input type="range" min="60" max="100" value="75" step="1" id="style-font-size" oninput="setStyleVal('bodySize', this.value / 10)"/>
+              <input
+                type="range"
+                min="60"
+                max="100"
+                value="75"
+                step="1"
+                id="style-font-size"
+                oninput="setStyleVal('bodySize', this.value / 10)"
+              />
               <span class="style-val" id="style-font-size-val">auto</span>
-              <button class="auto-btn active" id="btn-auto-fontsize" onclick="toggleAuto('bodySize')">A</button>
+              <button
+                class="auto-btn active"
+                id="btn-auto-fontsize"
+                onclick="toggleAuto('bodySize')"
+              >
+                A
+              </button>
             </div>
             <!-- Row 3c: Title Font Size -->
             <div class="style-row">
               <label>Title Size</label>
-              <input type="range" min="70" max="130" value="95" step="1" id="style-title-size" oninput="setStyleVal('titleSize', this.value / 10)"/>
+              <input
+                type="range"
+                min="70"
+                max="130"
+                value="95"
+                step="1"
+                id="style-title-size"
+                oninput="setStyleVal('titleSize', this.value / 10)"
+              />
               <span class="style-val" id="style-title-size-val">auto</span>
-              <button class="auto-btn active" id="btn-auto-titlesize" onclick="toggleAuto('titleSize')">A</button>
+              <button
+                class="auto-btn active"
+                id="btn-auto-titlesize"
+                onclick="toggleAuto('titleSize')"
+              >
+                A
+              </button>
             </div>
             <!-- Row 4: Paragraph Spacing -->
             <div class="style-row">
               <label>Para. Gap</label>
-              <input type="range" min="0" max="30" value="5" step="1" id="style-para-gap" oninput="setStyleVal('bulletGap', this.value / 10)"/>
+              <input
+                type="range"
+                min="0"
+                max="30"
+                value="5"
+                step="1"
+                id="style-para-gap"
+                oninput="setStyleVal('bulletGap', this.value / 10)"
+              />
               <span class="style-val" id="style-para-gap-val">auto</span>
-              <button class="auto-btn active" id="btn-auto-para" onclick="toggleAuto('bulletGap')">A</button>
+              <button
+                class="auto-btn active"
+                id="btn-auto-para"
+                onclick="toggleAuto('bulletGap')"
+              >
+                A
+              </button>
             </div>
             <!-- Row 5: Section Spacing -->
             <div class="style-row">
               <label>Section Gap</label>
-              <input type="range" min="20" max="160" value="50" step="5" id="style-section-gap" oninput="setStyleVal('sectionGap', this.value / 10)"/>
+              <input
+                type="range"
+                min="20"
+                max="160"
+                value="50"
+                step="5"
+                id="style-section-gap"
+                oninput="setStyleVal('sectionGap', this.value / 10)"
+              />
               <span class="style-val" id="style-section-gap-val">auto</span>
-              <button class="auto-btn active" id="btn-auto-section" onclick="toggleAuto('sectionGap')">A</button>
+              <button
+                class="auto-btn active"
+                id="btn-auto-section"
+                onclick="toggleAuto('sectionGap')"
+              >
+                A
+              </button>
             </div>
             <!-- Row 6: Margins -->
             <div class="style-row">
               <label>Margins</label>
-              <input type="range" min="50" max="200" value="100" step="5" id="style-margins" oninput="setStyleVal('margins', this.value / 10)"/>
+              <input
+                type="range"
+                min="50"
+                max="200"
+                value="100"
+                step="5"
+                id="style-margins"
+                oninput="setStyleVal('margins', this.value / 10)"
+              />
               <span class="style-val" id="style-margins-val">auto</span>
-              <button class="auto-btn active" id="btn-auto-margins" onclick="toggleAuto('margins')">A</button>
+              <button
+                class="auto-btn active"
+                id="btn-auto-margins"
+                onclick="toggleAuto('margins')"
+              >
+                A
+              </button>
             </div>
             <!-- Row 7: Line Height -->
             <div class="style-row">
               <label>Line Height</label>
-              <input type="range" min="110" max="180" value="135" step="5" id="style-line-height" oninput="setStyleVal('lineHeight', this.value / 100)"/>
+              <input
+                type="range"
+                min="110"
+                max="180"
+                value="135"
+                step="5"
+                id="style-line-height"
+                oninput="setStyleVal('lineHeight', this.value / 100)"
+              />
               <span class="style-val" id="style-line-height-val">auto</span>
-              <button class="auto-btn active" id="btn-auto-lineheight" onclick="toggleAuto('lineHeight')">A</button>
+              <button
+                class="auto-btn active"
+                id="btn-auto-lineheight"
+                onclick="toggleAuto('lineHeight')"
+              >
+                A
+              </button>
             </div>
             <!-- Row 8: Visual guides -->
-            <div class="style-row" style="gap:10px;">
-              <label style="min-width:auto;">Guides</label>
-              <label style="font-size:9px;display:flex;align-items:center;gap:3px;cursor:pointer;min-width:auto;">
-                <input type="checkbox" id="chk-margins" onchange="toggleGuides('margins')" style="margin:0;"/> Margins
+            <div class="style-row" style="gap: 10px">
+              <label style="min-width: auto">Guides</label>
+              <label
+                style="
+                  font-size: 9px;
+                  display: flex;
+                  align-items: center;
+                  gap: 3px;
+                  cursor: pointer;
+                  min-width: auto;
+                "
+              >
+                <input
+                  type="checkbox"
+                  id="chk-margins"
+                  onchange="toggleGuides('margins')"
+                  style="margin: 0"
+                />
+                Margins
               </label>
-              <label style="font-size:9px;display:flex;align-items:center;gap:3px;cursor:pointer;min-width:auto;">
-                <input type="checkbox" id="chk-printborder" onchange="toggleGuides('printborder')" style="margin:0;"/> Print Border
+              <label
+                style="
+                  font-size: 9px;
+                  display: flex;
+                  align-items: center;
+                  gap: 3px;
+                  cursor: pointer;
+                  min-width: auto;
+                "
+              >
+                <input
+                  type="checkbox"
+                  id="chk-printborder"
+                  onchange="toggleGuides('printborder')"
+                  style="margin: 0"
+                />
+                Print Border
               </label>
             </div>
           </div>
@@ -921,7 +1118,7 @@
         <div class="paper-wrapper">
           <div class="paper" id="paper">
             <!-- Rendered CV goes here -->
-          <div class="print-border" id="print-border"></div>
+            <div class="print-border" id="print-border"></div>
           </div>
           <div class="overflow-line" id="overflow-line"></div>
           <div class="margin-guide" id="margin-guide">
@@ -932,1288 +1129,1304 @@
     </div>
 
     <script>
-          // ═══════════════════════════════════════════════════════
-          // CV DATA MODEL
-          // ═══════════════════════════════════════════════════════
-          const DEFAULT_CV = {
-            name: "Tomás Maria Burnay Batalha",
-            contact:
-              "Lisbon, Portugal (Open to Relocation to Dublin) | (+351) 936 124 118 | tomas.b.batalha@gmail.com | linkedin.com/in/tomasmbatalha",
-            sections: [
-              {
-                id: "summary",
-                type: "summary",
-                title: "PROFESSIONAL SUMMARY",
-                content:
-                  "Former Google intern and startup Co-Founder with full-cycle new business sales experience. Built a €147K B2B pipeline from zero through outbound prospecting, cold outreach, and enterprise deal closing. Managed a 2,311-account territory at Amazon, outperforming full-time colleagues. Seeking to bring builder mentality and commercial execution to Google's New Business Sales team.",
-              },
-              {
-                id: "experience",
-                type: "jobs",
-                title: "WORK EXPERIENCE",
-                jobs: [
-                  {
-                    company: "Pairwire | New York, USA (Remote)",
-                    role: "Co-Founder and Head of Sales | February 2024 – December 2025",
-                    bullets: [
-                      "Built €147K pipeline of contracted enterprise pilots from zero in 11 months pre-funding through outbound prospecting, cold calling, consulting, and relationship management",
-                      "Closed 23 enterprise engagements including Fortune 500 and Big 4 firms across 6-9 month full-cycle sales processes",
-                      "Designed an AI-powered outbound engine processing 7,000+ leads, automating 80% of prospecting via custom tech stack (Python, Expand.io, AI-enhanced workflows)",
-                      "Led end-to-end deal management from first touch to contract close, managing entire funnel with no sales team or brand recognition",
-                      "Created partnership and investor pitch materials; led negotiations with Google, Web Summit, and enterprise decision-makers",
-                    ],
-                  },
-                  {
-                    company: "Google | Lisbon, Portugal",
-                    role: "Business Analyst Intern (Large Customer Sales) | May 2024 – August 2024",
-                    bullets: [
-                      'Led the "Future Trends" segment at Google\'s flagship partner event, presenting personally researched insights on Peak Season activation and media readiness to 237+ senior advertising clients',
-                      "Designed and automated three globally scalable dashboards using Apps Script and GMP tools to analyze ROAS vs. profit and CPA vs. conversions, projecting $1.41M in annual savings for media spend decisions",
-                      "Built a reporting platform for Partner Managers using Looker Studio, Analytics 360, and Apps Script, delivering an estimated €315K in annual efficiency gains",
-                    ],
-                  },
-                  {
-                    company: "Amazon | Madrid, Spain",
-                    role: "Business Development Intern (Amazon Business) | May 2022 – November 2022",
-                    bullets: [
-                      "Led the B2B retail expansion into Portugal, managing a portfolio of 2,311 companies through prospecting, outreach, and account activation",
-                      "Outperformed KPI benchmarks by 21x in company account configurations during the Portugal B2B rollout",
-                      "Raised territory share from 56% below to 25% above team average, outperforming full-time colleagues in the region",
-                      "Compiled a 19-page strategic report on B2B eCommerce based on 8 company territories and 54 targeted client interviews",
-                    ],
-                  },
-                  {
-                    company: "EY | Lisbon, Portugal",
-                    role: "Assurance Associate (Financial Services) | February 2022 – April 2022",
-                    bullets: [
-                      "Audited asset portfolios worth €41.3 billion across 3 insurance firms, developing rigorous data verification and attention to detail",
-                    ],
-                  },
-                ],
-              },
-              {
-                id: "education",
-                type: "education",
-                title: "EDUCATION",
-                schools: [
-                  {
-                    institution:
-                      "Rotterdam School of Management | Rotterdam, Netherlands",
-                    degree: "MSc in Strategic Management | GPA: 8/10",
-                    details: [
-                      "Relevant Courses: Applied Machine Learning to Strategy (9.3/10), Python Fundamentals (8.3/10)",
-                    ],
-                  },
-                  {
-                    institution: "National University of Singapore | Singapore",
-                    degree:
-                      "MSc Curriculum Term | MBA-aligned coursework in Strategy and Innovation",
-                    details: [
-                      "Built a commercial and financial plan for a NUS PhD venture: 70% energy savings, 45% unit margins, 278% ROI in a $1.5B market",
-                    ],
-                  },
-                  {
-                    institution:
-                      "Nova School of Business and Economics | Lisbon, Portugal",
-                    degree: "BSc in Management | GPA: 16/20",
-                    details: [
-                      "Statistics (20/20), Procurement Management (19/20), Economics of the European Union (19/20)",
-                    ],
-                  },
-                ],
-              },
-              {
-                id: "leadership",
-                type: "leadership",
-                title: "LEADERSHIP & ACTIVITIES",
-                items: [
-                  {
-                    name: "Nova Thirst Project",
-                    desc: "Founder & President: Led 23 volunteers, raised €2,539 for water access, organized 4 events including one with 35 NGOs (2020-2021)",
-                  },
-                  {
-                    name: "Nova Tech Club",
-                    desc: "Digital Transformation Consultant: Designed a job platform prototype and organized corporate events and workshops (2020-2021)",
-                  },
-                  {
-                    name: "Nova Social Consulting (WWF)",
-                    desc: "Pro Bono Consultant: Assessed organizational structure, identified 155 improvement areas, delivered 6 presentations to senior management (2020-2021)",
-                  },
-                ],
-              },
-              {
-                id: "skills",
-                type: "skills",
-                title: "SKILLS",
-                skills: [
-                  {
-                    label: "Sales & Marketing:",
-                    value:
-                      "Google Ads, YouTube Ads, Google Display Network, CRM (Salesforce), LinkedIn Sales Navigator, Apollo, Full-Cycle Sales, Pipeline Management, Cold Outreach, Consultative Selling",
-                  },
-                  {
-                    label: "Technical:",
-                    value:
-                      "Python, Apps Script, Visual Basic for Applications (VBA), SQL, Looker Studio, Power BI, DAX",
-                  },
-                  {
-                    label: "Certifications:",
-                    value:
-                      "Google Ads Certified, Bloomberg Market Concepts, Microsoft Excel Specialist, TOEFL iBT",
-                  },
-                  {
-                    label: "Languages:",
-                    value:
-                      "Portuguese (Native), English (Fluent), Spanish (Fluent), French (Beginner)",
-                  },
-                ],
-              },
-            ],
-          };
-,
-            showPrintBorder: false
-          let cv = JSON.parse(JSON.stringify(DEFAULT_CV));
-          let zoomLevel = 65;
-          let debounceTimer = null;
-          let resizeTimer = null;
-
-          // ═══ PROFILE / TAG SYSTEM ═══
-          const PROFILES_KEY = "cv-profiles";
-          const ACTIVE_KEY = "cv-active-profile";
-          let activeProfile = null;
-
-          // ═══ STYLE / TYPOGRAPHY SYSTEM ═══
-          const STYLE_DEFAULTS = {
-            bodyFont: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-            titleFont: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-            letterSpacing: 0,
-            bodySize: null,     // null = auto (autoFit controls it)
-            titleSize: null,    // null = auto (autoFit controls it)
-            sectionGap: null,   // null = auto (autoFit controls it)
-            bulletGap: null,
-            margins: null,      // null = auto
-            lineHeight: null,
-            showGuides: false
-          };
-          // userStyle: values the user has explicitly set; null = auto
-          let userStyle = JSON.parse(JSON.stringify(STYLE_DEFAULTS));
-
-          // ═══════════════════════════════════════════════════════
-          // INIT
-          // ═══════════════════════════════════════════════════════
-          function init() {
-            loadProfileList();
-            const activeName = localStorage.getItem(ACTIVE_KEY);
-            if (activeName) {
-              loadProfile(activeName, true);
-            } else {
-              const saved = localStorage.getItem("cv-editor-data");
-              if (saved) {
-                try { cv = JSON.parse(saved); } catch (e) { cv = JSON.parse(JSON.stringify(DEFAULT_CV)); }
-              }
-              // Restore style from CV data
-              if (cv.style) {
-                userStyle = Object.assign(JSON.parse(JSON.stringify(STYLE_DEFAULTS)), cv.style);
-              }
-              syncStyleUI();
-            }
-            renderEditor();
-            renderPreview();
-            autoZoom();
-            window.addEventListener('resize', () => {
-              clearTimeout(resizeTimer);
-              resizeTimer = setTimeout(autoZoom, 200);
-            });
-          }
-
-          // ═══════════════════════════════════════════════════════
-          // EDITOR RENDERING
-          // ═══════════════════════════════════════════════════════
-          function renderEditor() {
-            const editor = document.getElementById("editor");
-            let html = "";
-
-            // Name & Contact
-            html += `
-        <div class="section-block">
-          <div class="section-header" onclick="toggleSection(this)">
-            <span class="chevron open">▶</span>
-            <span class="section-title">Header</span>
-          </div>
-          <div class="section-body">
-            <div class="field-row">
-              <span class="field-label">Name</span>
-              <input class="field-input" value="${esc(cv.name)}" oninput="cv.name=this.value;schedulePreview()">
-            </div>
-            <div class="field-row">
-              <span class="field-label">Contact</span>
-              <input class="field-input" value="${esc(cv.contact)}" oninput="cv.contact=this.value;schedulePreview()">
-            </div>
-          </div>
-        </div>
-      `;
-
-            // Sections
-            cv.sections.forEach((sec, si) => {
-              const secHidden = sec.hidden ? 'item-hidden' : '';
-              html += `<div class="section-block ${secHidden}" draggable="true" ondragstart="dragSection(event,${si})" ondragover="dragOverSection(event,${si})" ondrop="dropSection(event,${si})" ondragend="dragEnd(event)">`;
-              html += `
-          <div class="section-header" onclick="toggleSection(this)">
-            <span class="chevron open">▶</span>
-            <span class="section-title">${esc(sec.title)}</span>
-            <div class="section-actions" onclick="event.stopPropagation()">
-              <button class="icon-btn eye ${sec.hidden?'hidden-item':''}" onclick="toggleHide('section',${si})" title="${sec.hidden?'Show':'Hide'} section">${sec.hidden?'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>'}</button>
-              <button class="icon-btn" onclick="moveSectionUp(${si})" title="Move up">↑</button>
-              <button class="icon-btn" onclick="moveSectionDown(${si})" title="Move down">↓</button>
-              <button class="icon-btn delete" onclick="removeSection(${si})" title="Remove section">✕</button>
-            </div>
-          </div>
-          <div class="section-body">
-            <div class="field-row" style="margin-bottom:6px">
-              <span class="field-label">Title</span>
-              <input class="field-input" value="${esc(sec.title)}" oninput="cv.sections[${si}].title=this.value;schedulePreview();updateSectionTitle(this,${si})">
-            </div>
-        `;
-
-              if (sec.type === "summary") {
-                html += `<textarea class="field-input" rows="3" oninput="cv.sections[${si}].content=this.value;schedulePreview()">${esc(sec.content)}</textarea>`;
-              } else if (sec.type === "jobs") {
-                sec.jobs.forEach((job, ji) => {
-                  const jobHidden = job.hidden ? 'item-hidden' : '';
-                  html += `<div class="job-block ${jobHidden}" draggable="true" ondragstart="dragJob(event,${si},${ji})" ondragover="dragOverJob(event,${si},${ji})" ondrop="dropJob(event,${si},${ji})" ondragend="dragEnd(event)">`;
-                  html += `
-              <div class="job-header">
-                <input class="company" value="${esc(job.company)}" oninput="cv.sections[${si}].jobs[${ji}].company=this.value;schedulePreview()" placeholder="Company | Location">
-                <button class="icon-btn eye ${job.hidden?'hidden-item':''}" onclick="toggleHide('job',${si},${ji})" title="${job.hidden?'Show':'Hide'} job">${job.hidden?'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>'}</button>
-                <button class="icon-btn" onclick="moveJobUp(${si},${ji})">↑</button>
-                <button class="icon-btn" onclick="moveJobDown(${si},${ji})">↓</button>
-                <button class="icon-btn delete" onclick="removeJob(${si},${ji})">✕</button>
-              </div>
-              <div class="job-header">
-                <input class="role" value="${esc(job.role)}" oninput="cv.sections[${si}].jobs[${ji}].role=this.value;schedulePreview()" placeholder="Role | Dates">
-              </div>
-              <ul class="bullet-list">
-            `;
-                  job.bullets.forEach((b, bi) => {
-                    const bHidden = (job.hiddenBullets||[]).includes(bi);
-                    html += `
-                <li class="bullet-item ${bHidden?'item-hidden':''}" draggable="true" ondragstart="dragBullet(event,${si},${ji},${bi})" ondragover="dragOverBullet(event,${si},${ji},${bi})" ondrop="dropBullet(event,${si},${ji},${bi})" ondragend="dragEnd(event)">
-                  <span class="bullet-drag" title="Drag to reorder">⠿</span>
-                  <textarea class="bullet-text" rows="1" oninput="autoGrow(this);cv.sections[${si}].jobs[${ji}].bullets[${bi}]=this.value;schedulePreview()">${esc(b)}</textarea>
-                  <div class="bullet-actions">
-                    <button class="icon-btn eye ${bHidden?'hidden-item':''}" onclick="toggleHide('bullet',${si},${ji},${bi})" title="${bHidden?'Show':'Hide'}">${bHidden?'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>'}</button>
-                    <button class="icon-btn" onclick="moveBulletUp(${si},${ji},${bi})">↑</button>
-                    <button class="icon-btn" onclick="moveBulletDown(${si},${ji},${bi})">↓</button>
-                    <button class="icon-btn delete" onclick="removeBullet(${si},${ji},${bi})">✕</button>
-                  </div>
-                </li>
-              `;
-                  });
-                  html += `</ul>`;
-                  html += `<div class="add-row"><button class="add-btn" onclick="addBullet(${si},${ji})">+ Add bullet</button></div>`;
-                  html += `</div>`;
-                });
-                html += `<div class="add-row"><button class="add-btn" onclick="addJob(${si})">+ Add job</button></div>`;
-              } else if (sec.type === "education") {
-                sec.schools.forEach((sch, ei) => {
-                  const schHidden = sch.hidden ? 'item-hidden' : '';
-                  html += `<div class="job-block ${schHidden}">`;
-                  html += `
-              <div class="job-header">
-                <input class="company" value="${esc(sch.institution)}" oninput="cv.sections[${si}].schools[${ei}].institution=this.value;schedulePreview()">
-                <button class="icon-btn eye ${sch.hidden?'hidden-item':''}" onclick="toggleHide('school',${si},${ei})" title="${sch.hidden?'Show':'Hide'}">${sch.hidden?'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>'}</button>
-                <button class="icon-btn" onclick="moveSchoolUp(${si},${ei})">↑</button>
-                <button class="icon-btn" onclick="moveSchoolDown(${si},${ei})">↓</button>
-                <button class="icon-btn delete" onclick="removeSchool(${si},${ei})">✕</button>
-              </div>
-              <div class="job-header">
-                <input class="role" value="${esc(sch.degree)}" oninput="cv.sections[${si}].schools[${ei}].degree=this.value;schedulePreview()">
-              </div>
-              <ul class="bullet-list">
-            `;
-                  (sch.details || []).forEach((d, di) => {
-                    const dHidden = (sch.hiddenDetails||[]).includes(di);
-                    html += `
-                <li class="bullet-item ${dHidden?'item-hidden':''}">
-                  <span class="bullet-drag">⠿</span>
-                  <textarea class="bullet-text" rows="1" oninput="autoGrow(this);cv.sections[${si}].schools[${ei}].details[${di}]=this.value;schedulePreview()">${esc(d)}</textarea>
-                  <div class="bullet-actions">
-                    <button class="icon-btn eye ${dHidden?'hidden-item':''}" onclick="toggleHide('eduDetail',${si},${ei},${di})" title="${dHidden?'Show':'Hide'}">${dHidden?'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>'}</button>
-                    <button class="icon-btn delete" onclick="removeEduDetail(${si},${ei},${di})">✕</button>
-                  </div>
-                </li>
-              `;
-                  });
-                  html += `</ul>`;
-                  html += `<div class="add-row"><button class="add-btn" onclick="addEduDetail(${si},${ei})">+ Add detail</button></div>`;
-                  html += `</div>`;
-                });
-                html += `<div class="add-row"><button class="add-btn" onclick="addSchool(${si})">+ Add school</button></div>`;
-              } else if (sec.type === "leadership") {
-                sec.items.forEach((item, li) => {
-                  const liHidden = item.hidden ? 'item-hidden' : '';
-                  html += `
-              <div class="leadership-item ${liHidden}">
-                <input class="name" value="${esc(item.name)}" oninput="cv.sections[${si}].items[${li}].name=this.value;schedulePreview()">
-                <input class="desc" value="${esc(item.desc)}" oninput="cv.sections[${si}].items[${li}].desc=this.value;schedulePreview()">
-                <button class="icon-btn eye ${item.hidden?'hidden-item':''}" onclick="toggleHide('leadership',${si},${li})" title="${item.hidden?'Show':'Hide'}">${item.hidden?'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>'}</button>
-                <button class="icon-btn" onclick="moveLeadershipUp(${si},${li})">↑</button>
-                <button class="icon-btn" onclick="moveLeadershipDown(${si},${li})">↓</button>
-                <button class="icon-btn delete" onclick="removeLeadership(${si},${li})">✕</button>
-              </div>
-            `;
-                });
-                html += `<div class="add-row"><button class="add-btn" onclick="addLeadership(${si})">+ Add activity</button></div>`;
-              } else if (sec.type === "skills") {
-                sec.skills.forEach((sk, ki) => {
-                  const skHidden = sk.hidden ? 'item-hidden' : '';
-                  html += `
-              <div class="skill-row ${skHidden}">
-                <input class="skill-label" value="${esc(sk.label)}" oninput="cv.sections[${si}].skills[${ki}].label=this.value;schedulePreview()">
-                <input class="skill-value" value="${esc(sk.value)}" oninput="cv.sections[${si}].skills[${ki}].value=this.value;schedulePreview()">
-                <button class="icon-btn eye ${sk.hidden?'hidden-item':''}" onclick="toggleHide('skill',${si},${ki})" title="${sk.hidden?'Show':'Hide'}">${sk.hidden?'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>'}</button>
-                <button class="icon-btn delete" onclick="removeSkill(${si},${ki})">✕</button>
-              </div>
-            `;
-                });
-                html += `<div class="add-row"><button class="add-btn" onclick="addSkill(${si})">+ Add skill</button></div>`;
-              }
-
-              html += `</div></div>`;
-            });
-
-            editor.innerHTML = html;
-
-            // Auto-grow textareas
-            document.querySelectorAll(".bullet-text").forEach((ta) => autoGrow(ta));
-          }
-
-          // ═══════════════════════════════════════════════════════
-          // PREVIEW RENDERING + AUTO-FIT
-          // ═══════════════════════════════════════════════════════
-          function renderPreview() {
-            const paper = document.getElementById('paper');
-            let html = `<div class="cv-name">${esc(cv.name)}</div>`;
-            html += `<div class="cv-contact">${esc(cv.contact)}</div>`;
-
-            cv.sections.forEach(sec => {
-              if (sec.hidden) return;
-              html += `<div class="cv-section-title">${esc(sec.title)}</div>`;
-
-              if (sec.type === "summary") {
-                html += `<div class="cv-summary">${esc(sec.content)}</div>`;
-              } else if (sec.type === "jobs") {
-                sec.jobs.forEach((job) => {
-                  if (job.hidden) return;
-                  html += `<div class="cv-company">${esc(job.company)}</div>`;
-                  html += `<div class="cv-role">${esc(job.role)}</div>`;
-                  job.bullets.forEach((b, bi) => {
-                    if ((job.hiddenBullets||[]).includes(bi)) return;
-                    html += `<div class="cv-bullet">${esc(b)}</div>`;
-                  });
-                });
-              } else if (sec.type === "education") {
-                sec.schools.forEach((sch) => {
-                  if (sch.hidden) return;
-                  html += `<div class="cv-company">${esc(sch.institution)}</div>`;
-                  html += `<div class="cv-role">${esc(sch.degree)}</div>`;
-                  (sch.details || []).forEach((d, di) => {
-                    if ((sch.hiddenDetails||[]).includes(di)) return;
-                    html += `<div class="cv-edu-detail">${esc(d)}</div>`;
-                  });
-                });
-              } else if (sec.type === "leadership") {
-                sec.items.forEach((item) => {
-                  if (item.hidden) return;
-                  html += `<div class="cv-leadership"><strong>${esc(item.name)}</strong> — ${esc(item.desc)}</div>`;
-                });
-              } else if (sec.type === "skills") {
-                sec.skills.forEach((sk) => {
-                  if (sk.hidden) return;
-                  html += `<div class="cv-skill"><strong>${esc(sk.label)}</strong> ${esc(sk.value)}</div>`;
-                });
-              }
-            });
-
-            paper.innerHTML = html;
-            autoFit();
-          }
-
-          function autoFit() {
-            const paper = document.getElementById('paper');
-            const checkOverflow = () => paper.scrollHeight > paper.clientHeight;
-            const getFillRatio = () => paper.scrollHeight / paper.clientHeight;
-
-            // Count total content entries to determine if page should be filled
-            const countEntries = () => {
-              let count = 0;
-              cv.sections.forEach(sec => {
-                count++; // section header
-                if (sec.type === 'summary') count += 1;
-                else if (sec.type === 'jobs') sec.jobs.forEach(j => { count += 2; count += j.bullets.length; });
-                else if (sec.type === 'education') sec.schools.forEach(s => { count += 2; count += (s.details||[]).length; });
-                else if (sec.type === 'leadership') count += sec.items.length;
-                else if (sec.type === 'skills') count += sec.skills.length;
-              });
-              return count;
-            };
-
-            // ── BASE VALUES (benchmark defaults) ──
-            const BASE = {
-              sectionGap: 5, companyGap: 3, bulletGap: 0.5,
-              lineHeight: 1.35, nameSize: 15, contactSize: 7.5,
-              contactMargin: 6, sectionTitleSize: 9.5, companySize: 8.5,
-              roleSize: 8, bodySize: 7.5, padV: 10, padH: 14
-            };
-
-            // Apply user-locked values as overrides to BASE
-            const locked = {};
-            if (userStyle.titleSize !== null) { BASE.sectionTitleSize = userStyle.titleSize; BASE.companySize = userStyle.titleSize - 1; BASE.roleSize = userStyle.titleSize - 1.5; locked.sectionTitleSize = true; locked.companySize = true; locked.roleSize = true; }
-            if (userStyle.bodySize !== null) { BASE.bodySize = userStyle.bodySize; locked.bodySize = true; }
-            if (userStyle.sectionGap !== null) { BASE.sectionGap = userStyle.sectionGap; locked.sectionGap = true; }
-            if (userStyle.bulletGap !== null) { BASE.bulletGap = userStyle.bulletGap; locked.bulletGap = true; }
-            if (userStyle.lineHeight !== null) { BASE.lineHeight = userStyle.lineHeight; locked.lineHeight = true; }
-            if (userStyle.margins !== null) { BASE.padV = userStyle.margins; BASE.padH = userStyle.margins + 4; locked.padV = true; locked.padH = true; }
-
-            // Apply fonts and letter-spacing (always user-controlled, not auto-adjustable)
-            const applyFonts = () => {
-              paper.style.fontFamily = userStyle.bodyFont;
-              paper.style.letterSpacing = userStyle.letterSpacing + 'px';
-              paper.querySelectorAll('.cv-name, .cv-section-title').forEach(el => {
-                el.style.fontFamily = userStyle.titleFont;
-              });
-            };
-
-            const applyState = (state) => {
-              paper.style.padding = `${state.padV}mm ${state.padH}mm`;
-              paper.querySelectorAll('.cv-name').forEach(el => el.style.fontSize = state.nameSize + 'pt');
-              paper.querySelectorAll('.cv-contact').forEach(el => {
-                el.style.fontSize = state.contactSize + 'pt';
-                el.style.marginBottom = state.contactMargin + 'px';
-              });
-              paper.querySelectorAll('.cv-section-title').forEach(el => {
-                el.style.fontSize = state.sectionTitleSize + 'pt';
-                el.style.marginTop = state.sectionGap + 'px';
-              });
-              paper.querySelectorAll('.cv-company').forEach(el => {
-                el.style.fontSize = state.companySize + 'pt';
-                el.style.marginTop = state.companyGap + 'px';
-              });
-              paper.querySelectorAll('.cv-role').forEach(el => {
-                el.style.fontSize = state.roleSize + 'pt';
-              });
-              paper.querySelectorAll('.cv-bullet, .cv-edu-detail, .cv-leadership, .cv-skill, .cv-summary').forEach(el => {
-                el.style.fontSize = state.bodySize + 'pt';
-                el.style.lineHeight = String(state.lineHeight);
-                el.style.marginBottom = state.bulletGap + 'px';
-              });
-            };
-
-            // Filter expansion/compression steps to exclude locked properties
-            const filterSteps = (steps) => steps.filter(step => {
-              for (const key of Object.keys(step)) {
-                if (locked[key]) return false;
-              }
-              return true;
-            });
-
-            // ── STEP 1: Start from base + apply fonts ──
-            let state = { ...BASE };
-            applyFonts();
-            applyState(state);
-
-            const entries = countEntries();
-            const TOO_SPARSE = entries < 10;
-
-            // ── STEP 2: EXPAND if content doesn't fill the page ──
-            if (!checkOverflow() && !TOO_SPARSE) {
-              const expansionSteps = filterSteps([
-                { sectionGap: 6 }, { sectionGap: 7 }, { sectionGap: 8 }, { sectionGap: 9 },
-                { sectionGap: 10 }, { sectionGap: 12 }, { sectionGap: 14 },
-                { companyGap: 4 }, { companyGap: 5 }, { companyGap: 6 },
-                { bulletGap: 1 }, { bulletGap: 1.5 }, { bulletGap: 2 },
-                { contactMargin: 8 }, { contactMargin: 10 }, { contactMargin: 12 },
-                { lineHeight: 1.40 }, { lineHeight: 1.45 },
-                { padV: 11, padH: 15 }, { padV: 12, padH: 16 },
-              ]);
-
-              let expLevel = 0;
-              while (!checkOverflow() && expLevel < expansionSteps.length) {
-                const prev = { ...state };
-                Object.assign(state, expansionSteps[expLevel]);
-                applyState(state);
-                if (checkOverflow()) {
-                  state = prev;
-                  applyState(state);
-                  break;
-                }
-                expLevel++;
-              }
-            }
-
-            // ── STEP 3: COMPRESS if content overflows ──
-            if (checkOverflow()) {
-              state = { ...BASE };
-              applyState(state);
-
-              const compressionSteps = filterSteps([
-                { sectionGap: 4.5 }, { sectionGap: 4 }, { sectionGap: 3.5 }, { sectionGap: 3 },
-                { companyGap: 2.5 }, { companyGap: 2 }, { companyGap: 1.5 },
-                { bulletGap: 0.3 }, { bulletGap: 0.1 }, { bulletGap: 0 },
-                { lineHeight: 1.30 }, { lineHeight: 1.25 }, { lineHeight: 1.20 },
-                { contactMargin: 4 }, { contactMargin: 3 },
-                { bodySize: 7.2 }, { bodySize: 7.0 }, { bodySize: 6.8 },
-                { sectionTitleSize: 9.0, companySize: 8.0, roleSize: 7.5 },
-                { sectionTitleSize: 8.5, companySize: 7.5, roleSize: 7.0 },
-                { nameSize: 14, contactSize: 7 },
-                { nameSize: 13, contactSize: 6.5 },
-                { padV: 9, padH: 13 },
-                { padV: 8, padH: 12 },
-                { padV: 7, padH: 10 },
-                { padV: 6, padH: 9 },
-              ]);
-
-              let compLevel = 0;
-              while (checkOverflow() && compLevel < compressionSteps.length) {
-                Object.assign(state, compressionSteps[compLevel]);
-                applyState(state);
-                compLevel++;
-              }
-            }
-
-            // ── UPDATE MARGIN GUIDES ──
-            updateMarginGuides(state);
-
-            // ── STATUS BAR ──
-            const fitStatus = document.getElementById('fit-status');
-            const scaleInfo = document.getElementById('scale-info');
-            const overflowLine = document.getElementById('overflow-line');
-            const ratio = getFillRatio();
-            const fillPct = Math.round(ratio * 100);
-
-            if (checkOverflow()) {
-              fitStatus.textContent = '✕ Overflows — reduce content';
-              fitStatus.className = 'fit-indicator fit-over';
-              overflowLine.style.display = 'block';
-            } else if (TOO_SPARSE) {
-              fitStatus.textContent = '○ Sparse content — add more to fill page';
-              fitStatus.className = 'fit-indicator fit-warn';
-              overflowLine.style.display = 'none';
-            } else if (fillPct >= 92) {
-              fitStatus.textContent = '✓ Perfectly filled';
-              fitStatus.className = 'fit-indicator fit-ok';
-              overflowLine.style.display = 'none';
-            } else if (fillPct >= 80) {
-              fitStatus.textContent = '✓ Well balanced';
-              fitStatus.className = 'fit-indicator fit-ok';
-              overflowLine.style.display = 'none';
-            } else {
-              fitStatus.textContent = '✓ Fits comfortably';
-              fitStatus.className = 'fit-indicator fit-ok';
-              overflowLine.style.display = 'none';
-            }
-
-            const bodyFont = state.bodySize;
-            const lh = state.lineHeight;
-            scaleInfo.textContent = `Fill: ${fillPct}% | Body: ${bodyFont}pt | LH: ${lh} | Gaps: ${state.sectionGap}px`;
-          }
-
-          // ═══════════════════════════════════════════════════════
-          // SECTION OPERATIONS
-          // ═══════════════════════════════════════════════════════
-          function moveSectionUp(i) {
-            if (i <= 0) return;
-            [cv.sections[i - 1], cv.sections[i]] = [
-              cv.sections[i],
-              cv.sections[i - 1],
-            ];
-            renderEditor();
-            renderPreview();
-          }
-          function moveSectionDown(i) {
-            if (i >= cv.sections.length - 1) return;
-            [cv.sections[i], cv.sections[i + 1]] = [
-              cv.sections[i + 1],
-              cv.sections[i],
-            ];
-            renderEditor();
-            renderPreview();
-          }
-          function removeSection(i) {
-            if (!confirm(`Remove section "${cv.sections[i].title}"?`)) return;
-            cv.sections.splice(i, 1);
-            renderEditor();
-            renderPreview();
-          }
-          function addSection() {
-            const type = prompt(
-              "Section type: summary, jobs, education, leadership, or skills",
-              "jobs",
-            );
-            if (!type) return;
-            const title = prompt("Section title:", "NEW SECTION");
-            if (!title) return;
-            const sec = { id: "sec_" + Date.now(), type, title };
-            if (type === "summary") sec.content = "";
-            else if (type === "jobs") sec.jobs = [];
-            else if (type === "education") sec.schools = [];
-            else if (type === "leadership") sec.items = [];
-            else if (type === "skills") sec.skills = [];
-            cv.sections.push(sec);
-            renderEditor();
-            renderPreview();
-          }
-          function updateSectionTitle(input, si) {
-            // Update the header display
-            const block = input.closest(".section-block");
-            const titleSpan = block.querySelector(".section-title");
-            titleSpan.textContent = input.value;
-          }
-
-          // ═══════════════════════════════════════════════════════
-          // JOB OPERATIONS
-          // ═══════════════════════════════════════════════════════
-          function addJob(si) {
-            cv.sections[si].jobs.push({ company: "", role: "", bullets: [""] });
-            renderEditor();
-            renderPreview();
-          }
-          function removeJob(si, ji) {
-            if (!confirm("Remove this job?")) return;
-            cv.sections[si].jobs.splice(ji, 1);
-            renderEditor();
-            renderPreview();
-          }
-          function moveJobUp(si, ji) {
-            if (ji <= 0) return;
-            const jobs = cv.sections[si].jobs;
-            [jobs[ji - 1], jobs[ji]] = [jobs[ji], jobs[ji - 1]];
-            renderEditor();
-            renderPreview();
-          }
-          function moveJobDown(si, ji) {
-            const jobs = cv.sections[si].jobs;
-            if (ji >= jobs.length - 1) return;
-            [jobs[ji], jobs[ji + 1]] = [jobs[ji + 1], jobs[ji]];
-            renderEditor();
-            renderPreview();
-          }
-
-          // ═══════════════════════════════════════════════════════
-          // BULLET OPERATIONS
-          // ═══════════════════════════════════════════════════════
-          function addBullet(si, ji) {
-            cv.sections[si].jobs[ji].bullets.push("");
-            renderEditor();
-            renderPreview();
-          }
-          function removeBullet(si, ji, bi) {
-            cv.sections[si].jobs[ji].bullets.splice(bi, 1);
-            renderEditor();
-            renderPreview();
-          }
-          function moveBulletUp(si, ji, bi) {
-            if (bi <= 0) return;
-            const bullets = cv.sections[si].jobs[ji].bullets;
-            [bullets[bi - 1], bullets[bi]] = [bullets[bi], bullets[bi - 1]];
-            renderEditor();
-            renderPreview();
-          }
-          function moveBulletDown(si, ji, bi) {
-            const bullets = cv.sections[si].jobs[ji].bullets;
-            if (bi >= bullets.length - 1) return;
-            [bullets[bi], bullets[bi + 1]] = [bullets[bi + 1], bullets[bi]];
-            renderEditor();
-            renderPreview();
-          }
-
-          // ═══════════════════════════════════════════════════════
-          // EDUCATION OPERATIONS
-          // ═══════════════════════════════════════════════════════
-          function addSchool(si) {
-            cv.sections[si].schools.push({
-              institution: "",
-              degree: "",
-              details: [],
-            });
-            renderEditor();
-            renderPreview();
-          }
-          function removeSchool(si, ei) {
-            if (!confirm("Remove this school?")) return;
-            cv.sections[si].schools.splice(ei, 1);
-            renderEditor();
-            renderPreview();
-          }
-          function moveSchoolUp(si, ei) {
-            if (ei <= 0) return;
-            const schools = cv.sections[si].schools;
-            [schools[ei - 1], schools[ei]] = [schools[ei], schools[ei - 1]];
-            renderEditor();
-            renderPreview();
-          }
-          function moveSchoolDown(si, ei) {
-            const schools = cv.sections[si].schools;
-            if (ei >= schools.length - 1) return;
-            [schools[ei], schools[ei + 1]] = [schools[ei + 1], schools[ei]];
-            renderEditor();
-            renderPreview();
-          }
-          function addEduDetail(si, ei) {
-            cv.sections[si].schools[ei].details.push("");
-            renderEditor();
-            renderPreview();
-          }
-          function removeEduDetail(si, ei, di) {
-            cv.sections[si].schools[ei].details.splice(di, 1);
-            renderEditor();
-            renderPreview();
-          }
-
-          // ═══════════════════════════════════════════════════════
-          // LEADERSHIP OPERATIONS
-          // ═══════════════════════════════════════════════════════
-          function addLeadership(si) {
-            cv.sections[si].items.push({ name: "", desc: "" });
-            renderEditor();
-            renderPreview();
-          }
-          function removeLeadership(si, li) {
-            cv.sections[si].items.splice(li, 1);
-            renderEditor();
-            renderPreview();
-          }
-          function moveLeadershipUp(si, li) {
-            if (li <= 0) return;
-            const items = cv.sections[si].items;
-            [items[li - 1], items[li]] = [items[li], items[li - 1]];
-            renderEditor();
-            renderPreview();
-          }
-          function moveLeadershipDown(si, li) {
-            const items = cv.sections[si].items;
-            if (li >= items.length - 1) return;
-            [items[li], items[li + 1]] = [items[li + 1], items[li]];
-            renderEditor();
-            renderPreview();
-          }
-
-
-          // ═══════════════════════════════════════════════════════
-          // HIDE/SHOW TOGGLE
-          // ═══════════════════════════════════════════════════════
-          function toggleHide(type, si, ji, bi) {
-            switch (type) {
-              case 'section':
-                cv.sections[si].hidden = !cv.sections[si].hidden;
-                break;
-              case 'job':
-                cv.sections[si].jobs[ji].hidden = !cv.sections[si].jobs[ji].hidden;
-                break;
-              case 'bullet': {
-                const job = cv.sections[si].jobs[ji];
-                if (!job.hiddenBullets) job.hiddenBullets = [];
-                const idx = job.hiddenBullets.indexOf(bi);
-                if (idx === -1) job.hiddenBullets.push(bi);
-                else job.hiddenBullets.splice(idx, 1);
-                break;
-              }
-              case 'school':
-                cv.sections[si].schools[ji].hidden = !cv.sections[si].schools[ji].hidden;
-                break;
-              case 'eduDetail': {
-                const sch = cv.sections[si].schools[ji];
-                if (!sch.hiddenDetails) sch.hiddenDetails = [];
-                const idx = sch.hiddenDetails.indexOf(bi);
-                if (idx === -1) sch.hiddenDetails.push(bi);
-                else sch.hiddenDetails.splice(idx, 1);
-                break;
-              }
-              case 'leadership':
-                cv.sections[si].items[ji].hidden = !cv.sections[si].items[ji].hidden;
-                break;
-              case 'skill':
-                cv.sections[si].skills[ji].hidden = !cv.sections[si].skills[ji].hidden;
-                break;
-            }
-            renderEditor();
-            renderPreview();
-          }
-          // ═══════════════════════════════════════════════════════
-          // SKILLS OPERATIONS
-          // ═══════════════════════════════════════════════════════
-          function addSkill(si) {
-            cv.sections[si].skills.push({ label: "", value: "" });
-            renderEditor();
-            renderPreview();
-          }
-          function removeSkill(si, ki) {
-            cv.sections[si].skills.splice(ki, 1);
-            renderEditor();
-            renderPreview();
-          }
-
-          // ═══════════════════════════════════════════════════════
-          // DRAG AND DROP — SECTIONS
-          // ═══════════════════════════════════════════════════════
-          let dragType = null,
-            dragFrom = null;
-
-          function dragSection(e, i) {
-            dragType = "section";
-            dragFrom = { si: i };
-            e.dataTransfer.effectAllowed = "move";
-            e.target.classList.add("dragging");
-          }
-          function dragOverSection(e, i) {
-            if (dragType !== "section") return;
-            e.preventDefault();
-            e.dataTransfer.dropEffect = "move";
-          }
-          function dropSection(e, i) {
-            if (dragType !== "section") return;
-            e.preventDefault();
-            const from = dragFrom.si;
-            if (from === i) return;
-            const item = cv.sections.splice(from, 1)[0];
-            cv.sections.splice(i, 0, item);
-            renderEditor();
-            renderPreview();
-          }
-
-          // DRAG — JOBS
-          function dragJob(e, si, ji) {
-            dragType = "job";
-            dragFrom = { si, ji };
-            e.dataTransfer.effectAllowed = "move";
-            e.stopPropagation();
-            e.target.classList.add("dragging");
-          }
-          function dragOverJob(e, si, ji) {
-            if (dragType !== "job" || dragFrom.si !== si) return;
-            e.preventDefault();
-            e.stopPropagation();
-          }
-          function dropJob(e, si, ji) {
-            if (dragType !== "job" || dragFrom.si !== si) return;
-            e.preventDefault();
-            e.stopPropagation();
-            const from = dragFrom.ji;
-            if (from === ji) return;
-            const jobs = cv.sections[si].jobs;
-            const item = jobs.splice(from, 1)[0];
-            jobs.splice(ji, 0, item);
-            renderEditor();
-            renderPreview();
-          }
-
-          // DRAG — BULLETS
-          function dragBullet(e, si, ji, bi) {
-            dragType = "bullet";
-            dragFrom = { si, ji, bi };
-            e.dataTransfer.effectAllowed = "move";
-            e.stopPropagation();
-            e.target.classList.add("dragging");
-          }
-          function dragOverBullet(e, si, ji, bi) {
-            if (dragType !== "bullet" || dragFrom.si !== si || dragFrom.ji !== ji)
-              return;
-            e.preventDefault();
-            e.stopPropagation();
-          }
-          function dropBullet(e, si, ji, bi) {
-            if (dragType !== "bullet" || dragFrom.si !== si || dragFrom.ji !== ji)
-              return;
-            e.preventDefault();
-            e.stopPropagation();
-            const from = dragFrom.bi;
-            if (from === bi) return;
-            const bullets = cv.sections[si].jobs[ji].bullets;
-            const item = bullets.splice(from, 1)[0];
-            bullets.splice(bi, 0, item);
-            renderEditor();
-            renderPreview();
-          }
-
-          function dragEnd(e) {
-            dragType = null;
-            dragFrom = null;
-            document
-              .querySelectorAll(".dragging")
-              .forEach((el) => el.classList.remove("dragging"));
-          }
-
-          // ═══════════════════════════════════════════════════════
-          // UTILITIES
-          // ═══════════════════════════════════════════════════════
-          function esc(s) {
-            if (!s) return "";
-            return s
-              .replace(/&/g, "&amp;")
-              .replace(/</g, "&lt;")
-              .replace(/>/g, "&gt;")
-              .replace(/"/g, "&quot;");
-          }
-
-          function autoGrow(el) {
-            el.style.height = "auto";
-            el.style.height = el.scrollHeight + "px";
-          }
-
-          function toggleSection(header) {
-            const body = header.nextElementSibling;
-            const chevron = header.querySelector(".chevron");
-            body.classList.toggle("collapsed");
-            chevron.classList.toggle("open");
-          }
-
-          function setZoom(val) {
-            zoomLevel = parseInt(val);
-            document.getElementById("zoom-val").textContent = zoomLevel + "%";
-            document.querySelector(".zoom-slider").value = zoomLevel;
-            document.getElementById("paper").style.transform = `scale(${zoomLevel / 100})`;
-          }
-
-          function autoZoom() {
-            const panel = document.querySelector('.paper-wrapper');
-            const toolbar = document.querySelector('.toolbar');
-            const stylePanel = document.getElementById('style-panel');
-            const paperW = 793.7; // 210mm in px
-            const paperH = 1122.5; // 297mm in px
-            const availW = panel.clientWidth - 40;
-            const spUsed = (toolbar ? toolbar.offsetHeight : 0) + (stylePanel && !stylePanel.classList.contains('collapsed') ? stylePanel.offsetHeight : 0);
-            const availH = panel.clientHeight - spUsed - 40;
-            const scaleW = availW / paperW;
-            const scaleH = availH / paperH;
-            const scale = Math.min(scaleW, scaleH);
-            const zoom = Math.max(20, Math.min(200, Math.round(scale * 100)));
-            setZoom(zoom);
-          }
-userStyle[prop] = val;
-            updateStyleValDisplay(prop, val);
-            const btnMap = {bodySize:'btn-auto-fontsize', titleSize:'btn-auto-titlesize', bulletGap:'btn-auto-para', sectionGap:'btn-auto-section', margins:'btn-auto-margins', lineHeight:'btn-auto-lineheight'};
-            const btnId = btnMap[prop];
-            if (btnId) document.getElementById(btnId).classList.remove('active');
-            cv.style = JSON.parse(JSON.stringify(userStyle));
-            renderPreview();
-            schedulePreview();
-          }
-
-          function toggleAuto(prop) {
-            const btnMap = {bodySize:'btn-auto-fontsize', titleSize:'btn-auto-titlesize', bulletGap:'btn-auto-para', sectionGap:'btn-auto-section', margins:'btn-auto-margins', lineHeight:'btn-auto-lineheight'};
-            if (userStyle[prop] === null) {
-              const defaults = {bodySize: 7.5, titleSize: 9.5, bulletGap: 0.5, sectionGap: 5, margins: 10, lineHeight: 1.35};
-              const defaults = {bodySize: 7.5, titleSize: 9.5, bulletGap: 0.5, sectionGap: 5, margins: 10, lineHeight: 1.35};
-              const defaults = {bodySize: 7.5, titleSize: 9.5, bulletGap: 0.5, sectionGap: 5, margins: 10, lineHeight: 1.35};
-              userStyle[prop] = defaults[prop];
-              document.getElementById(btnMap[prop]).classList.remove('active');
-            } else {
-              userStyle[prop] = null;
-              document.getElementById(btnMap
-            schedulePreview();
-          }
-
-          function updateStyleValDisplay(prop, val) {
-            const map = {
-              bodySize: 'style-font-size-val',
-              titleSize: 'style-titlene-height-val',
-              letterSpacing: 'style-letter-spacing-val'
-            };nst map = {
-              bodySize: 'style-font-size-val',
-              titleSize: 'style-title-size-val',
-              nst map = {
-              bodySize: 'style-font-size-val',
-              titleSize: 'style-titlens-val',
-              lineHeight: 'style-line-height-val',
-              letterSpacing: 'style-letter-spacing-val'
-            };
-            const el = document.getElementById(map[prop]);
-            if (!el) return;
-            if (val === null) {
-              el.textContent = 'auto';
-            } else if (prop === 'letterSpacing') {
-              el.textContent = val.toFixed(2) + 'px';
-            } else if (prop === 'bodySize' || prop === 'titleementById(map[prop]);
-            if (!el) return;
-            if (val === null) {
-              el.textContent = 'auto';
-            } else if (prop === 'letterSpacing') {
-              el.textContent = val.toFixed(2) + 'px';
-            } else if (prop === 'bodySize' || prop === 'titleSize') {
-              el.textContent = val.toFixed(1) + 'pt';
-            } else if (prop === 'lineHeight') {
-              el.textContent = val.toFixed(2);
-            } else if (prop === 'margins') {
-              el.textContent = val.toFixed(1) + 'mm';
-            } else {
-              el.textContent = val.toFixed(1) + 'px';
-            }
-          }
-
-          function syncStyleUI() {
-            // Sync font dropdowns
-            const bf = document.getElementById('style-body-font');
-            co
-            syncSlider('bodySize', 'style-font-size', 'btn-auto-fontsize', 7.5);
-            syncSlider('titleSize', 'style-title-size', 'btn-auto-titlesize', 9.5);
-            syncSlider('bulletGap', 'style-para-gap', 'btn-auto-para', 0.5);
-            syncSlider('sectionGap', 'style-section-gap', 'btn-auto-section', 5);
-            syncSlider('margins', 'style-margins', 'btn-auto-margins', 10);
-            syncSlider('lineHeight', 'style-line-height', 'btn-auto-lineheight', 1.35);
-            // Sync checkboxes
-            document.getElementById('chk-margins').checked = !!userStyle.showGuides;
-            document.getElementById('margin-guide').classList.toggle('visible', !!userStyle.showGuides);
-            document.getElementById('chk-printborder').checked = !!userStyle.showPrintBorder;
-            document.getElementById('print-border').classList.toggle('visible', !!userStyle.showPrintBorder);
-          }
-
-          function toggleGuides(type) {
-            if (type === 'margins') {
-              userStyle.showGuides = document.getElementById('chk-margins').checked;
-              document.getElementById('margin-guide').classList.toggle('visible', userStyle.showGuides);
-            } else if (type === 'printborder') {
-              userStyle.showPrintBorder = document.getElementById('chk-printborder').checked;
-              document.getElementById('print-border').classList.toggle('visible', userStyle.showPrintBorder)
-
-          function toggleGuides(type) {
-            if (type === 'margins') {
-              userStyle.showGuides = document.getElementById('chk-margins').checked;
-              document.getElementById('margin-guide').classList.toggle('visible', userStyle.showGuides);
-            } else if (type === 'printborder') {
-              userStyle.showPrintBorder = document.getElementById('chk-printborder').checked;
-              document.getElementById('print-border').classList.toggle('visible', userStyle.showPrintBorder);
-            }
-            cv.style = JSON.parse(JSON.stringify(userStyle));
-          }
-
-          function updateMarginGuides(state) {
-            const inner = document.getElementById('margin-guide-inner');
-            if (!inner) return;
-            const pctTop = (state.padV / 297 * 100);
-            const pctBot = pctTop;
-            const pctLeft = (state.padH / 210 * 100);
-            const pctRight = pctLeft;
-            inner.style.top = pctTop + '%';
-            inner.style.left = pctLeft + '%';
-            inner.style.right = pctRight + '%';
-            inner.style.bottom = pctBot + '%';
-          }
-
-          function schedulePreview() {
-            clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(() => {
-              renderPreview();
-              // Auto-save to current profile quietly
-              if (activeProfile) {
-                const profiles = getProfiles();
-                profiles[activeProfile] = JSON.parse(JSON.stringify(cv));
-                setProfiles(profiles);
-              }
-              localStorage.setItem("cv-editor-data", JSON.stringify(cv));
-            }, 150);
-          }
-
-          function saveToStorage() {
-            // Legacy: also saves to old key for backward compat
-            localStorage.setItem("cv-editor-data", JSON.stringify(cv));
-            if (activeProfile) {
-              saveCurrentProfile(true);
-            } else {
-              alert("Saved! Use 'Save As' to save with a tag.");
-            }
-          }
-
-          // ═══════════════════════════════════════════════════════
-          // PROFILE / TAG MANAGEMENT
-          // ═══════════════════════════════════════════════════════
-          function getProfiles() {
-            try { return JSON.parse(localStorage.getItem(PROFILES_KEY) || "{}"); } catch(e) { return {}; }
-          }
-
-          function setProfiles(profiles) {
-            localStorage.setItem(PROFILES_KEY, JSON.stringify(profiles));
-          }
-
-          function loadProfileList() {
-            const sel = document.getElementById('profile-select');
-            const profiles = getProfiles();
-            const names = Object.keys(profiles).sort();
-            sel.innerHTML = '<option value="">— Unsaved Draft —</option>';
-            names.forEach(name => {
-              const opt = document.createElement('option');
-              opt.value = name;
-              opt.textContent = name;
-              if (name === activeProfile) opt.selected = true;
-              sel.appendChild(opt);
-            });
-            updateProfileIndicator();
-          }
-
-          function updateProfileIndicator() {
-            const ind = document.getElementById('profile-indicator');
-            if (ind) ind.textContent = activeProfile ? '🏷 ' + activeProfile : '';
-          }
-
-          function loadProfile(name, silent) {
-            if (!name) {
-              // Switching to "unsaved draft" — load from legacy storage or default
-              activeProfile = null;
-              localStorage.removeItem(ACTIVE_KEY);
-              const saved = localStorage.getItem('cv-editor-data');
-              if (saved) { try { cv = JSON.parse(saved); } catch(e) { cv = JSON.parse(JSON.stringify(DEFAULT_CV)); } }
-              else { cv = JSON.parse(JSON.stringify(DEFAULT_CV)); }
-              // Restore style
-              if (cv.style) { userStyle = Object.assign(JSON.parse(JSON.stringify(STYLE_DEFAULTS)), cv.style); }
-              else { userStyle = JSON.parse(JSON.stringify(STYLE_DEFAULTS)); }
-              syncStyleUI();
-              renderEditor(); renderPreview();
-              updateProfileIndicator();
-              return;
-            }
-            const profiles = getProfiles();
-            if (profiles[name]) {
-              cv = JSON.parse(JSON.stringify(profiles[name]));
-              activeProfile = name;
-              localStorage.setItem(ACTIVE_KEY, name);
-              // Restore style
-              if (cv.style) { userStyle = Object.assign(JSON.parse(JSON.stringify(STYLE_DEFAULTS)), cv.style); }
-              else { userStyle = JSON.parse(JSON.stringify(STYLE_DEFAULTS)); }
-              syncStyleUI();
-              renderEditor(); renderPreview();
-              loadProfileList();
-              if (!silent) { showToast('Loaded: ' + name); }
-            }
-          }
-
-          function saveAsProfile() {
-            const suggested = activeProfile || '';
-            const name = prompt('Save CV with tag name (e.g. "Google AE", "Sales CV", "Consulting"):', suggested);
-            if (!name || !name.trim()) return;
-            const tag = name.trim();
-            const profiles = getProfiles();
-            if (profiles[tag] && !confirm('Overwrite existing profile "' + tag + '"?')) return;
-            profiles[tag] = JSON.parse(JSON.stringify(cv));
-            setProfiles(profiles);
-            activeProfile = tag;
-            localStorage.setItem(ACTIVE_KEY, tag);
-            localStorage.setItem('cv-editor-data', JSON.stringify(cv));
-            loadProfileList();
-            showToast('Saved: ' + tag);
-          }
-
-          function saveCurrentProfile(quiet) {
-            if (!activeProfile) { saveAsProfile(); return; }
-            const profiles = getProfiles();
-            profiles[activeProfile] = JSON.parse(JSON.stringify(cv));
-            setProfiles(profiles);
-            localStorage.setItem('cv-editor-data', JSON.stringify(cv));
-            if (!quiet) showToast('Saved: ' + activeProfile);
-          }
-
-          function deleteProfile() {
-            const sel = document.getElementById('profile-select');
-            const name = sel.value;
-            if (!name) { alert('Select a profile to delete.'); return; }
-            if (!confirm('Delete profile "' + name + '"? This cannot be undone.')) return;
-            const profiles = getProfiles();
-            delete profiles[name];
-            setProfiles(profiles);
-            if (activeProfile === name) {
-              activeProfile = null;
-              localStorage.removeItem(ACTIVE_KEY);
-            }
-            loadProfileList();
-            showToast('Deleted: ' + name);
-          }
-
-          function showToast(msg) {
-            let toast = document.getElementById('cv-toast');
-            if (!toast) {
-              toast = document.createElement('div');
-              toast.id = 'cv-toast';
-              toast.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#22c55e;color:#fff;padding:8px 20px;border-radius:8px;font-size:12px;font-weight:600;z-index:9999;opacity:0;transition:opacity 0.3s;pointer-events:none;font-family:inherit;';
-              document.body.appendChild(toast);
-            }
-            toast.textContent = msg;
-            toast.style.opacity = '1';
-            setTimeout(() => { toast.style.opacity = '0'; }, 2000);
-          }
-
-          function resetToDefault() {
-            if (!confirm("Reset to default CV data? All changes will be lost."))
-              return;
-            cv = JSON.parse(JSON.stringify(DEFAULT_CV));
-            localStorage.removeItem("cv-editor-data");
-            renderEditor();
-            renderPreview();
-          }
-
-          function exportPDF() {
-            // Tip: In Chrome/Safari print dialog, set Margins to "None" and uncheck "Headers and footers"
-            // This ensures only the CV content appears in the PDF
-            const origTitle = document.title;
-            document.title = activeProfile ? activeProfile : 'draft';
-            window.print();
-            document.title = origTitle;
-          }
-
-          /* ═══ PROFILE EXPORT / IMPORT ═══ */
-          function exportProfiles() {
-            const profiles = getProfiles();
-            const keys = Object.keys(profiles);
-            if (keys.length === 0) { alert('No saved profiles to export.'); return; }
-            const blob = new Blob([JSON.stringify(profiles, null, 2)], { type: 'application/json' });
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = 'cv-profiles-backup.json';
-            a.click();
-            URL.revokeObjectURL(a.href);
-            showToast('Exported ' + keys.length + ' profile(s)');
-          }
-
-          function importProfiles() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.json';
-            input.onchange = (e) => {
-              const file = e.target.files[0];
-              if (!file) return;
-              const reader = new FileReader();
-              reader.onload = (ev) => {
-                try {
-                  const imported = JSON.parse(ev.target.result);
-                  if (typeof imported !== 'object' || Array.isArray(imported)) throw new Error('Bad format');
-                  const existing = getProfiles();
-                  let count = 0;
-                  for (const [name, data] of Object.entries(imported)) {
-                    if (existing[name]) {
-                      if (!confirm('Profile "' + name + '" already exists. Overwrite?')) continue;
-                    }
-                    existing[name] = data;
-                    count++;
-                  }
-                  setProfiles(existing);
+                // ═══════════════════════════════════════════════════════
+                // CV DATA MODEL
+                // ═══════════════════════════════════════════════════════
+                const DEFAULT_CV = {
+                  name: "Tomás Maria Burnay Batalha",
+                  contact:
+                    "Lisbon, Portugal (Open to Relocation to Dublin) | (+351) 936 124 118 | tomas.b.batalha@gmail.com | linkedin.com/in/tomasmbatalha",
+                  sections: [
+                    {
+                      id: "summary",
+                      type: "summary",
+                      title: "PROFESSIONAL SUMMARY",
+                      content:
+                        "Former Google intern and startup Co-Founder with full-cycle new business sales experience. Built a €147K B2B pipeline from zero through outbound prospecting, cold outreach, and enterprise deal closing. Managed a 2,311-account territory at Amazon, outperforming full-time colleagues. Seeking to bring builder mentality and commercial execution to Google's New Business Sales team.",
+                    },
+                    {
+                      id: "experience",
+                      type: "jobs",
+                      title: "WORK EXPERIENCE",
+                      jobs: [
+                        {
+                          company: "Pairwire | New York, USA (Remote)",
+                          role: "Co-Founder and Head of Sales | February 2024 – December 2025",
+                          bullets: [
+                            "Built €147K pipeline of contracted enterprise pilots from zero in 11 months pre-funding through outbound prospecting, cold calling, consulting, and relationship management",
+                            "Closed 23 enterprise engagements including Fortune 500 and Big 4 firms across 6-9 month full-cycle sales processes",
+                            "Designed an AI-powered outbound engine processing 7,000+ leads, automating 80% of prospecting via custom tech stack (Python, Expand.io, AI-enhanced workflows)",
+                            "Led end-to-end deal management from first touch to contract close, managing entire funnel with no sales team or brand recognition",
+                            "Created partnership and investor pitch materials; led negotiations with Google, Web Summit, and enterprise decision-makers",
+                          ],
+                        },
+                        {
+                          company: "Google | Lisbon, Portugal",
+                          role: "Business Analyst Intern (Large Customer Sales) | May 2024 – August 2024",
+                          bullets: [
+                            'Led the "Future Trends" segment at Google\'s flagship partner event, presenting personally researched insights on Peak Season activation and media readiness to 237+ senior advertising clients',
+                            "Designed and automated three globally scalable dashboards using Apps Script and GMP tools to analyze ROAS vs. profit and CPA vs. conversions, projecting $1.41M in annual savings for media spend decisions",
+                            "Built a reporting platform for Partner Managers using Looker Studio, Analytics 360, and Apps Script, delivering an estimated €315K in annual efficiency gains",
+                          ],
+                        },
+                        {
+                          company: "Amazon | Madrid, Spain",
+                          role: "Business Development Intern (Amazon Business) | May 2022 – November 2022",
+                          bullets: [
+                            "Led the B2B retail expansion into Portugal, managing a portfolio of 2,311 companies through prospecting, outreach, and account activation",
+                            "Outperformed KPI benchmarks by 21x in company account configurations during the Portugal B2B rollout",
+                            "Raised territory share from 56% below to 25% above team average, outperforming full-time colleagues in the region",
+                            "Compiled a 19-page strategic report on B2B eCommerce based on 8 company territories and 54 targeted client interviews",
+                          ],
+                        },
+                        {
+                          company: "EY | Lisbon, Portugal",
+                          role: "Assurance Associate (Financial Services) | February 2022 – April 2022",
+                          bullets: [
+                            "Audited asset portfolios worth €41.3 billion across 3 insurance firms, developing rigorous data verification and attention to detail",
+                          ],
+                        },
+                      ],
+                    },
+                    {
+                      id: "education",
+                      type: "education",
+                      title: "EDUCATION",
+                      schools: [
+                        {
+                          institution:
+                            "Rotterdam School of Management | Rotterdam, Netherlands",
+                          degree: "MSc in Strategic Management | GPA: 8/10",
+                          details: [
+                            "Relevant Courses: Applied Machine Learning to Strategy (9.3/10), Python Fundamentals (8.3/10)",
+                          ],
+                        },
+                        {
+                          institution: "National University of Singapore | Singapore",
+                          degree:
+                            "MSc Curriculum Term | MBA-aligned coursework in Strategy and Innovation",
+                          details: [
+                            "Built a commercial and financial plan for a NUS PhD venture: 70% energy savings, 45% unit margins, 278% ROI in a $1.5B market",
+                          ],
+                        },
+                        {
+                          institution:
+                            "Nova School of Business and Economics | Lisbon, Portugal",
+                          degree: "BSc in Management | GPA: 16/20",
+                          details: [
+                            "Statistics (20/20), Procurement Management (19/20), Economics of the European Union (19/20)",
+                          ],
+                        },
+                      ],
+                    },
+                    {
+                      id: "leadership",
+                      type: "leadership",
+                      title: "LEADERSHIP & ACTIVITIES",
+                      items: [
+                        {
+                          name: "Nova Thirst Project",
+                          desc: "Founder & President: Led 23 volunteers, raised €2,539 for water access, organized 4 events including one with 35 NGOs (2020-2021)",
+                        },
+                        {
+                          name: "Nova Tech Club",
+                          desc: "Digital Transformation Consultant: Designed a job platform prototype and organized corporate events and workshops (2020-2021)",
+                        },
+                        {
+                          name: "Nova Social Consulting (WWF)",
+                          desc: "Pro Bono Consultant: Assessed organizational structure, identified 155 improvement areas, delivered 6 presentations to senior management (2020-2021)",
+                        },
+                      ],
+                    },
+                    {
+                      id: "skills",
+                      type: "skills",
+                      title: "SKILLS",
+                      skills: [
+                        {
+                          label: "Sales & Marketing:",
+                          value:
+                            "Google Ads, YouTube Ads, Google Display Network, CRM (Salesforce), LinkedIn Sales Navigator, Apollo, Full-Cycle Sales, Pipeline Management, Cold Outreach, Consultative Selling",
+                        },
+                        {
+                          label: "Technical:",
+                          value:
+                            "Python, Apps Script, Visual Basic for Applications (VBA), SQL, Looker Studio, Power BI, DAX",
+                        },
+                        {
+                          label: "Certifications:",
+                          value:
+                            "Google Ads Certified, Bloomberg Market Concepts, Microsoft Excel Specialist, TOEFL iBT",
+                        },
+                        {
+                          label: "Languages:",
+                          value:
+                            "Portuguese (Native), English (Fluent), Spanish (Fluent), French (Beginner)",
+                        },
+                      ],
+                    },
+                  ],
+                };
+                let cv = JSON.parse(JSON.stringify(DEFAULT_CV));
+                let zoomLevel = 65;
+                let debounceTimer = null;
+                let resizeTimer = null;
+
+                // ═══ PROFILE / TAG SYSTEM ═══
+                const PROFILES_KEY = "cv-profiles";
+                const ACTIVE_KEY = "cv-active-profile";
+                let activeProfile = null;
+
+                // ═══ STYLE / TYPOGRAPHY SYSTEM ═══
+                const STYLE_DEFAULTS = {
+                  bodyFont: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                  titleFont: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                  letterSpacing: 0,
+                  bodySize: null,     // null = auto (autoFit controls it)
+                  titleSize: null,    // null = auto (autoFit controls it)
+                  sectionGap: null,   // null = auto (autoFit controls it)
+                  bulletGap: null,
+                  margins: null,      // null = auto
+                  lineHeight: null,
+                  showGuides: false,
+                  showPrintBorder: false
+                };
+                // userStyle: values the user has explicitly set; null = auto
+                let userStyle = JSON.parse(JSON.stringify(STYLE_DEFAULTS));
+
+                // ═══════════════════════════════════════════════════════
+                // INIT
+                // ═══════════════════════════════════════════════════════
+                function init() {
                   loadProfileList();
-                  showToast('Imported ' + count + ' profile(s)');
-                } catch (err) {
-                  alert('Invalid file: ' + err.message);
+                  const activeName = localStorage.getItem(ACTIVE_KEY);
+                  if (activeName) {
+                    loadProfile(activeName, true);
+                  } else {
+                    const saved = localStorage.getItem("cv-editor-data");
+                    if (saved) {
+                      try { cv = JSON.parse(saved); } catch (e) { cv = JSON.parse(JSON.stringify(DEFAULT_CV)); }
+                    }
+                    // Restore style from CV data
+                    if (cv.style) {
+                      userStyle = Object.assign(JSON.parse(JSON.stringify(STYLE_DEFAULTS)), cv.style);
+                    }
+                    syncStyleUI();
+                  }
+                  renderEditor();
+                  renderPreview();
+                  autoZoom();
+                  window.addEventListener('resize', () => {
+                    clearTimeout(resizeTimer);
+                    resizeTimer = setTimeout(autoZoom, 200);
+                  });
                 }
-              };
-              reader.readAsText(file);
-            };
-            input.click();
-          }
 
-          // Keyboard shortcut: Cmd+S to save current profile
-          document.addEventListener("keydown", (e) => {
-            if ((e.metaKey || e.ctrlKey) && e.key === "s") {
-              e.preventDefault();
-              saveCurrentProfile();
-            }
-          });
+                // ═══════════════════════════════════════════════════════
+                // EDITOR RENDERING
+                // ═══════════════════════════════════════════════════════
+                function renderEditor() {
+                  const editor = document.getElementById("editor");
+                  let html = "";
 
-          // Start
-          try { init(); } catch(e) { document.body.innerHTML = '<pre style="color:red;padding:20px;">INIT ERROR: ' + e.message + '\n\n' + e.stack + '</pre>'; }
+                  // Name & Contact
+                  html += `
+              <div class="section-block">
+                <div class="section-header" onclick="toggleSection(this)">
+                  <span class="chevron open">▶</span>
+                  <span class="section-title">Header</span>
+                </div>
+                <div class="section-body">
+                  <div class="field-row">
+                    <span class="field-label">Name</span>
+                    <input class="field-input" value="${esc(cv.name)}" oninput="cv.name=this.value;schedulePreview()">
+                  </div>
+                  <div class="field-row">
+                    <span class="field-label">Contact</span>
+                    <input class="field-input" value="${esc(cv.contact)}" oninput="cv.contact=this.value;schedulePreview()">
+                  </div>
+                </div>
+              </div>
+            `;
+
+                  // Sections
+                  cv.sections.forEach((sec, si) => {
+                    const secHidden = sec.hidden ? 'item-hidden' : '';
+                    html += `<div class="section-block ${secHidden}" draggable="true" ondragstart="dragSection(event,${si})" ondragover="dragOverSection(event,${si})" ondrop="dropSection(event,${si})" ondragend="dragEnd(event)">`;
+                    html += `
+                <div class="section-header" onclick="toggleSection(this)">
+                  <span class="chevron open">▶</span>
+                  <span class="section-title">${esc(sec.title)}</span>
+                  <div class="section-actions" onclick="event.stopPropagation()">
+                    <button class="icon-btn eye ${sec.hidden?'hidden-item':''}" onclick="toggleHide('section',${si})" title="${sec.hidden?'Show':'Hide'} section">${sec.hidden?'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>'}</button>
+                    <button class="icon-btn" onclick="moveSectionUp(${si})" title="Move up">↑</button>
+                    <button class="icon-btn" onclick="moveSectionDown(${si})" title="Move down">↓</button>
+                    <button class="icon-btn delete" onclick="removeSection(${si})" title="Remove section">✕</button>
+                  </div>
+                </div>
+                <div class="section-body">
+                  <div class="field-row" style="margin-bottom:6px">
+                    <span class="field-label">Title</span>
+                    <input class="field-input" value="${esc(sec.title)}" oninput="cv.sections[${si}].title=this.value;schedulePreview();updateSectionTitle(this,${si})">
+                  </div>
+              `;
+
+                    if (sec.type === "summary") {
+                      html += `<textarea class="field-input" rows="3" oninput="cv.sections[${si}].content=this.value;schedulePreview()">${esc(sec.content)}</textarea>`;
+                    } else if (sec.type === "jobs") {
+                      sec.jobs.forEach((job, ji) => {
+                        const jobHidden = job.hidden ? 'item-hidden' : '';
+                        html += `<div class="job-block ${jobHidden}" draggable="true" ondragstart="dragJob(event,${si},${ji})" ondragover="dragOverJob(event,${si},${ji})" ondrop="dropJob(event,${si},${ji})" ondragend="dragEnd(event)">`;
+                        html += `
+                    <div class="job-header">
+                      <input class="company" value="${esc(job.company)}" oninput="cv.sections[${si}].jobs[${ji}].company=this.value;schedulePreview()" placeholder="Company | Location">
+                      <button class="icon-btn eye ${job.hidden?'hidden-item':''}" onclick="toggleHide('job',${si},${ji})" title="${job.hidden?'Show':'Hide'} job">${job.hidden?'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>'}</button>
+                      <button class="icon-btn" onclick="moveJobUp(${si},${ji})">↑</button>
+                      <button class="icon-btn" onclick="moveJobDown(${si},${ji})">↓</button>
+                      <button class="icon-btn delete" onclick="removeJob(${si},${ji})">✕</button>
+                    </div>
+                    <div class="job-header">
+                      <input class="role" value="${esc(job.role)}" oninput="cv.sections[${si}].jobs[${ji}].role=this.value;schedulePreview()" placeholder="Role | Dates">
+                    </div>
+                    <ul class="bullet-list">
+                  `;
+                        job.bullets.forEach((b, bi) => {
+                          const bHidden = (job.hiddenBullets||[]).includes(bi);
+                          html += `
+                      <li class="bullet-item ${bHidden?'item-hidden':''}" draggable="true" ondragstart="dragBullet(event,${si},${ji},${bi})" ondragover="dragOverBullet(event,${si},${ji},${bi})" ondrop="dropBullet(event,${si},${ji},${bi})" ondragend="dragEnd(event)">
+                        <span class="bullet-drag" title="Drag to reorder">⠿</span>
+                        <textarea class="bullet-text" rows="1" oninput="autoGrow(this);cv.sections[${si}].jobs[${ji}].bullets[${bi}]=this.value;schedulePreview()">${esc(b)}</textarea>
+                        <div class="bullet-actions">
+                          <button class="icon-btn eye ${bHidden?'hidden-item':''}" onclick="toggleHide('bullet',${si},${ji},${bi})" title="${bHidden?'Show':'Hide'}">${bHidden?'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>'}</button>
+                          <button class="icon-btn" onclick="moveBulletUp(${si},${ji},${bi})">↑</button>
+                          <button class="icon-btn" onclick="moveBulletDown(${si},${ji},${bi})">↓</button>
+                          <button class="icon-btn delete" onclick="removeBullet(${si},${ji},${bi})">✕</button>
+                        </div>
+                      </li>
+                    `;
+                        });
+                        html += `</ul>`;
+                        html += `<div class="add-row"><button class="add-btn" onclick="addBullet(${si},${ji})">+ Add bullet</button></div>`;
+                        html += `</div>`;
+                      });
+                      html += `<div class="add-row"><button class="add-btn" onclick="addJob(${si})">+ Add job</button></div>`;
+                    } else if (sec.type === "education") {
+                      sec.schools.forEach((sch, ei) => {
+                        const schHidden = sch.hidden ? 'item-hidden' : '';
+                        html += `<div class="job-block ${schHidden}">`;
+                        html += `
+                    <div class="job-header">
+                      <input class="company" value="${esc(sch.institution)}" oninput="cv.sections[${si}].schools[${ei}].institution=this.value;schedulePreview()">
+                      <button class="icon-btn eye ${sch.hidden?'hidden-item':''}" onclick="toggleHide('school',${si},${ei})" title="${sch.hidden?'Show':'Hide'}">${sch.hidden?'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>'}</button>
+                      <button class="icon-btn" onclick="moveSchoolUp(${si},${ei})">↑</button>
+                      <button class="icon-btn" onclick="moveSchoolDown(${si},${ei})">↓</button>
+                      <button class="icon-btn delete" onclick="removeSchool(${si},${ei})">✕</button>
+                    </div>
+                    <div class="job-header">
+                      <input class="role" value="${esc(sch.degree)}" oninput="cv.sections[${si}].schools[${ei}].degree=this.value;schedulePreview()">
+                    </div>
+                    <ul class="bullet-list">
+                  `;
+                        (sch.details || []).forEach((d, di) => {
+                          const dHidden = (sch.hiddenDetails||[]).includes(di);
+                          html += `
+                      <li class="bullet-item ${dHidden?'item-hidden':''}">
+                        <span class="bullet-drag">⠿</span>
+                        <textarea class="bullet-text" rows="1" oninput="autoGrow(this);cv.sections[${si}].schools[${ei}].details[${di}]=this.value;schedulePreview()">${esc(d)}</textarea>
+                        <div class="bullet-actions">
+                          <button class="icon-btn eye ${dHidden?'hidden-item':''}" onclick="toggleHide('eduDetail',${si},${ei},${di})" title="${dHidden?'Show':'Hide'}">${dHidden?'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>'}</button>
+                          <button class="icon-btn delete" onclick="removeEduDetail(${si},${ei},${di})">✕</button>
+                        </div>
+                      </li>
+                    `;
+                        });
+                        html += `</ul>`;
+                        html += `<div class="add-row"><button class="add-btn" onclick="addEduDetail(${si},${ei})">+ Add detail</button></div>`;
+                        html += `</div>`;
+                      });
+                      html += `<div class="add-row"><button class="add-btn" onclick="addSchool(${si})">+ Add school</button></div>`;
+                    } else if (sec.type === "leadership") {
+                      sec.items.forEach((item, li) => {
+                        const liHidden = item.hidden ? 'item-hidden' : '';
+                        html += `
+                    <div class="leadership-item ${liHidden}">
+                      <input class="name" value="${esc(item.name)}" oninput="cv.sections[${si}].items[${li}].name=this.value;schedulePreview()">
+                      <input class="desc" value="${esc(item.desc)}" oninput="cv.sections[${si}].items[${li}].desc=this.value;schedulePreview()">
+                      <button class="icon-btn eye ${item.hidden?'hidden-item':''}" onclick="toggleHide('leadership',${si},${li})" title="${item.hidden?'Show':'Hide'}">${item.hidden?'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>'}</button>
+                      <button class="icon-btn" onclick="moveLeadershipUp(${si},${li})">↑</button>
+                      <button class="icon-btn" onclick="moveLeadershipDown(${si},${li})">↓</button>
+                      <button class="icon-btn delete" onclick="removeLeadership(${si},${li})">✕</button>
+                    </div>
+                  `;
+                      });
+                      html += `<div class="add-row"><button class="add-btn" onclick="addLeadership(${si})">+ Add activity</button></div>`;
+                    } else if (sec.type === "skills") {
+                      sec.skills.forEach((sk, ki) => {
+                        const skHidden = sk.hidden ? 'item-hidden' : '';
+                        html += `
+                    <div class="skill-row ${skHidden}">
+                      <input class="skill-label" value="${esc(sk.label)}" oninput="cv.sections[${si}].skills[${ki}].label=this.value;schedulePreview()">
+                      <input class="skill-value" value="${esc(sk.value)}" oninput="cv.sections[${si}].skills[${ki}].value=this.value;schedulePreview()">
+                      <button class="icon-btn eye ${sk.hidden?'hidden-item':''}" onclick="toggleHide('skill',${si},${ki})" title="${sk.hidden?'Show':'Hide'}">${sk.hidden?'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>'}</button>
+                      <button class="icon-btn delete" onclick="removeSkill(${si},${ki})">✕</button>
+                    </div>
+                  `;
+                      });
+                      html += `<div class="add-row"><button class="add-btn" onclick="addSkill(${si})">+ Add skill</button></div>`;
+                    }
+
+                    html += `</div></div>`;
+                  });
+
+                  editor.innerHTML = html;
+
+                  // Auto-grow textareas
+                  document.querySelectorAll(".bullet-text").forEach((ta) => autoGrow(ta));
+                }
+
+                // ═══════════════════════════════════════════════════════
+                // PREVIEW RENDERING + AUTO-FIT
+                // ═══════════════════════════════════════════════════════
+                function renderPreview() {
+                  const paper = document.getElementById('paper');
+                  let html = `<div class="cv-name">${esc(cv.name)}</div>`;
+                  html += `<div class="cv-contact">${esc(cv.contact)}</div>`;
+
+                  cv.sections.forEach(sec => {
+                    if (sec.hidden) return;
+                    html += `<div class="cv-section-title">${esc(sec.title)}</div>`;
+
+                    if (sec.type === "summary") {
+                      html += `<div class="cv-summary">${esc(sec.content)}</div>`;
+                    } else if (sec.type === "jobs") {
+                      sec.jobs.forEach((job) => {
+                        if (job.hidden) return;
+                        html += `<div class="cv-company">${esc(job.company)}</div>`;
+                        html += `<div class="cv-role">${esc(job.role)}</div>`;
+                        job.bullets.forEach((b, bi) => {
+                          if ((job.hiddenBullets||[]).includes(bi)) return;
+                          html += `<div class="cv-bullet">${esc(b)}</div>`;
+                        });
+                      });
+                    } else if (sec.type === "education") {
+                      sec.schools.forEach((sch) => {
+                        if (sch.hidden) return;
+                        html += `<div class="cv-company">${esc(sch.institution)}</div>`;
+                        html += `<div class="cv-role">${esc(sch.degree)}</div>`;
+                        (sch.details || []).forEach((d, di) => {
+                          if ((sch.hiddenDetails||[]).includes(di)) return;
+                          html += `<div class="cv-edu-detail">${esc(d)}</div>`;
+                        });
+                      });
+                    } else if (sec.type === "leadership") {
+                      sec.items.forEach((item) => {
+                        if (item.hidden) return;
+                        html += `<div class="cv-leadership"><strong>${esc(item.name)}</strong> — ${esc(item.desc)}</div>`;
+                      });
+                    } else if (sec.type === "skills") {
+                      sec.skills.forEach((sk) => {
+                        if (sk.hidden) return;
+                        html += `<div class="cv-skill"><strong>${esc(sk.label)}</strong> ${esc(sk.value)}</div>`;
+                      });
+                    }
+                  });
+
+                  paper.innerHTML = html;
+                  autoFit();
+                }
+
+                function autoFit() {
+                  const paper = document.getElementById('paper');
+                  const checkOverflow = () => paper.scrollHeight > paper.clientHeight;
+                  const getFillRatio = () => paper.scrollHeight / paper.clientHeight;
+
+                  // Count total content entries to determine if page should be filled
+                  const countEntries = () => {
+                    let count = 0;
+                    cv.sections.forEach(sec => {
+                      count++; // section header
+                      if (sec.type === 'summary') count += 1;
+                      else if (sec.type === 'jobs') sec.jobs.forEach(j => { count += 2; count += j.bullets.length; });
+                      else if (sec.type === 'education') sec.schools.forEach(s => { count += 2; count += (s.details||[]).length; });
+                      else if (sec.type === 'leadership') count += sec.items.length;
+                      else if (sec.type === 'skills') count += sec.skills.length;
+                    });
+                    return count;
+                  };
+
+                  // ── BASE VALUES (benchmark defaults) ──
+                  const BASE = {
+                    sectionGap: 5, companyGap: 3, bulletGap: 0.5,
+                    lineHeight: 1.35, nameSize: 15, contactSize: 7.5,
+                    contactMargin: 6, sectionTitleSize: 9.5, companySize: 8.5,
+                    roleSize: 8, bodySize: 7.5, padV: 10, padH: 14
+                  };
+
+                  // Apply user-locked values as overrides to BASE
+                  const locked = {};
+                  if (userStyle.titleSize !== null) { BASE.sectionTitleSize = userStyle.titleSize; BASE.companySize = userStyle.titleSize - 1; BASE.roleSize = userStyle.titleSize - 1.5; locked.sectionTitleSize = true; locked.companySize = true; locked.roleSize = true; }
+                  if (userStyle.bodySize !== null) { BASE.bodySize = userStyle.bodySize; locked.bodySize = true; }
+                  if (userStyle.sectionGap !== null) { BASE.sectionGap = userStyle.sectionGap; locked.sectionGap = true; }
+                  if (userStyle.bulletGap !== null) { BASE.bulletGap = userStyle.bulletGap; locked.bulletGap = true; }
+                  if (userStyle.lineHeight !== null) { BASE.lineHeight = userStyle.lineHeight; locked.lineHeight = true; }
+                  if (userStyle.margins !== null) { BASE.padV = userStyle.margins; BASE.padH = userStyle.margins + 4; locked.padV = true; locked.padH = true; }
+
+                  // Apply fonts and letter-spacing (always user-controlled, not auto-adjustable)
+                  const applyFonts = () => {
+                    paper.style.fontFamily = userStyle.bodyFont;
+                    paper.style.letterSpacing = userStyle.letterSpacing + 'px';
+                    paper.querySelectorAll('.cv-name, .cv-section-title').forEach(el => {
+                      el.style.fontFamily = userStyle.titleFont;
+                    });
+                  };
+
+                  const applyState = (state) => {
+                    paper.style.padding = `${state.padV}mm ${state.padH}mm`;
+                    paper.querySelectorAll('.cv-name').forEach(el => el.style.fontSize = state.nameSize + 'pt');
+                    paper.querySelectorAll('.cv-contact').forEach(el => {
+                      el.style.fontSize = state.contactSize + 'pt';
+                      el.style.marginBottom = state.contactMargin + 'px';
+                    });
+                    paper.querySelectorAll('.cv-section-title').forEach(el => {
+                      el.style.fontSize = state.sectionTitleSize + 'pt';
+                      el.style.marginTop = state.sectionGap + 'px';
+                    });
+                    paper.querySelectorAll('.cv-company').forEach(el => {
+                      el.style.fontSize = state.companySize + 'pt';
+                      el.style.marginTop = state.companyGap + 'px';
+                    });
+                    paper.querySelectorAll('.cv-role').forEach(el => {
+                      el.style.fontSize = state.roleSize + 'pt';
+                    });
+                    paper.querySelectorAll('.cv-bullet, .cv-edu-detail, .cv-leadership, .cv-skill, .cv-summary').forEach(el => {
+                      el.style.fontSize = state.bodySize + 'pt';
+                      el.style.lineHeight = String(state.lineHeight);
+                      el.style.marginBottom = state.bulletGap + 'px';
+                    });
+                  };
+
+                  // Filter expansion/compression steps to exclude locked properties
+                  const filterSteps = (steps) => steps.filter(step => {
+                    for (const key of Object.keys(step)) {
+                      if (locked[key]) return false;
+                    }
+                    return true;
+                  });
+
+                  // ── STEP 1: Start from base + apply fonts ──
+                  let state = { ...BASE };
+                  applyFonts();
+                  applyState(state);
+
+                  const entries = countEntries();
+                  const TOO_SPARSE = entries < 10;
+
+                  // ── STEP 2: EXPAND if content doesn't fill the page ──
+                  if (!checkOverflow() && !TOO_SPARSE) {
+                    const expansionSteps = filterSteps([
+                      { sectionGap: 6 }, { sectionGap: 7 }, { sectionGap: 8 }, { sectionGap: 9 },
+                      { sectionGap: 10 }, { sectionGap: 12 }, { sectionGap: 14 },
+                      { companyGap: 4 }, { companyGap: 5 }, { companyGap: 6 },
+                      { bulletGap: 1 }, { bulletGap: 1.5 }, { bulletGap: 2 },
+                      { contactMargin: 8 }, { contactMargin: 10 }, { contactMargin: 12 },
+                      { lineHeight: 1.40 }, { lineHeight: 1.45 },
+                      { padV: 11, padH: 15 }, { padV: 12, padH: 16 },
+                    ]);
+
+                    let expLevel = 0;
+                    while (!checkOverflow() && expLevel < expansionSteps.length) {
+                      const prev = { ...state };
+                      Object.assign(state, expansionSteps[expLevel]);
+                      applyState(state);
+                      if (checkOverflow()) {
+                        state = prev;
+                        applyState(state);
+                        break;
+                      }
+                      expLevel++;
+                    }
+                  }
+
+                  // ── STEP 3: COMPRESS if content overflows ──
+                  if (checkOverflow()) {
+                    state = { ...BASE };
+                    applyState(state);
+
+                    const compressionSteps = filterSteps([
+                      { sectionGap: 4.5 }, { sectionGap: 4 }, { sectionGap: 3.5 }, { sectionGap: 3 },
+                      { companyGap: 2.5 }, { companyGap: 2 }, { companyGap: 1.5 },
+                      { bulletGap: 0.3 }, { bulletGap: 0.1 }, { bulletGap: 0 },
+                      { lineHeight: 1.30 }, { lineHeight: 1.25 }, { lineHeight: 1.20 },
+                      { contactMargin: 4 }, { contactMargin: 3 },
+                      { bodySize: 7.2 }, { bodySize: 7.0 }, { bodySize: 6.8 },
+                      { sectionTitleSize: 9.0, companySize: 8.0, roleSize: 7.5 },
+                      { sectionTitleSize: 8.5, companySize: 7.5, roleSize: 7.0 },
+                      { nameSize: 14, contactSize: 7 },
+                      { nameSize: 13, contactSize: 6.5 },
+                      { padV: 9, padH: 13 },
+                      { padV: 8, padH: 12 },
+                      { padV: 7, padH: 10 },
+                      { padV: 6, padH: 9 },
+                    ]);
+
+                    let compLevel = 0;
+                    while (checkOverflow() && compLevel < compressionSteps.length) {
+                      Object.assign(state, compressionSteps[compLevel]);
+                      applyState(state);
+                      compLevel++;
+                    }
+                  }
+
+                  // ── UPDATE MARGIN GUIDES ──
+                  updateMarginGuides(state);
+
+                  // ── STATUS BAR ──
+                  const fitStatus = document.getElementById('fit-status');
+                  const scaleInfo = document.getElementById('scale-info');
+                  const overflowLine = document.getElementById('overflow-line');
+                  const ratio = getFillRatio();
+                  const fillPct = Math.round(ratio * 100);
+
+                  if (checkOverflow()) {
+                    fitStatus.textContent = '✕ Overflows — reduce content';
+                    fitStatus.className = 'fit-indicator fit-over';
+                    overflowLine.style.display = 'block';
+                  } else if (TOO_SPARSE) {
+                    fitStatus.textContent = '○ Sparse content — add more to fill page';
+                    fitStatus.className = 'fit-indicator fit-warn';
+                    overflowLine.style.display = 'none';
+                  } else if (fillPct >= 92) {
+                    fitStatus.textContent = '✓ Perfectly filled';
+                    fitStatus.className = 'fit-indicator fit-ok';
+                    overflowLine.style.display = 'none';
+                  } else if (fillPct >= 80) {
+                    fitStatus.textContent = '✓ Well balanced';
+                    fitStatus.className = 'fit-indicator fit-ok';
+                    overflowLine.style.display = 'none';
+                  } else {
+                    fitStatus.textContent = '✓ Fits comfortably';
+                    fitStatus.className = 'fit-indicator fit-ok';
+                    overflowLine.style.display = 'none';
+                  }
+
+                  const bodyFont = state.bodySize;
+                  const lh = state.lineHeight;
+                  scaleInfo.textContent = `Fill: ${fillPct}% | Body: ${bodyFont}pt | LH: ${lh} | Gaps: ${state.sectionGap}px`;
+                }
+
+                // ═══════════════════════════════════════════════════════
+                // SECTION OPERATIONS
+                // ═══════════════════════════════════════════════════════
+                function moveSectionUp(i) {
+                  if (i <= 0) return;
+                  [cv.sections[i - 1], cv.sections[i]] = [
+                    cv.sections[i],
+                    cv.sections[i - 1],
+                  ];
+                  renderEditor();
+                  renderPreview();
+                }
+                function moveSectionDown(i) {
+                  if (i >= cv.sections.length - 1) return;
+                  [cv.sections[i], cv.sections[i + 1]] = [
+                    cv.sections[i + 1],
+                    cv.sections[i],
+                  ];
+                  renderEditor();
+                  renderPreview();
+                }
+                function removeSection(i) {
+                  if (!confirm(`Remove section "${cv.sections[i].title}"?`)) return;
+                  cv.sections.splice(i, 1);
+                  renderEditor();
+                  renderPreview();
+                }
+                function addSection() {
+                  const type = prompt(
+                    "Section type: summary, jobs, education, leadership, or skills",
+                    "jobs",
+                  );
+                  if (!type) return;
+                  const title = prompt("Section title:", "NEW SECTION");
+                  if (!title) return;
+                  const sec = { id: "sec_" + Date.now(), type, title };
+                  if (type === "summary") sec.content = "";
+                  else if (type === "jobs") sec.jobs = [];
+                  else if (type === "education") sec.schools = [];
+                  else if (type === "leadership") sec.items = [];
+                  else if (type === "skills") sec.skills = [];
+                  cv.sections.push(sec);
+                  renderEditor();
+                  renderPreview();
+                }
+                function updateSectionTitle(input, si) {
+                  // Update the header display
+                  const block = input.closest(".section-block");
+                  const titleSpan = block.querySelector(".section-title");
+                  titleSpan.textContent = input.value;
+                }
+
+                // ═══════════════════════════════════════════════════════
+                // JOB OPERATIONS
+                // ═══════════════════════════════════════════════════════
+                function addJob(si) {
+                  cv.sections[si].jobs.push({ company: "", role: "", bullets: [""] });
+                  renderEditor();
+                  renderPreview();
+                }
+                function removeJob(si, ji) {
+                  if (!confirm("Remove this job?")) return;
+                  cv.sections[si].jobs.splice(ji, 1);
+                  renderEditor();
+                  renderPreview();
+                }
+                function moveJobUp(si, ji) {
+                  if (ji <= 0) return;
+                  const jobs = cv.sections[si].jobs;
+                  [jobs[ji - 1], jobs[ji]] = [jobs[ji], jobs[ji - 1]];
+                  renderEditor();
+                  renderPreview();
+                }
+                function moveJobDown(si, ji) {
+                  const jobs = cv.sections[si].jobs;
+                  if (ji >= jobs.length - 1) return;
+                  [jobs[ji], jobs[ji + 1]] = [jobs[ji + 1], jobs[ji]];
+                  renderEditor();
+                  renderPreview();
+                }
+
+                // ═══════════════════════════════════════════════════════
+                // BULLET OPERATIONS
+                // ═══════════════════════════════════════════════════════
+                function addBullet(si, ji) {
+                  cv.sections[si].jobs[ji].bullets.push("");
+                  renderEditor();
+                  renderPreview();
+                }
+                function removeBullet(si, ji, bi) {
+                  cv.sections[si].jobs[ji].bullets.splice(bi, 1);
+                  renderEditor();
+                  renderPreview();
+                }
+                function moveBulletUp(si, ji, bi) {
+                  if (bi <= 0) return;
+                  const bullets = cv.sections[si].jobs[ji].bullets;
+                  [bullets[bi - 1], bullets[bi]] = [bullets[bi], bullets[bi - 1]];
+                  renderEditor();
+                  renderPreview();
+                }
+                function moveBulletDown(si, ji, bi) {
+                  const bullets = cv.sections[si].jobs[ji].bullets;
+                  if (bi >= bullets.length - 1) return;
+                  [bullets[bi], bullets[bi + 1]] = [bullets[bi + 1], bullets[bi]];
+                  renderEditor();
+                  renderPreview();
+                }
+
+                // ═══════════════════════════════════════════════════════
+                // EDUCATION OPERATIONS
+                // ═══════════════════════════════════════════════════════
+                function addSchool(si) {
+                  cv.sections[si].schools.push({
+                    institution: "",
+                    degree: "",
+                    details: [],
+                  });
+                  renderEditor();
+                  renderPreview();
+                }
+                function removeSchool(si, ei) {
+                  if (!confirm("Remove this school?")) return;
+                  cv.sections[si].schools.splice(ei, 1);
+                  renderEditor();
+                  renderPreview();
+                }
+                function moveSchoolUp(si, ei) {
+                  if (ei <= 0) return;
+                  const schools = cv.sections[si].schools;
+                  [schools[ei - 1], schools[ei]] = [schools[ei], schools[ei - 1]];
+                  renderEditor();
+                  renderPreview();
+                }
+                function moveSchoolDown(si, ei) {
+                  const schools = cv.sections[si].schools;
+                  if (ei >= schools.length - 1) return;
+                  [schools[ei], schools[ei + 1]] = [schools[ei + 1], schools[ei]];
+                  renderEditor();
+                  renderPreview();
+                }
+                function addEduDetail(si, ei) {
+                  cv.sections[si].schools[ei].details.push("");
+                  renderEditor();
+                  renderPreview();
+                }
+                function removeEduDetail(si, ei, di) {
+                  cv.sections[si].schools[ei].details.splice(di, 1);
+                  renderEditor();
+                  renderPreview();
+                }
+
+                // ═══════════════════════════════════════════════════════
+                // LEADERSHIP OPERATIONS
+                // ═══════════════════════════════════════════════════════
+                function addLeadership(si) {
+                  cv.sections[si].items.push({ name: "", desc: "" });
+                  renderEditor();
+                  renderPreview();
+                }
+                function removeLeadership(si, li) {
+                  cv.sections[si].items.splice(li, 1);
+                  renderEditor();
+                  renderPreview();
+                }
+                function moveLeadershipUp(si, li) {
+                  if (li <= 0) return;
+                  const items = cv.sections[si].items;
+                  [items[li - 1], items[li]] = [items[li], items[li - 1]];
+                  renderEditor();
+                  renderPreview();
+                }
+                function moveLeadershipDown(si, li) {
+                  const items = cv.sections[si].items;
+                  if (li >= items.length - 1) return;
+                  [items[li], items[li + 1]] = [items[li + 1], items[li]];
+                  renderEditor();
+                  renderPreview();
+                }
+
+
+                // ═══════════════════════════════════════════════════════
+                // HIDE/SHOW TOGGLE
+                // ═══════════════════════════════════════════════════════
+                function toggleHide(type, si, ji, bi) {
+                  switch (type) {
+                    case 'section':
+                      cv.sections[si].hidden = !cv.sections[si].hidden;
+                      break;
+                    case 'job':
+                      cv.sections[si].jobs[ji].hidden = !cv.sections[si].jobs[ji].hidden;
+                      break;
+                    case 'bullet': {
+                      const job = cv.sections[si].jobs[ji];
+                      if (!job.hiddenBullets) job.hiddenBullets = [];
+                      const idx = job.hiddenBullets.indexOf(bi);
+                      if (idx === -1) job.hiddenBullets.push(bi);
+                      else job.hiddenBullets.splice(idx, 1);
+                      break;
+                    }
+                    case 'school':
+                      cv.sections[si].schools[ji].hidden = !cv.sections[si].schools[ji].hidden;
+                      break;
+                    case 'eduDetail': {
+                      const sch = cv.sections[si].schools[ji];
+                      if (!sch.hiddenDetails) sch.hiddenDetails = [];
+                      const idx = sch.hiddenDetails.indexOf(bi);
+                      if (idx === -1) sch.hiddenDetails.push(bi);
+                      else sch.hiddenDetails.splice(idx, 1);
+                      break;
+                    }
+                    case 'leadership':
+                      cv.sections[si].items[ji].hidden = !cv.sections[si].items[ji].hidden;
+                      break;
+                    case 'skill':
+                      cv.sections[si].skills[ji].hidden = !cv.sections[si].skills[ji].hidden;
+                      break;
+                  }
+                  renderEditor();
+                  renderPreview();
+                }
+                // ═══════════════════════════════════════════════════════
+                // SKILLS OPERATIONS
+                // ═══════════════════════════════════════════════════════
+                function addSkill(si) {
+                  cv.sections[si].skills.push({ label: "", value: "" });
+                  renderEditor();
+                  renderPreview();
+                }
+                function removeSkill(si, ki) {
+                  cv.sections[si].skills.splice(ki, 1);
+                  renderEditor();
+                  renderPreview();
+                }
+
+                // ═══════════════════════════════════════════════════════
+                // DRAG AND DROP — SECTIONS
+                // ═══════════════════════════════════════════════════════
+                let dragType = null,
+                  dragFrom = null;
+
+                function dragSection(e, i) {
+                  dragType = "section";
+                  dragFrom = { si: i };
+                  e.dataTransfer.effectAllowed = "move";
+                  e.target.classList.add("dragging");
+                }
+                function dragOverSection(e, i) {
+                  if (dragType !== "section") return;
+                  e.preventDefault();
+                  e.dataTransfer.dropEffect = "move";
+                }
+                function dropSection(e, i) {
+                  if (dragType !== "section") return;
+                  e.preventDefault();
+                  const from = dragFrom.si;
+                  if (from === i) return;
+                  const item = cv.sections.splice(from, 1)[0];
+                  cv.sections.splice(i, 0, item);
+                  renderEditor();
+                  renderPreview();
+                }
+
+                // DRAG — JOBS
+                function dragJob(e, si, ji) {
+                  dragType = "job";
+                  dragFrom = { si, ji };
+                  e.dataTransfer.effectAllowed = "move";
+                  e.stopPropagation();
+                  e.target.classList.add("dragging");
+                }
+                function dragOverJob(e, si, ji) {
+                  if (dragType !== "job" || dragFrom.si !== si) return;
+                  e.preventDefault();
+                  e.stopPropagation();
+                }
+                function dropJob(e, si, ji) {
+                  if (dragType !== "job" || dragFrom.si !== si) return;
+                  e.preventDefault();
+                  e.stopPropagation();
+                  const from = dragFrom.ji;
+                  if (from === ji) return;
+                  const jobs = cv.sections[si].jobs;
+                  const item = jobs.splice(from, 1)[0];
+                  jobs.splice(ji, 0, item);
+                  renderEditor();
+                  renderPreview();
+                }
+
+                // DRAG — BULLETS
+                function dragBullet(e, si, ji, bi) {
+                  dragType = "bullet";
+                  dragFrom = { si, ji, bi };
+                  e.dataTransfer.effectAllowed = "move";
+                  e.stopPropagation();
+                  e.target.classList.add("dragging");
+                }
+                function dragOverBullet(e, si, ji, bi) {
+                  if (dragType !== "bullet" || dragFrom.si !== si || dragFrom.ji !== ji)
+                    return;
+                  e.preventDefault();
+                  e.stopPropagation();
+                }
+                function dropBullet(e, si, ji, bi) {
+                  if (dragType !== "bullet" || dragFrom.si !== si || dragFrom.ji !== ji)
+                    return;
+                  e.preventDefault();
+                  e.stopPropagation();
+                  const from = dragFrom.bi;
+                  if (from === bi) return;
+                  const bullets = cv.sections[si].jobs[ji].bullets;
+                  const item = bullets.splice(from, 1)[0];
+                  bullets.splice(bi, 0, item);
+                  renderEditor();
+                  renderPreview();
+                }
+
+                function dragEnd(e) {
+                  dragType = null;
+                  dragFrom = null;
+                  document
+                    .querySelectorAll(".dragging")
+                    .forEach((el) => el.classList.remove("dragging"));
+                }
+
+                // ═══════════════════════════════════════════════════════
+                // UTILITIES
+                // ═══════════════════════════════════════════════════════
+                function esc(s) {
+                  if (!s) return "";
+                  return s
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;");
+                }
+
+                function autoGrow(el) {
+                  el.style.height = "auto";
+                  el.style.height = el.scrollHeight + "px";
+                }
+
+                function toggleSection(header) {
+                  const body = header.nextElementSibling;
+                  const chevron = header.querySelector(".chevron");
+                  body.classList.toggle("collapsed");
+                  chevron.classList.toggle("open");
+                }
+
+                function setZoom(val) {
+                  zoomLevel = parseInt(val);
+                  document.getElementById("zoom-val").textContent = zoomLevel + "%";
+                  document.querySelector(".zoom-slider").value = zoomLevel;
+                  document.getElementById("paper").style.transform = `scale(${zoomLevel / 100})`;
+                }
+
+                function autoZoom() {
+                  const panel = document.querySelector('.paper-wrapper');
+                  const toolbar = document.querySelector('.toolbar');
+                  const stylePanel = document.getElementById('style-panel');
+                  const paperW = 793.7; // 210mm in px
+                  const paperH = 1122.5; // 297mm in px
+                  const availW = panel.clientWidth - 40;
+                  const spUsed = (toolbar ? toolbar.offsetHeight : 0) + (stylePanel && !stylePanel.classList.contains('collapsed') ? stylePanel.offsetHeight : 0);
+                  const availH = panel.clientHeight - spUsed - 40;
+                  const scaleW = availW / paperW;
+                  const scaleH = availH / paperH;
+                  const scale = Math.min(scaleW, scaleH);
+                  const zoom = Math.max(20, Math.min(200, Math.round(scale * 100)));
+                  setZoom(zoom);
+                }
+
+                // ===================================================
+                // STYLE / TYPOGRAPHY CONTROLS
+                // ===================================================
+                function toggleStylePanel() {
+                  const panel = document.getElementById('style-panel');
+                  panel.classList.toggle('collapsed');
+                  setTimeout(autoZoom, 50);
+                }
+
+                function setStyleFont(prop, val) {
+                  userStyle[prop] = val;
+                  cv.style = JSON.parse(JSON.stringify(userStyle));
+                  renderPreview();
+                  schedulePreview();
+                }
+
+                function setStyleVal(prop, val) {
+                  userStyle[prop] = val;
+                  updateStyleValDisplay(prop, val);
+                  const btnMap = {bodySize:'btn-auto-fontsize', titleSize:'btn-auto-titlesize', bulletGap:'btn-auto-para', sectionGap:'btn-auto-section', margins:'btn-auto-margins', lineHeight:'btn-auto-lineheight'};
+                  const btnId = btnMap[prop];
+                  if (btnId) document.getElementById(btnId).classList.remove('active');
+                  cv.style = JSON.parse(JSON.stringify(userStyle));
+                  renderPreview();
+                  schedulePreview();
+                }
+
+                function toggleAuto(prop) {
+                  const btnMap = {bodySize:'btn-auto-fontsize', titleSize:'btn-auto-titlesize', bulletGap:'btn-auto-para', sectionGap:'btn-auto-section', margins:'btn-auto-margins', lineHeight:'btn-auto-lineheight'};
+                  if (userStyle[prop] === null) {
+                    const defaults = {bodySize: 7.5, titleSize: 9.5, bulletGap: 0.5, sectionGap: 5, margins: 10, lineHeight: 1.35};
+                    userStyle[prop] = defaults[prop];
+                    document.getElementById(btnMap[prop]).classList.remove('active');
+                  } else {
+                    userStyle[prop] = null;
+                    document.getElementById(btnMap[prop]).classList.add('active');
+                  }
+                  updateStyleValDisplay(prop, userStyle[prop]);
+                  cv.style = JSON.parse(JSON.stringify(userStyle));
+                  renderPreview();
+                  schedulePreview();
+                }
+
+                function updateStyleValDisplay(prop, val) {
+                  const map = {
+                    bodySize: 'style-font-size-val',
+                    titleSize: 'style-title-size-val',
+                    bulletGap: 'style-para-gap-val',
+                    sectionGap: 'style-section-gap-val',
+                    margins: 'style-margins-val',
+                    lineHeight: 'style-line-height-val',
+                    letterSpacing: 'style-letter-spacing-val'
+                  };
+                  const el = document.getElementById(map[prop]);
+                  if (!el) return;
+                  if (val === null) {
+                    el.textContent = 'auto';
+                  } else if (prop === 'letterSpacing') {
+                    el.textContent = val.toFixed(2) + 'px';
+                  } else if (prop === 'bodySize' || prop === 'titleSize') {
+                    el.textContent = val.toFixed(1) + 'pt';
+                  } else if (prop === 'lineHeight') {
+                    el.textContent = val.toFixed(2);
+                  } else if (prop === 'margins') {
+                    el.textContent = val.toFixed(1) + 'mm';
+                  } else {
+                    el.textContent = val.toFixed(1) + 'px';
+                  }
+                }
+
+                function syncStyleUI() {
+                  const bf = document.getElementById('style-body-font');
+                  const tf = document.getElementById('style-title-font');
+                  if (bf) { for (const opt of bf.options) { if (opt.value === userStyle.bodyFont) opt.selected = true; } }
+                  if (tf) { for (const opt of tf.options) { if (opt.value === userStyle.titleFont) opt.selected = true; } }
+                  document.getElementById('style-letter-spacing').value = userStyle.letterSpacing * 100;
+                  updateStyleValDisplay('letterSpacing', userStyle.letterSpacing);
+                  const syncSlider = (prop, sliderId, btnId, defVal) => {
+                    const slider = document.getElementById(sliderId);
+                    const btn = document.getElementById(btnId);
+                    if (userStyle[prop] !== null) {
+                      slider.value = userStyle[prop] * 10;
+                      btn.classList.remove('active');
+                      updateStyleValDisplay(prop, userStyle[prop]);
+                    } else {
+                      slider.value = defVal * 10;
+                      btn.classList.add('active');
+                      updateStyleValDisplay(prop, null);
+                    }
+                  };
+                  syncSlider('bodySize', 'style-font-size', 'btn-auto-fontsize', 7.5);
+                  syncSlider('titleSize', 'style-title-size', 'btn-auto-titlesize', 9.5);
+                  syncSlider('bulletGap', 'style-para-gap', 'btn-auto-para', 0.5);
+                  syncSlider('sectionGap', 'style-section-gap', 'btn-auto-section', 5);
+                  syncSlider('margins', 'style-margins', 'btn-auto-margins', 10);
+                  syncSlider('lineHeight', 'style-line-height', 'btn-auto-lineheight', 1.35);
+                  document.getElementById('chk-margins').checked = !!userStyle.showGuides;
+                  document.getElementById('margin-guide').classList.toggle('visible', !!userStyle.showGuides);
+                  document.getElementById('chk-printborder').checked = !!userStyle.showPrintBorder;
+                  document.getElementById('print-border').classList.toggle('visible', !!userStyle.showPrintBorder);
+                }
+
+                function toggleGuides(type) {
+                  if (type === 'margins') {
+                    userStyle.showGuides = document.getElementById('chk-margins').checked;
+                    document.getElementById('margin-guide').classList.toggle('visible', userStyle.showGuides);
+                  } else if (type === 'printborder') {
+                    userStyle.showPrintBorder = document.getElementById('chk-printborder').checked;
+                    document.getElementById('print-border').classList.toggle('visible', userStyle.showPrintBorder);
+                  }
+                  cv.style = JSON.parse(JSON.stringify(userStyle));
+                }
+
+                function updateMarginGuides(state) {
+                  const inner = document.getElementById('margin-guide-inner');
+                  if (!inner) return;
+                  const pctTop = (state.padV / 297 * 100);
+                  const pctBot = pctTop;
+                  const pctLeft = (state.padH / 210 * 100);
+                  const pctRight = pctLeft;
+                  inner.style.top = pctTop + '%';
+                  inner.style.left = pctLeft + '%';
+                  inner.style.right = pctRight + '%';
+                  inner.style.bottom = pctBot + '%';
+                }
+
+                function schedulePreview() {
+                  clearTimeout(debounceTimer);
+                  debounceTimer = setTimeout(() => {
+                    renderPreview();
+                    // Auto-save to current profile quietly
+                    if (activeProfile) {
+                      const profiles = getProfiles();
+                      profiles[activeProfile] = JSON.parse(JSON.stringify(cv));
+                      setProfiles(profiles);
+                    }
+                    localStorage.setItem("cv-editor-data", JSON.stringify(cv));
+                  }, 150);
+                }
+
+                function saveToStorage() {
+                  // Legacy: also saves to old key for backward compat
+                  localStorage.setItem("cv-editor-data", JSON.stringify(cv));
+                  if (activeProfile) {
+                    saveCurrentProfile(true);
+                  } else {
+                    alert("Saved! Use 'Save As' to save with a tag.");
+                  }
+                }
+
+                // ═══════════════════════════════════════════════════════
+                // PROFILE / TAG MANAGEMENT
+                // ═══════════════════════════════════════════════════════
+                function getProfiles() {
+                  try { return JSON.parse(localStorage.getItem(PROFILES_KEY) || "{}"); } catch(e) { return {}; }
+                }
+
+                function setProfiles(profiles) {
+                  localStorage.setItem(PROFILES_KEY, JSON.stringify(profiles));
+                }
+
+                function loadProfileList() {
+                  const sel = document.getElementById('profile-select');
+                  const profiles = getProfiles();
+                  const names = Object.keys(profiles).sort();
+                  sel.innerHTML = '<option value="">— Unsaved Draft —</option>';
+                  names.forEach(name => {
+                    const opt = document.createElement('option');
+                    opt.value = name;
+                    opt.textContent = name;
+                    if (name === activeProfile) opt.selected = true;
+                    sel.appendChild(opt);
+                  });
+                  updateProfileIndicator();
+                }
+
+                function updateProfileIndicator() {
+                  const ind = document.getElementById('profile-indicator');
+                  if (ind) ind.textContent = activeProfile ? '🏷 ' + activeProfile : '';
+                }
+
+                function loadProfile(name, silent) {
+                  if (!name) {
+                    // Switching to "unsaved draft" — load from legacy storage or default
+                    activeProfile = null;
+                    localStorage.removeItem(ACTIVE_KEY);
+                    const saved = localStorage.getItem('cv-editor-data');
+                    if (saved) { try { cv = JSON.parse(saved); } catch(e) { cv = JSON.parse(JSON.stringify(DEFAULT_CV)); } }
+                    else { cv = JSON.parse(JSON.stringify(DEFAULT_CV)); }
+                    // Restore style
+                    if (cv.style) { userStyle = Object.assign(JSON.parse(JSON.stringify(STYLE_DEFAULTS)), cv.style); }
+                    else { userStyle = JSON.parse(JSON.stringify(STYLE_DEFAULTS)); }
+                    syncStyleUI();
+                    renderEditor(); renderPreview();
+                    updateProfileIndicator();
+                    return;
+                  }
+                  const profiles = getProfiles();
+                  if (profiles[name]) {
+                    cv = JSON.parse(JSON.stringify(profiles[name]));
+                    activeProfile = name;
+                    localStorage.setItem(ACTIVE_KEY, name);
+                    // Restore style
+                    if (cv.style) { userStyle = Object.assign(JSON.parse(JSON.stringify(STYLE_DEFAULTS)), cv.style); }
+                    else { userStyle = JSON.parse(JSON.stringify(STYLE_DEFAULTS)); }
+                    syncStyleUI();
+                    renderEditor(); renderPreview();
+                    loadProfileList();
+                    if (!silent) { showToast('Loaded: ' + name); }
+                  }
+                }
+
+                function saveAsProfile() {
+                  const suggested = activeProfile || '';
+                  const name = prompt('Save CV with tag name (e.g. "Google AE", "Sales CV", "Consulting"):', suggested);
+                  if (!name || !name.trim()) return;
+                  const tag = name.trim();
+                  const profiles = getProfiles();
+                  if (profiles[tag] && !confirm('Overwrite existing profile "' + tag + '"?')) return;
+                  profiles[tag] = JSON.parse(JSON.stringify(cv));
+                  setProfiles(profiles);
+                  activeProfile = tag;
+                  localStorage.setItem(ACTIVE_KEY, tag);
+                  localStorage.setItem('cv-editor-data', JSON.stringify(cv));
+                  loadProfileList();
+                  showToast('Saved: ' + tag);
+                }
+
+                function saveCurrentProfile(quiet) {
+                  if (!activeProfile) { saveAsProfile(); return; }
+                  const profiles = getProfiles();
+                  profiles[activeProfile] = JSON.parse(JSON.stringify(cv));
+                  setProfiles(profiles);
+                  localStorage.setItem('cv-editor-data', JSON.stringify(cv));
+                  if (!quiet) showToast('Saved: ' + activeProfile);
+                }
+
+                function deleteProfile() {
+                  const sel = document.getElementById('profile-select');
+                  const name = sel.value;
+                  if (!name) { alert('Select a profile to delete.'); return; }
+                  if (!confirm('Delete profile "' + name + '"? This cannot be undone.')) return;
+                  const profiles = getProfiles();
+                  delete profiles[name];
+                  setProfiles(profiles);
+                  if (activeProfile === name) {
+                    activeProfile = null;
+                    localStorage.removeItem(ACTIVE_KEY);
+                  }
+                  loadProfileList();
+                  showToast('Deleted: ' + name);
+                }
+
+                function showToast(msg) {
+                  let toast = document.getElementById('cv-toast');
+                  if (!toast) {
+                    toast = document.createElement('div');
+                    toast.id = 'cv-toast';
+                    toast.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#22c55e;color:#fff;padding:8px 20px;border-radius:8px;font-size:12px;font-weight:600;z-index:9999;opacity:0;transition:opacity 0.3s;pointer-events:none;font-family:inherit;';
+                    document.body.appendChild(toast);
+                  }
+                  toast.textContent = msg;
+                  toast.style.opacity = '1';
+                  setTimeout(() => { toast.style.opacity = '0'; }, 2000);
+                }
+
+                function resetToDefault() {
+                  if (!confirm("Reset to default CV data? All changes will be lost."))
+                    return;
+                  cv = JSON.parse(JSON.stringify(DEFAULT_CV));
+                  localStorage.removeItem("cv-editor-data");
+                  renderEditor();
+                  renderPreview();
+                }
+
+                function exportPDF() {
+                  // Tip: In Chrome/Safari print dialog, set Margins to "None" and uncheck "Headers and footers"
+                  // This ensures only the CV content appears in the PDF
+                  const origTitle = document.title;
+                  document.title = activeProfile ? activeProfile : 'draft';
+                  window.print();
+                  document.title = origTitle;
+                }
+
+                /* ═══ PROFILE EXPORT / IMPORT ═══ */
+                function exportProfiles() {
+                  const profiles = getProfiles();
+                  const keys = Object.keys(profiles);
+                  if (keys.length === 0) { alert('No saved profiles to export.'); return; }
+                  const blob = new Blob([JSON.stringify(profiles, null, 2)], { type: 'application/json' });
+                  const a = document.createElement('a');
+                  a.href = URL.createObjectURL(blob);
+                  a.download = 'cv-profiles-backup.json';
+                  a.click();
+                  URL.revokeObjectURL(a.href);
+                  showToast('Exported ' + keys.length + ' profile(s)');
+                }
+
+                function importProfiles() {
+                  const input = document.createElement('input');
+                  input.type = 'file';
+                  input.accept = '.json';
+                  input.onchange = (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                      try {
+                        const imported = JSON.parse(ev.target.result);
+                        if (typeof imported !== 'object' || Array.isArray(imported)) throw new Error('Bad format');
+                        const existing = getProfiles();
+                        let count = 0;
+                        for (const [name, data] of Object.entries(imported)) {
+                          if (existing[name]) {
+                            if (!confirm('Profile "' + name + '" already exists. Overwrite?')) continue;
+                          }
+                          existing[name] = data;
+                          count++;
+                        }
+                        setProfiles(existing);
+                        loadProfileList();
+                        showToast('Imported ' + count + ' profile(s)');
+                      } catch (err) {
+                        alert('Invalid file: ' + err.message);
+                      }
+                    };
+                    reader.readAsText(file);
+                  };
+                  input.click();
+                }
+
+                // Keyboard shortcut: Cmd+S to save current profile
+                document.addEventListener("keydown", (e) => {
+                  if ((e.metaKey || e.ctrlKey) && e.key === "s") {
+                    e.preventDefault();
+                    saveCurrentProfile();
+                  }
+                });
+
+                // Start
+                init();
     </script>
   </body>
 </html>
