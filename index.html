@@ -136,6 +136,28 @@
         flex: 1;
         overflow: hidden;
       }
+      /* ═══ RESIZE HANDLES ═══ */
+      .resize-handle {
+        width: 5px;
+        cursor: col-resize;
+        background: transparent;
+        position: relative;
+        flex-shrink: 0;
+        z-index: 10;
+        transition: background 0.15s;
+      }
+      .resize-handle:hover,
+      .resize-handle.active {
+        background: var(--accent);
+      }
+      .resize-handle::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -3px;
+        right: -3px;
+        bottom: 0;
+      }
       /* ═══ CHAT PANEL (far left) ═══ */
       .chat-panel {
         width: 320px;
@@ -176,10 +198,31 @@
         color: var(--accent);
       }
       .chat-config {
-        padding: 10px 14px;
         border-bottom: 1px solid var(--border);
         background: #161616;
         flex-shrink: 0;
+      }
+      .chat-config summary {
+        padding: 8px 14px;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--muted);
+        cursor: pointer;
+        list-style: none;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        user-select: none;
+      }
+      .chat-config summary::-webkit-details-marker { display: none; }
+      .chat-config summary::before {
+        content: '▶';
+        font-size: 8px;
+        transition: transform 0.15s;
+      }
+      .chat-config[open] summary::before { transform: rotate(90deg); }
+      .chat-config .config-body {
+        padding: 0 14px 10px;
       }
       .chat-config label {
         font-size: 10px;
@@ -1347,7 +1390,11 @@
             ✕
           </button>
         </div>
-        <div class="chat-config" id="chat-config">
+        <details class="chat-config" id="chat-config">
+          <summary>
+            <span id="ai-status-compact">⚙ AI Config</span>
+          </summary>
+          <div class="config-body">
           <label>AI Provider</label>
           <select id="ai-provider" onchange="onProviderChange()">
             <option value="ollama" selected>
@@ -1448,7 +1495,8 @@
               >Off — faster responses</span
             >
           </div>
-        </div>
+          </div>
+        </details>
         <div class="chat-messages" id="chat-messages">
           <div class="chat-msg system">
             Connect an AI provider above to start
@@ -1495,41 +1543,31 @@
           </div>
         </div>
         <details class="chat-instructions">
-          <summary>ℹ️ How to get started</summary>
+          <summary>How to get started</summary>
           <div class="inst-body">
-            <h4>🏠
+            <h4>Local / Ollama (Free, No API Key!)</h4>
             Run AI models locally on your Mac. Zero cost, full privacy.<br />
             1. Install: <code>brew install ollama</code><br />
             2. Start: <code>ollama serve</code><br />
             3. Pull a model: <code>ollama pull qwen2.5:32b</code><br />
-            4. Click "Detect" above → select model → Connect<br />
-            Recommended: <strong>qwen2.5:32b</strong> (32GB Mac) or <strong>deepseek-r1:32b</strong> 🧠<br />
-            <h4>🟢 Groq (Free — Recommended Cloud)</h4>
-            Completely free, no credit card ne            Completely free, no credit card ne            Completely
-            2. Sign up /             2. Sign up /          />
-            3. Copy and paste above. Uses <strong>Llama 3.3 70B</strong>.<br />
-            <h4>🌐 OpenRouter (Free models            <h4>🌐 OpenRouter (Frlable, no credit card needed.<br />
-            1. Go to <code>openrouter.ai/keys</code><br />
-            2. Sign up → Create Key → Copy and paste above<br />
-            3. Auto-uses free <strong>Llama 3.3 70B</strong>.<br />
-            <h4>⚡ Cerebras (Free, ultra-fast)</h4>
-            Free tier, extremely fast inference (2000+ tok/s).<br />
-            1. Go to <code>cloud.cerebras.ai</code><br />
-            2. Sign up → API Keys → Create → paste above<br />
-            3. Uses <strong>Llama 3.3 70B</strong>.<br />
-            <h4>🔴 Google Gemini (Free tier)</h4>
-            1. Go to <code>aistudio.google.com/apikey</code><br />
-            2. Create API key → Copy and paste above<br />
-            3. Free tier: 15 RPM. Uses Gemini 2.5 Flash.<br />
-            <h4>🔵 OpenAI (GPT-4o)</h4>
-            1. Go to <code>platform.openai.com/api-keys</code><br />
-            2. Create a new key → Copy and paste above<br />
-            3. Requires billing setup. ~$0.005/message.<br />
-            <h4>🟣 Anthropic (Claude Sonnet 4)</h4>
-            1. Go to <code>console.anthropic.com</code><br />
-            2. Settings → API Keys → Create Key<b            2. Settings → API Keng setup. ~$0.003/message.
-                                 s>
+            4. Click Detect above, select model, then Connect<br />
+            Best: <strong>qwen2.5:32b</strong> (32GB Mac) or <strong>deepseek-r1:32b</strong><br />
+            <h4>Groq (Free Cloud)</h4>
+            Free, no credit card. Go to <code>console.groq.com</code>, create API key, paste above.<br />
+            <h4>OpenRouter (Free models)</h4>
+            Go to <code>openrouter.ai/keys</code>, create key, paste above.<br />
+            <h4>Cerebras (Free, ultra-fast)</h4>
+            Go to <code>cloud.cerebras.ai</code>, create key, paste above.<br />
+            <h4>Google Gemini (Free tier)</h4>
+            Go to <code>aistudio.google.com/apikey</code>, create key, paste above.<br />
+            <h4>OpenAI (Paid)</h4>
+            Go to <code>platform.openai.com/api-keys</code>, create key. ~$0.005/msg.<br />
+            <h4>Anthropic Claude (Paid)</h4>
+            Go to <code>console.anthropic.com</code>, create key. ~$0.003/msg.
+          </div>
+        </details>
       </div>
+      <div class="resize-handle" id="resize-chat" data-left="chat-panel" data-right="editor-panel"></div>
       <button
         class="toggle-chat-btn"
         id="toggle-chat-btn"
@@ -1539,7 +1577,7 @@
       </button>
 
       <!-- ═══ CENTER: EDITOR ═══ -->
-      <div class="editor-panel">
+      <div class="editor-panel" id="editor-panel">
         <div class="toolbar">
           <h1><span>CV</span> EDITOR</h1>
           <select
@@ -1630,8 +1668,10 @@
         </div>
       </div>
 
+      <div class="resize-handle" id="resize-preview" data-left="editor-panel" data-right="preview-panel"></div>
+
       <!-- ═══ RIGHT: PREVIEW ═══ -->
-      <div class="preview-panel">
+      <div class="preview-panel" id="preview-panel">
         <div class="preview-toolbar">
           <span class="zoom-label">Zoom:</span>
           <input
@@ -3958,16 +3998,22 @@
         el.textContent = text;
       }
 
-      function connectAI() {
+      async function connectAI() {
         const keyInput = document.getElementById("ai-api-key");
         aiProvider = document.getElementById("ai-provider").value;
 
         if (aiProvider === "ollama") {
-          // Ollama: no API key needed, check model selected
+          // Ollama: no API key needed
           aiApiKey = "ollama"; // placeholder
           if (!ollamaModel) {
-            updateAIStatus("error", "● Click 'Detect' to find models first");
-            return;
+            // Try auto-detect first
+            try {
+              await detectOllamaModels();
+            } catch(e) {}
+          }
+          if (!ollamaModel) {
+            // Default fallback model
+            ollamaModel = "llama3.1:8b";
           }
           // Resolve "auto" model references
           AI_CHAT_MODELS.ollama = ollamaModel;
@@ -3998,6 +4044,9 @@
           statusText += " — Chat: " + labels.chat + " | Edit: " + labels.edit;
         }
         updateAIStatus("connected", statusText);
+        // Update compact status in config summary and collapse
+        document.getElementById('ai-status-compact').innerHTML = '<span style="color:#22c55e">●</span> ' + statusText.replace('● Connected — ', '');
+        document.getElementById('chat-config').removeAttribute('open');
         document.getElementById("chat-send-btn").disabled = false;
         // Clear chat & send greeting
         chatHistory = [];
@@ -4786,6 +4835,54 @@ Make bullet points achievement-focused with action verbs. Preserve all dates, co
           hideNewCVModal();
         }
       }
+
+      // ═══════════════════════════════════════════════════════
+      // RESIZABLE PANELS
+      // ═══════════════════════════════════════════════════════
+      (function initResizeHandles() {
+        document.querySelectorAll('.resize-handle').forEach(function(handle) {
+          let startX, startWidthLeft, startWidthRight, leftEl, rightEl;
+
+          handle.addEventListener('mousedown', function(e) {
+            e.preventDefault();
+            const leftId = handle.dataset.left;
+            const rightId = handle.dataset.right;
+            leftEl = document.getElementById(leftId);
+            rightEl = document.getElementById(rightId);
+            if (!leftEl || !rightEl) return;
+
+            startX = e.clientX;
+            startWidthLeft = leftEl.getBoundingClientRect().width;
+            startWidthRight = rightEl.getBoundingClientRect().width;
+            handle.classList.add('active');
+            document.body.style.cursor = 'col-resize';
+            document.body.style.userSelect = 'none';
+
+            function onMouseMove(e) {
+              const dx = e.clientX - startX;
+              const newLeft = Math.max(200, startWidthLeft + dx);
+              const newRight = Math.max(200, startWidthRight - dx);
+              leftEl.style.width = newLeft + 'px';
+              leftEl.style.flex = 'none';
+              rightEl.style.width = newRight + 'px';
+              rightEl.style.flex = 'none';
+            }
+
+            function onMouseUp() {
+              handle.classList.remove('active');
+              document.body.style.cursor = '';
+              document.body.style.userSelect = '';
+              document.removeEventListener('mousemove', onMouseMove);
+              document.removeEventListener('mouseup', onMouseUp);
+              // Trigger preview re-zoom
+              if (typeof autoZoom === 'function') autoZoom();
+            }
+
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+          });
+        });
+      })();
 
       // Initialize Firebase on load
       initFirebase();
