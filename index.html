@@ -3,7 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CV Editor Platform</title>
+    <title>TopResume.ai — CV Editor Platform</title>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <style>
       :root {
         --bg: #0f0f0f;
@@ -36,10 +39,102 @@
         overflow: hidden;
       }
 
+      /* ═══ TOP NAV BAR ═══ */
+      .top-nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 48px;
+        padding: 0 20px;
+        background: #0a0a0a;
+        border-bottom: 1px solid var(--border);
+        flex-shrink: 0;
+        z-index: 100;
+      }
+      .top-nav .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+      }
+      .top-nav .logo-mark {
+        width: 32px;
+        height: 32px;
+        border-radius: 6px;
+        background: #0a0a0a;
+        border: 1.5px solid #222;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        overflow: hidden;
+      }
+      .top-nav .logo-mark .t { color: var(--accent); }
+      .top-nav .logo-mark .r { color: #fff; }
+      .top-nav .logo-text {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--text);
+        letter-spacing: -0.3px;
+      }
+      .top-nav .logo-text span { color: var(--accent); }
+      .top-nav .logo-text .domain { color: var(--muted); font-weight: 400; font-size: 12px; }
+      .top-nav .auth-section {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .top-nav .auth-btn {
+        padding: 6px 16px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: transparent;
+        color: var(--text);
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        font-family: inherit;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.15s;
+      }
+      .top-nav .auth-btn:hover { border-color: var(--accent); color: #fff; }
+      .top-nav .auth-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+      .top-nav .auth-btn.primary:hover { background: var(--accent-hover); }
+      .top-nav .user-info {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .top-nav .user-avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        border: 1.5px solid var(--border);
+      }
+      .top-nav .user-name {
+        font-size: 12px;
+        color: var(--text);
+        font-weight: 500;
+        max-width: 120px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
       /* ═══ LAYOUT ═══ */
+      .app-wrapper {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+      }
       .app {
         display: flex;
-        height: 100vh;
+        flex: 1;
+        overflow: hidden;
       }
       /* ═══ CHAT PANEL (far left) ═══ */
       .chat-panel {
@@ -1064,6 +1159,100 @@
         display: block;
       }
 
+      /* ═══ MODAL / DIALOG ═══ */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.7);
+        backdrop-filter: blur(4px);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s;
+      }
+      .modal-overlay.active { opacity: 1; pointer-events: all; }
+      .modal {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 28px 32px;
+        width: 440px;
+        max-width: 90vw;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      }
+      .modal h3 {
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 16px;
+        color: var(--text);
+      }
+      .modal-options {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+      .modal-option {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 16px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.15s;
+        background: transparent;
+        color: var(--text);
+        font-family: inherit;
+        text-align: left;
+      }
+      .modal-option:hover { border-color: var(--accent); background: rgba(59,130,246,0.05); }
+      .modal-option .opt-icon { font-size: 22px; flex-shrink: 0; }
+      .modal-option .opt-text { flex: 1; }
+      .modal-option .opt-title { font-size: 13px; font-weight: 600; display: block; }
+      .modal-option .opt-desc { font-size: 11px; color: var(--muted); display: block; margin-top: 2px; }
+      .modal-close {
+        padding: 6px 20px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: transparent;
+        color: var(--muted);
+        font-size: 12px;
+        cursor: pointer;
+        font-family: inherit;
+      }
+      .modal-close:hover { color: var(--text); border-color: #555; }
+      .modal-upload-area {
+        border: 2px dashed var(--border);
+        border-radius: 8px;
+        padding: 24px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.15s;
+        margin-bottom: 16px;
+      }
+      .modal-upload-area:hover { border-color: var(--accent); }
+      .modal-upload-area p { font-size: 12px; color: var(--muted); margin-top: 6px; }
+      .modal-upload-area .upload-icon { font-size: 28px; }
+      .modal-progress {
+        margin: 16px 0;
+        text-align: center;
+      }
+      .modal-progress .spinner {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        border: 2.5px solid var(--border);
+        border-top-color: var(--accent);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+      @keyframes spin { to { transform: rotate(360deg); } }
+      .modal-progress p { font-size: 12px; color: var(--muted); margin-top: 8px; }
+
       /* ═══ PRINT ═══ */
       @page {
         size: A4;
@@ -1087,6 +1276,8 @@
           display: block !important;
           background: #fff !important;
         }
+        .top-nav,
+        .chat-panel,
         .editor-panel,
         .preview-toolbar,
         .style-panel,
@@ -1123,6 +1314,26 @@
     </style>
   </head>
   <body>
+    <!-- ═══ TOP NAV BAR ═══ -->
+    <div class="app-wrapper">
+      <nav class="top-nav">
+        <a class="logo" href="#">
+          <div class="logo-mark"><span class="t">T</span><span class="r">R</span></div>
+          <div class="logo-text">top<span>resume</span><span class="domain">.ai</span></div>
+        </a>
+        <div class="auth-section" id="auth-section">
+          <button class="auth-btn primary" id="auth-login-btn" onclick="signInWithGoogle()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+            Sign in with Google
+          </button>
+          <div class="user-info" id="auth-user-info" style="display:none">
+            <img class="user-avatar" id="auth-avatar" src="" alt="" />
+            <span class="user-name" id="auth-name"></span>
+            <button class="auth-btn" onclick="signOutUser()">Sign out</button>
+          </div>
+        </div>
+      </nav>
+
     <div class="app">
       <!-- ═══ FAR LEFT: AI CHAT ═══ -->
       <div class="chat-panel" id="chat-panel">
@@ -1345,6 +1556,14 @@
               max-width: 130px;
             "
           ></select>
+          <button
+            class="btn btn-sm"
+            onclick="showNewCVModal()"
+            title="Create new CV"
+            style="background:#22c55e;color:#fff;font-size:11px"
+          >
+            + New CV
+          </button>
           <button
             class="btn btn-primary btn-sm"
             onclick="saveCurrentProfile()"
@@ -4320,6 +4539,302 @@ INTERACTION STYLE
           }) || parts[parts.length - 1];
         return textPart.text;
       }
+
+      // ═══════════════════════════════════════════════════════
+      // FIREBASE AUTH
+      // ═══════════════════════════════════════════════════════
+      const FIREBASE_CONFIG = {
+        apiKey: "AIzaSyB_placeholder_replace_me",
+        authDomain: "topresume-ai.firebaseapp.com",
+        projectId: "topresume-ai",
+        storageBucket: "topresume-ai.appspot.com",
+        messagingSenderId: "000000000000",
+        appId: "1:000000000000:web:placeholder"
+      };
+
+      let firebaseApp = null;
+      let firebaseAuth = null;
+      let currentUser = null;
+
+      function initFirebase() {
+        try {
+          firebaseApp = firebase.initializeApp(FIREBASE_CONFIG);
+          firebaseAuth = firebase.auth();
+          firebaseAuth.onAuthStateChanged(function(user) {
+            currentUser = user;
+            updateAuthUI(user);
+          });
+        } catch(e) {
+          console.log('Firebase not configured yet:', e.message);
+        }
+      }
+
+      function updateAuthUI(user) {
+        const loginBtn = document.getElementById('auth-login-btn');
+        const userInfo = document.getElementById('auth-user-info');
+        if (user) {
+          loginBtn.style.display = 'none';
+          userInfo.style.display = 'flex';
+          document.getElementById('auth-avatar').src = user.photoURL || '';
+          document.getElementById('auth-name').textContent = user.displayName || user.email || 'User';
+        } else {
+          loginBtn.style.display = 'flex';
+          userInfo.style.display = 'none';
+        }
+      }
+
+      async function signInWithGoogle() {
+        try {
+          if (!firebaseAuth) {
+            alert('Firebase not configured yet.\\n\\nTo enable login:\\n1. Create a Firebase project at console.firebase.google.com\\n2. Enable Google sign-in under Authentication\\n3. Update FIREBASE_CONFIG in the code');
+            return;
+          }
+          const provider = new firebase.auth.GoogleAuthProvider();
+          await firebaseAuth.signInWithPopup(provider);
+        } catch(e) {
+          if (e.code !== 'auth/popup-closed-by-user') {
+            console.error('Auth error:', e);
+            alert('Sign in failed: ' + e.message);
+          }
+        }
+      }
+
+      async function signOutUser() {
+        try {
+          if (firebaseAuth) await firebaseAuth.signOut();
+        } catch(e) {
+          console.error('Sign out error:', e);
+        }
+      }
+
+      // ═══════════════════════════════════════════════════════
+      // NEW CV MODAL
+      // ═══════════════════════════════════════════════════════
+      function showNewCVModal() {
+        document.getElementById('new-cv-modal').classList.add('active');
+      }
+
+      function hideNewCVModal() {
+        document.getElementById('new-cv-modal').classList.remove('active');
+        document.getElementById('modal-upload-step').style.display = 'none';
+        document.getElementById('modal-options-step').style.display = 'block';
+        document.getElementById('modal-progress-step').style.display = 'none';
+      }
+
+      function newCVFromEmpty() {
+        hideNewCVModal();
+        const name = prompt('Name for the new CV profile:', 'New CV ' + new Date().toLocaleDateString());
+        if (!name) return;
+        cv = {
+          name: "Your Name",
+          title: "Your Title / Headline",
+          contact: { location: "City, Country", phone: "+00 000 000 000", email: "email@example.com", linkedin: "linkedin.com/in/yourname" },
+          sections: [
+            { type: "summary", title: "Professional Summary", content: "Write your professional summary here..." },
+            { type: "experience", title: "Experience", jobs: [
+              { company: "Company Name", role: "Job Title", period: "2024 – Present", bullets: ["Describe your key achievement here"] }
+            ]},
+            { type: "education", title: "Education", items: [
+              { school: "University Name", degree: "Degree", year: "2024" }
+            ]},
+            { type: "skills", title: "Skills", content: "Skill 1, Skill 2, Skill 3" }
+          ]
+        };
+        renderEditor();
+        renderPreview();
+        autoFit();
+        // Save as new profile
+        const profiles = getProfiles();
+        profiles[name] = JSON.parse(JSON.stringify(cv));
+        setProfiles(profiles);
+        localStorage.setItem(ACTIVE_KEY, name);
+        loadProfileList();
+        document.getElementById('profile-select').value = name;
+      }
+
+      let newCVMode = ''; // 'doc' or 'linkedin'
+
+      function newCVFromDoc() {
+        newCVMode = 'doc';
+        document.getElementById('modal-options-step').style.display = 'none';
+        document.getElementById('modal-upload-step').style.display = 'block';
+        document.getElementById('upload-title').textContent = '📄 Upload Document';
+        document.getElementById('upload-desc').textContent = 'Upload a document (.txt, .md, .pdf) with your experience, and AI will create a structured CV.';
+        document.getElementById('upload-accept').setAttribute('accept', '.txt,.md,.pdf,.doc,.docx');
+      }
+
+      function newCVFromLinkedIn() {
+        newCVMode = 'linkedin';
+        document.getElementById('modal-options-step').style.display = 'none';
+        document.getElementById('modal-upload-step').style.display = 'block';
+        document.getElementById('upload-title').textContent = '💼 Upload LinkedIn PDF';
+        document.getElementById('upload-desc').textContent = 'Go to LinkedIn → More → Save to PDF, then upload here.';
+        document.getElementById('upload-accept').setAttribute('accept', '.pdf');
+      }
+
+      function triggerFileUpload() {
+        document.getElementById('upload-accept').click();
+      }
+
+      async function handleNewCVUpload(evt) {
+        const file = evt.target.files[0];
+        if (!file) return;
+        // Show progress
+        document.getElementById('modal-upload-step').style.display = 'none';
+        document.getElementById('modal-progress-step').style.display = 'block';
+        document.getElementById('progress-msg').textContent = 'Reading file...';
+
+        let text = '';
+        try {
+          if (file.name.endsWith('.pdf')) {
+            // For PDF, try to read as text (basic extraction)
+            text = await file.text();
+            // If binary PDF, extract readable text
+            if (text.startsWith('%PDF')) {
+              // Extract text between stream/endstream and clean up
+              const matches = text.match(/\(([^)]+)\)/g);
+              if (matches) {
+                text = matches.map(m => m.slice(1,-1)).join(' ');
+              } else {
+                text = text.replace(/[^\x20-\x7E\n]/g, ' ').replace(/\s+/g, ' ');
+              }
+            }
+          } else {
+            text = await file.text();
+          }
+        } catch(e) {
+          text = 'Failed to read file: ' + e.message;
+        }
+
+        if (!text || text.length < 20) {
+          alert('Could not extract enough text from the file. Try a .txt or .md file instead.');
+          hideNewCVModal();
+          return;
+        }
+
+        document.getElementById('progress-msg').textContent = 'AI is generating your CV structure...';
+
+        // Use AI to generate CV JSON
+        try {
+          const prompt = newCVMode === 'linkedin'
+            ? 'Convert this LinkedIn profile into a structured CV. '
+            : 'Convert this document/text into a structured CV. ';
+
+          const systemMsg = `You are a CV structuring expert. Given raw text from a ${newCVMode === 'linkedin' ? 'LinkedIn PDF export' : 'document'}, extract and structure it into a clean CV JSON object.
+
+Return ONLY valid JSON with this exact structure (no markdown, no explanation, just the JSON):
+{
+  "name": "Full Name",
+  "title": "Professional Headline",
+  "contact": { "location": "City, Country", "phone": "", "email": "", "linkedin": "" },
+  "sections": [
+    { "type": "summary", "title": "Professional Summary", "content": "2-3 sentence summary" },
+    { "type": "experience", "title": "Experience", "jobs": [
+      { "company": "Company", "role": "Title", "period": "Start – End", "bullets": ["Achievement 1", "Achievement 2"] }
+    ]},
+    { "type": "education", "title": "Education", "items": [
+      { "school": "University", "degree": "Degree", "year": "Year" }
+    ]},
+    { "type": "skills", "title": "Skills", "content": "Comma-separated skills" }
+  ]
+}
+
+Make bullet points achievement-focused with action verbs. Preserve all dates, companies, and metrics.`;
+
+          const history = [{ role: 'user', content: prompt + '\\n\\nHere is the raw text:\\n\\n' + text.substring(0, 12000) }];
+
+          // Determine which model/provider to use
+          let modelType = 'edit'; // use best available model
+          const result = await callAI([{ role: 'user', content: prompt + '\\n\\nRaw text:\\n\\n' + text.substring(0, 12000) }], modelType);
+
+          // Parse the JSON from the response
+          let cvData;
+          try {
+            // Try to find JSON in the response
+            const jsonMatch = result.match(/\{[\s\S]*\}/);
+            if (jsonMatch) {
+              cvData = JSON.parse(jsonMatch[0]);
+            } else {
+              throw new Error('No JSON found');
+            }
+          } catch(e) {
+            alert('AI returned invalid format. Please try again.');
+            hideNewCVModal();
+            return;
+          }
+
+          // Apply the generated CV
+          cv = cvData;
+          renderEditor();
+          renderPreview();
+          autoFit();
+
+          // Save as new profile
+          const profileName = (cv.name || 'New CV') + ' — ' + new Date().toLocaleDateString();
+          const profiles = getProfiles();
+          profiles[profileName] = JSON.parse(JSON.stringify(cv));
+          setProfiles(profiles);
+          localStorage.setItem(ACTIVE_KEY, profileName);
+          loadProfileList();
+          document.getElementById('profile-select').value = profileName;
+
+          hideNewCVModal();
+          appendChatMsg('system', '✅ New CV generated from ' + (newCVMode === 'linkedin' ? 'LinkedIn export' : 'uploaded document') + '! Review and refine it using the editor or AI chat.');
+
+        } catch(e) {
+          alert('AI generation failed: ' + e.message + '\\n\\nMake sure you have an AI provider connected.');
+          hideNewCVModal();
+        }
+      }
+
+      // Initialize Firebase on load
+      initFirebase();
     </script>
+
+    <!-- ═══ NEW CV MODAL ═══ -->
+    <div class="modal-overlay" id="new-cv-modal">
+      <div class="modal">
+        <h3>Create New CV</h3>
+        <div id="modal-options-step" class="modal-options">
+          <button class="modal-option" onclick="newCVFromEmpty()">
+            <span class="opt-icon">📝</span>
+            <span class="opt-text">
+              <span class="opt-title">Empty CV</span>
+              <span class="opt-desc">Start from a blank template</span>
+            </span>
+          </button>
+          <button class="modal-option" onclick="newCVFromDoc()">
+            <span class="opt-icon">📄</span>
+            <span class="opt-text">
+              <span class="opt-title">From Document</span>
+              <span class="opt-desc">Upload .txt, .md, .pdf — AI converts to structured CV</span>
+            </span>
+          </button>
+          <button class="modal-option" onclick="newCVFromLinkedIn()">
+            <span class="opt-icon">💼</span>
+            <span class="opt-text">
+              <span class="opt-title">From LinkedIn</span>
+              <span class="opt-desc">Upload your LinkedIn PDF export → instant CV</span>
+            </span>
+          </button>
+        </div>
+        <div id="modal-upload-step" style="display:none">
+          <h4 id="upload-title" style="font-size:13px;margin-bottom:12px">Upload</h4>
+          <p id="upload-desc" style="font-size:11px;color:var(--muted);margin-bottom:12px"></p>
+          <div class="modal-upload-area" onclick="triggerFileUpload()">
+            <div class="upload-icon">⬆️</div>
+            <p>Click to upload or drag & drop</p>
+          </div>
+          <input type="file" id="upload-accept" style="display:none" onchange="handleNewCVUpload(event)" />
+        </div>
+        <div id="modal-progress-step" style="display:none" class="modal-progress">
+          <div class="spinner"></div>
+          <p id="progress-msg">Processing...</p>
+        </div>
+        <button class="modal-close" onclick="hideNewCVModal()">Cancel</button>
+      </div>
+    </div>
+
+    </div><!-- end app-wrapper -->
   </body>
 </html>
