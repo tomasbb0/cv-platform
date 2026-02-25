@@ -53,8 +53,15 @@
         overflow: hidden;
         transition: width 0.2s;
       }
-      .chat-panel.collapsed { width: 0; min-width: 0; overflow: hidden; border: none; }
-      .chat-panel.collapsed * { display: none; }
+      .chat-panel.collapsed {
+        width: 0;
+        min-width: 0;
+        overflow: hidden;
+        border: none;
+      }
+      .chat-panel.collapsed * {
+        display: none;
+      }
       .chat-header {
         padding: 10px 14px;
         background: #151515;
@@ -64,24 +71,61 @@
         gap: 8px;
         flex-shrink: 0;
       }
-      .chat-header h2 { font-size: 13px; font-weight: 700; flex: 1; letter-spacing: 0.3px; }
-      .chat-header h2 span { color: var(--accent); }
+      .chat-header h2 {
+        font-size: 13px;
+        font-weight: 700;
+        flex: 1;
+        letter-spacing: 0.3px;
+      }
+      .chat-header h2 span {
+        color: var(--accent);
+      }
       .chat-config {
         padding: 10px 14px;
         border-bottom: 1px solid var(--border);
         background: #161616;
         flex-shrink: 0;
       }
-      .chat-config label { font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 4px; }
-      .chat-config select, .chat-config input[type="password"], .chat-config input[type="text"] {
-        width: 100%; padding: 6px 10px; background: #222; border: 1px solid var(--border); border-radius: 5px;
-        color: var(--text); font-size: 11px; font-family: inherit; margin-bottom: 6px;
+      .chat-config label {
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: block;
+        margin-bottom: 4px;
       }
-      .chat-config .connect-row { display: flex; gap: 6px; align-items: center; }
-      .chat-config .connect-status { font-size: 10px; flex: 1; }
-      .chat-config .connect-status.connected { color: var(--success); }
-      .chat-config .connect-status.disconnected { color: var(--muted); }
-      .chat-config .connect-status.error { color: var(--danger); }
+      .chat-config select,
+      .chat-config input[type="password"],
+      .chat-config input[type="text"] {
+        width: 100%;
+        padding: 6px 10px;
+        background: #222;
+        border: 1px solid var(--border);
+        border-radius: 5px;
+        color: var(--text);
+        font-size: 11px;
+        font-family: inherit;
+        margin-bottom: 6px;
+      }
+      .chat-config .connect-row {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+      }
+      .chat-config .connect-status {
+        font-size: 10px;
+        flex: 1;
+      }
+      .chat-config .connect-status.connected {
+        color: var(--success);
+      }
+      .chat-config .connect-status.disconnected {
+        color: var(--muted);
+      }
+      .chat-config .connect-status.error {
+        color: var(--danger);
+      }
       .chat-messages {
         flex: 1;
         overflow-y: auto;
@@ -118,8 +162,20 @@
         align-self: center;
         font-style: italic;
       }
-      .chat-msg code { background: rgba(0,0,0,0.3); padding: 1px 4px; border-radius: 3px; font-size: 11px; }
-      .chat-msg pre { background: rgba(0,0,0,0.3); padding: 8px; border-radius: 6px; overflow-x: auto; margin: 6px 0; font-size: 11px; }
+      .chat-msg code {
+        background: rgba(0, 0, 0, 0.3);
+        padding: 1px 4px;
+        border-radius: 3px;
+        font-size: 11px;
+      }
+      .chat-msg pre {
+        background: rgba(0, 0, 0, 0.3);
+        padding: 8px;
+        border-radius: 6px;
+        overflow-x: auto;
+        margin: 6px 0;
+        font-size: 11px;
+      }
       .chat-input-area {
         padding: 10px;
         border-top: 1px solid var(--border);
@@ -145,7 +201,10 @@
         max-height: 120px;
         line-height: 1.4;
       }
-      .chat-input-row textarea:focus { outline: none; border-color: var(--accent); }
+      .chat-input-row textarea:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
       .chat-input-row .send-btn {
         background: var(--accent);
         border: none;
@@ -161,8 +220,13 @@
         flex-shrink: 0;
         transition: background 0.15s;
       }
-      .chat-input-row .send-btn:hover { background: var(--accent-hover); }
-      .chat-input-row .send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+      .chat-input-row .send-btn:hover {
+        background: var(--accent-hover);
+      }
+      .chat-input-row .send-btn:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
       .chat-attach-btn {
         background: none;
         border: 1px solid var(--border);
@@ -178,14 +242,31 @@
         flex-shrink: 0;
         transition: all 0.15s;
       }
-      .chat-attach-btn:hover { color: var(--text); border-color: var(--text); }
-      .chat-attachments { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 6px; }
-      .chat-attachment-tag {
-        display: inline-flex; align-items: center; gap: 4px;
-        background: #2a2a2a; padding: 3px 8px; border-radius: 4px;
-        font-size: 10px; color: var(--muted);
+      .chat-attach-btn:hover {
+        color: var(--text);
+        border-color: var(--text);
       }
-      .chat-attachment-tag .remove-att { cursor: pointer; color: var(--danger); font-weight: 700; }
+      .chat-attachments {
+        display: flex;
+        gap: 4px;
+        flex-wrap: wrap;
+        margin-bottom: 6px;
+      }
+      .chat-attachment-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: #2a2a2a;
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-size: 10px;
+        color: var(--muted);
+      }
+      .chat-attachment-tag .remove-att {
+        cursor: pointer;
+        color: var(--danger);
+        font-weight: 700;
+      }
       /* ═══ DIFF/COMMIT UI ═══ */
       .diff-block {
         background: #111;
@@ -205,11 +286,26 @@
         align-items: center;
         gap: 6px;
       }
-      .diff-header input[type="checkbox"] { accent-color: var(--accent); }
-      .diff-row { padding: 4px 10px; font-family: 'SF Mono', 'Fira Code', monospace; }
-      .diff-row.before { background: #2d1515; color: #f87171; }
-      .diff-row.after { background: #152d15; color: #4ade80; }
-      .diff-actions { padding: 8px 10px; display: flex; gap: 6px; }
+      .diff-header input[type="checkbox"] {
+        accent-color: var(--accent);
+      }
+      .diff-row {
+        padding: 4px 10px;
+        font-family: "SF Mono", "Fira Code", monospace;
+      }
+      .diff-row.before {
+        background: #2d1515;
+        color: #f87171;
+      }
+      .diff-row.after {
+        background: #152d15;
+        color: #4ade80;
+      }
+      .diff-actions {
+        padding: 8px 10px;
+        display: flex;
+        gap: 6px;
+      }
       /* ═══ INSTRUCTIONS COLLAPSIBLE ═══ */
       .chat-instructions {
         border-top: 1px solid var(--border);
@@ -232,15 +328,37 @@
         max-height: 200px;
         overflow-y: auto;
       }
-      .chat-instructions .inst-body h4 { color: var(--text); margin: 6px 0 2px; font-size: 11px; }
-      .chat-instructions .inst-body code { background: #222; padding: 1px 4px; border-radius: 3px; }
-      .toggle-chat-btn {
-        position: fixed; top: 50%; left: 0; transform: translateY(-50%);
-        background: var(--accent); color: #fff; border: none; border-radius: 0 6px 6px 0;
-        padding: 8px 4px; font-size: 12px; cursor: pointer; z-index: 100; writing-mode: vertical-rl;
-        font-weight: 600; font-size: 10px; letter-spacing: 0.5px;
+      .chat-instructions .inst-body h4 {
+        color: var(--text);
+        margin: 6px 0 2px;
+        font-size: 11px;
       }
-      .chat-panel:not(.collapsed) ~ .toggle-chat-btn { display: none; }
+      .chat-instructions .inst-body code {
+        background: #222;
+        padding: 1px 4px;
+        border-radius: 3px;
+      }
+      .toggle-chat-btn {
+        position: fixed;
+        top: 50%;
+        left: 0;
+        transform: translateY(-50%);
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        border-radius: 0 6px 6px 0;
+        padding: 8px 4px;
+        font-size: 12px;
+        cursor: pointer;
+        z-index: 100;
+        writing-mode: vertical-rl;
+        font-weight: 600;
+        font-size: 10px;
+        letter-spacing: 0.5px;
+      }
+      .chat-panel:not(.collapsed) ~ .toggle-chat-btn {
+        display: none;
+      }
       .editor-panel {
         width: 40%;
         min-width: 350px;
@@ -1010,59 +1128,124 @@
       <div class="chat-panel" id="chat-panel">
         <div class="chat-header">
           <h2>🤖 <span>AI</span> ASSISTANT</h2>
-          <button class="btn btn-sm btn-secondary" onclick="toggleChatPanel()" title="Hide chat">✕</button>
+          <button
+            class="btn btn-sm btn-secondary"
+            onclick="toggleChatPanel()"
+            title="Hide chat"
+          >
+            ✕
+          </button>
         </div>
         <div class="chat-config" id="chat-config">
           <label>AI Provider</label>
           <select id="ai-provider" onchange="onProviderChange()">
-            <option value="openai">OpenAI (GPT-4o)</option>
-            <option value="gemini">Google Gemini (2.5 Flash)</option>
-            <option value="claude">Anthropic Claude (Sonnet 4)</option>
             <option value="groq" selected>Groq — Free (Llama 3.3 70B)</option>
+            <option value="openrouter">OpenRouter — Free (Llama 3.3 / Gemini / Qwen)</option>
+            <option value="cerebras">Cerebras — Free (Llama 3.3 70B, ultra-fast)</option>
+            <option value="gemini">Google Gemini — Free tier (2.5 Flash)</option>
+            <option value="openai">OpenAI (GPT-4o)</option>
+            <option value="claude">Anthropic Claude (Sonnet 4)</option>
           </select>
           <label>API Key</label>
-          <input type="password" id="ai-api-key" placeholder="Paste your API key..." />
+          <input
+            type="password"
+            id="ai-api-key"
+            placeholder="Paste your API key..."
+          />
           <div class="connect-row">
-            <button class="btn btn-sm btn-primary" onclick="connectAI()">Connect</button>
-            <span class="connect-status disconnected" id="ai-status">● Not connected</span>
+            <button class="btn btn-sm btn-primary" onclick="connectAI()">
+              Connect
+            </button>
+            <span class="connect-status disconnected" id="ai-status"
+              >● Not connected</span
+            >
           </div>
         </div>
         <div class="chat-messages" id="chat-messages">
-          <div class="chat-msg system">Connect an AI provider above to start</div>
+          <div class="chat-msg system">
+            Connect an AI provider above to start
+          </div>
         </div>
         <div class="chat-input-area">
           <div class="chat-attachments" id="chat-attachments"></div>
           <div class="chat-input-row">
-            <button class="chat-attach-btn" onclick="document.getElementById('chat-file-input').click()" title="Attach document">📎</button>
-            <input type="file" id="chat-file-input" accept=".txt,.md,.pdf,.doc,.docx,.json,.csv" style="display:none" onchange="handleAttachment(this)" multiple />
-            <textarea id="chat-input" placeholder="Ask the AI to tailor your CV..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage()}" oninput="autoGrow(this)"></textarea>
-            <button class="send-btn" id="chat-send-btn" onclick="sendMessage()" disabled>▶</button>
+            <button
+              class="chat-attach-btn"
+              onclick="document.getElementById('chat-file-input').click()"
+              title="Attach document"
+            >
+              📎
+            </button>
+            <input
+              type="file"
+              id="chat-file-input"
+              accept=".txt,.md,.pdf,.doc,.docx,.json,.csv"
+              style="display: none"
+              onchange="handleAttachment(this)"
+              multiple
+            />
+            <textarea
+              id="chat-input"
+              placeholder="Ask the AI to tailor your CV..."
+              rows="1"
+              onkeydown="
+                if (event.key === 'Enter' && !event.shiftKey) {
+                  event.preventDefault();
+                  sendMessage();
+                }
+              "
+              oninput="autoGrow(this)"
+            ></textarea>
+            <button
+              class="send-btn"
+              id="chat-send-btn"
+              onclick="sendMessage()"
+              disabled
+            >
+              ▶
+            </button>
           </div>
         </div>
         <details class="chat-instructions">
           <summary>ℹ️ How to get API keys</summary>
           <div class="inst-body">
             <h4>🟢 Groq (Free — Recommended)</h4>
-            Completely free, no credit card needed.<br/>
-            1. Go to <code>console.groq.com</code><br/>
-            2. Sign up / log in → API Keys → Create<br/>
-            3. Copy and paste above. Uses <strong>Llama 3.3 70B</strong>.<br/>
+            Completely free, no credit card needed.<br />
+            1. Go to <code>console.groq.com</code><br />
+            2. Sign up / log in → API Keys → Create<br />
+            3. Copy and paste above. Uses <strong>Llama 3.3 70B</strong>.<br />
+            <h4>� OpenRouter (Free models)</h4>
+            Free models available, no credit card needed.<br />
+            1. Go to <code>openrouter.ai/keys</code><br />
+            2. Sign up → Create Key → Copy and paste above<br />
+            3. Auto-uses free <strong>Llama 3.3 70B</strong>.<br />
+            <h4>⚡ Cerebras (Free, ultra-fast)</h4>
+            Free tier, extremely fast inference (2000+ tok/s).<br />
+            1. Go to <code>cloud.cerebras.ai</code><br />
+            2. Sign up → API Keys → Create → paste above<br />
+            3. Uses <strong>Llama 3.3 70B</strong>.<br />
+            <h4>🔴 Google Gemini (Free tier)</h4>
+            1. Go to <code>aistudio.google.com/apikey</code><br />
+            2. Create API key → Copy and paste above<br />
+            3. Free tier: 15 RPM. Uses Gemini 2.5 Flash.<br />
             <h4>🔵 OpenAI (GPT-4o)</h4>
-            1. Go to <code>platform.openai.com/api-keys</code><br/>
-            2. Create a new key → Copy and paste above<br/>
-            3. Requires billing setup. ~$0.005/message.<br/>
+            1. Go to <code>platform.openai.com/api-keys</code><br />
+            2. Create a new key → Copy and paste above<br />
+            3. Requires billing setup. ~$0.005/message.<br />
             <h4>🟣 Anthropic (Claude Sonnet 4)</h4>
-            1. Go to <code>console.anthropic.com</code><br/>
-            2. Settings → API Keys → Create Key<br/>
-            3. Requires billing setup. ~$0.003/message.<br/>
-            <h4>🔴 Google Gemini (2.5 Flash)</h4>
-            1. Go to <code>aistudio.google.com/apikey</code><br/>
-            2. Create API key → Copy and paste above<br/>
-            3. Free tier: 15 RPM. Pro for more.
+            1. Go to <code>console.anthropic.com</code><br />
+            2. Settings → API Keys → Create Key<br />
+            3. Requires billing setup. ~$0.003/message.
           </div>
         </details>
       </div>
-      <button class="toggle-chat-btn" id="toggle-chat-btn" onclick="toggleChatPanel()">💬 AI Chat</button>
+      <button
+        class="toggle-chat-btn"
+        id="toggle-chat-btn"
+        onclick="toggleChatPanel()"
+      >
+        💬 AI Chat
+      </button>
 
       <!-- ═══ CENTER: EDITOR ═══ -->
       <div class="editor-panel">
@@ -3252,105 +3435,128 @@
       // AI CHAT ASSISTANT
       // ═══════════════════════════════════════════════════════
       let aiConnected = false;
-      let aiProvider = 'groq';
-      let aiApiKey = '';
+      let aiProvider = "groq";
+      let aiApiKey = "";
       let chatHistory = []; // {role, content}
       let chatAttachments = []; // {name, text}
       let aiStreaming = false;
       let pendingChanges = []; // diff suggestions
 
       const AI_MODELS = {
-        openai: 'gpt-4o',
-        gemini: 'gemini-2.5-flash',
-        claude: 'claude-sonnet-4-20250514',
-        groq: 'llama-3.3-70b-versatile'
+        openai: "gpt-4o",
+        gemini: "gemini-2.5-flash",
+        claude: "claude-sonnet-4-20250514",
+        groq: "llama-3.3-70b-versatile",
+        openrouter: "meta-llama/llama-3.3-70b-instruct:free",
+        cerebras: "llama-3.3-70b",
       };
 
       const AI_ENDPOINTS = {
-        openai: 'https://api.openai.com/v1/chat/completions',
+        openai: "https://api.openai.com/v1/chat/completions",
         gemini: null, // special handling
-        claude: 'https://api.anthropic.com/v1/messages',
-        groq: 'https://api.groq.com/openai/v1/chat/completions'
+        claude: "https://api.anthropic.com/v1/messages",
+        groq: "https://api.groq.com/openai/v1/chat/completions",
+        openrouter: "https://openrouter.ai/api/v1/chat/completions",
+        cerebras: "https://api.cerebras.ai/v1/chat/completions",
       };
 
       function toggleChatPanel() {
-        const p = document.getElementById('chat-panel');
-        const b = document.getElementById('toggle-chat-btn');
-        p.classList.toggle('collapsed');
-        b.style.display = p.classList.contains('collapsed') ? '' : 'none';
+        const p = document.getElementById("chat-panel");
+        const b = document.getElementById("toggle-chat-btn");
+        p.classList.toggle("collapsed");
+        b.style.display = p.classList.contains("collapsed") ? "" : "none";
       }
 
       function onProviderChange() {
-        aiProvider = document.getElementById('ai-provider').value;
+        aiProvider = document.getElementById("ai-provider").value;
         aiConnected = false;
-        updateAIStatus('disconnected', '● Not connected');
+        updateAIStatus("disconnected", "● Not connected");
       }
 
       function updateAIStatus(cls, text) {
-        const el = document.getElementById('ai-status');
-        el.className = 'connect-status ' + cls;
+        const el = document.getElementById("ai-status");
+        el.className = "connect-status " + cls;
         el.textContent = text;
       }
 
       function connectAI() {
-        const keyInput = document.getElementById('ai-api-key');
+        const keyInput = document.getElementById("ai-api-key");
         aiApiKey = keyInput.value.trim();
-        aiProvider = document.getElementById('ai-provider').value;
-        if (!aiApiKey) { updateAIStatus('error', '● Enter an API key'); return; }
+        aiProvider = document.getElementById("ai-provider").value;
+        if (!aiApiKey) {
+          updateAIStatus("error", "● Enter an API key");
+          return;
+        }
         aiConnected = true;
-        updateAIStatus('connected', '● Connected — ' + AI_MODELS[aiProvider]);
-        document.getElementById('chat-send-btn').disabled = false;
+        updateAIStatus("connected", "● Connected — " + AI_MODELS[aiProvider]);
+        document.getElementById("chat-send-btn").disabled = false;
         // Clear chat & send greeting
         chatHistory = [];
-        const msgs = document.getElementById('chat-messages');
-        msgs.innerHTML = '';
-        appendChatMsg('assistant', "Hi Tomás! 👋 I can see your active CV. What would you like to change? You can:\n\n• Paste a job description to tailor your CV\n• Ask me to improve specific bullets\n• Attach context documents\n• Request formatting changes\n\nWhat would you like to do?");
+        const msgs = document.getElementById("chat-messages");
+        msgs.innerHTML = "";
+        appendChatMsg(
+          "assistant",
+          "Hi Tomás! 👋 I can see your active CV. What would you like to change? You can:\n\n• Paste a job description to tailor your CV\n• Ask me to improve specific bullets\n• Attach context documents\n• Request formatting changes\n\nWhat would you like to do?",
+        );
       }
 
       function appendChatMsg(role, text, extraHTML) {
-        const msgs = document.getElementById('chat-messages');
-        const div = document.createElement('div');
-        div.className = 'chat-msg ' + role;
+        const msgs = document.getElementById("chat-messages");
+        const div = document.createElement("div");
+        div.className = "chat-msg " + role;
         // Simple markdown-ish rendering
         let html = escapeHtml(text)
-          .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-          .replace(/`(.+?)`/g, '<code>$1</code>')
-          .replace(/\n/g, '<br>');
-        div.innerHTML = html + (extraHTML || '');
+          .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+          .replace(/`(.+?)`/g, "<code>$1</code>")
+          .replace(/\n/g, "<br>");
+        div.innerHTML = html + (extraHTML || "");
         msgs.appendChild(div);
         msgs.scrollTop = msgs.scrollHeight;
         return div;
       }
 
       function escapeHtml(t) {
-        return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        return t
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
       }
 
       function autoGrow(el) {
-        el.style.height = '36px';
-        el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+        el.style.height = "36px";
+        el.style.height = Math.min(el.scrollHeight, 120) + "px";
       }
 
       // ═══ ATTACHMENTS ═══
       function handleAttachment(input) {
-        Array.from(input.files).forEach(function(file) {
+        Array.from(input.files).forEach(function (file) {
           const reader = new FileReader();
-          reader.onload = function(e) {
+          reader.onload = function (e) {
             const text = e.target.result;
-            chatAttachments.push({ name: file.name, text: text.substring(0, 15000) });
+            chatAttachments.push({
+              name: file.name,
+              text: text.substring(0, 15000),
+            });
             renderAttachments();
           };
           reader.readAsText(file);
         });
-        input.value = '';
+        input.value = "";
       }
 
       function renderAttachments() {
-        const el = document.getElementById('chat-attachments');
-        el.innerHTML = chatAttachments.map(function(a, i) {
-          return '<span class="chat-attachment-tag">📄 ' + escapeHtml(a.name) +
-            ' <span class="remove-att" onclick="removeAttachment(' + i + ')">✕</span></span>';
-        }).join('');
+        const el = document.getElementById("chat-attachments");
+        el.innerHTML = chatAttachments
+          .map(function (a, i) {
+            return (
+              '<span class="chat-attachment-tag">📄 ' +
+              escapeHtml(a.name) +
+              ' <span class="remove-att" onclick="removeAttachment(' +
+              i +
+              ')">✕</span></span>'
+            );
+          })
+          .join("");
       }
 
       function removeAttachment(i) {
@@ -3360,11 +3566,14 @@
 
       // ═══ BUILD CV CONTEXT FOR AI ═══
       function buildCVContext() {
-        let ctx = "CURRENT CV DATA (JSON):\n```json\n" + JSON.stringify(cv, null, 2) + "\n```\n\n";
+        let ctx =
+          "CURRENT CV DATA (JSON):\n```json\n" +
+          JSON.stringify(cv, null, 2) +
+          "\n```\n\n";
         ctx += "ACTIVE PROFILE: " + (activeProfile || "Unsaved Draft") + "\n";
         if (chatAttachments.length > 0) {
           ctx += "\nATTACHED DOCUMENTS:\n";
-          chatAttachments.forEach(function(a) {
+          chatAttachments.forEach(function (a) {
             ctx += "--- " + a.name + " ---\n" + a.text + "\n--- END ---\n\n";
           });
         }
@@ -3372,7 +3581,8 @@
       }
 
       function buildSystemPrompt() {
-        return `You are a senior career coach and CV optimization expert helping Tomás Batalha tailor his CV. You have access to his full CV data.
+        return (
+          `You are a senior career coach and CV optimization expert helping Tomás Batalha tailor his CV. You have access to his full CV data.
 
 RULES:
 1. When suggesting changes, ALWAYS use this exact JSON format wrapped in a code block:
@@ -3399,24 +3609,25 @@ RULES:
 6. Maintain quantification — never remove numbers/metrics.
 7. The "before" field MUST exactly match the current CV text.
 
-` + buildCVContext();
+` + buildCVContext()
+        );
       }
 
       // ═══ SEND MESSAGE ═══
       async function sendMessage() {
         if (!aiConnected || aiStreaming) return;
-        const input = document.getElementById('chat-input');
+        const input = document.getElementById("chat-input");
         const text = input.value.trim();
         if (!text) return;
-        input.value = '';
-        input.style.height = '36px';
+        input.value = "";
+        input.style.height = "36px";
 
-        appendChatMsg('user', text);
-        chatHistory.push({ role: 'user', content: text });
+        appendChatMsg("user", text);
+        chatHistory.push({ role: "user", content: text });
 
         aiStreaming = true;
-        document.getElementById('chat-send-btn').disabled = true;
-        const thinkingDiv = appendChatMsg('assistant', '⏳ Thinking...');
+        document.getElementById("chat-send-btn").disabled = true;
+        const thinkingDiv = appendChatMsg("assistant", "⏳ Thinking...");
 
         try {
           const response = await callAI(chatHistory);
@@ -3425,156 +3636,228 @@ RULES:
           // Parse response for changes
           const changesMatch = response.match(/```json:changes\n([\s\S]*?)```/);
           let messageText = response;
-          let changesHTML = '';
+          let changesHTML = "";
 
           if (changesMatch) {
-            messageText = response.replace(/```json:changes\n[\s\S]*?```/, '').trim();
+            messageText = response
+              .replace(/```json:changes\n[\s\S]*?```/, "")
+              .trim();
             try {
               pendingChanges = JSON.parse(changesMatch[1]);
               changesHTML = renderDiffBlocks(pendingChanges);
-            } catch(e) {
-              changesHTML = '<div class="chat-msg system">⚠️ Could not parse changes</div>';
+            } catch (e) {
+              changesHTML =
+                '<div class="chat-msg system">⚠️ Could not parse changes</div>';
             }
           }
 
-          appendChatMsg('assistant', messageText, changesHTML);
-          chatHistory.push({ role: 'assistant', content: response });
-        } catch(err) {
+          appendChatMsg("assistant", messageText, changesHTML);
+          chatHistory.push({ role: "assistant", content: response });
+        } catch (err) {
           thinkingDiv.remove();
-          appendChatMsg('system', '❌ Error: ' + err.message);
+          appendChatMsg("system", "❌ Error: " + err.message);
         }
 
         aiStreaming = false;
-        document.getElementById('chat-send-btn').disabled = false;
+        document.getElementById("chat-send-btn").disabled = false;
       }
 
       // ═══ RENDER DIFF BLOCKS ═══
       function renderDiffBlocks(changes) {
-        if (!changes || !changes.length) return '';
+        if (!changes || !changes.length) return "";
         let html = '<div style="margin-top:8px">';
-        changes.forEach(function(c, i) {
-          html += '<div class="diff-block">' +
-            '<div class="diff-header"><input type="checkbox" checked id="diff-cb-' + i + '"/> <span>' + escapeHtml(c.label || c.path) + '</span></div>' +
-            '<div class="diff-row before">− ' + escapeHtml(c.before) + '</div>' +
-            '<div class="diff-row after">+ ' + escapeHtml(c.after) + '</div>' +
-            '</div>';
+        changes.forEach(function (c, i) {
+          html +=
+            '<div class="diff-block">' +
+            '<div class="diff-header"><input type="checkbox" checked id="diff-cb-' +
+            i +
+            '"/> <span>' +
+            escapeHtml(c.label || c.path) +
+            "</span></div>" +
+            '<div class="diff-row before">− ' +
+            escapeHtml(c.before) +
+            "</div>" +
+            '<div class="diff-row after">+ ' +
+            escapeHtml(c.after) +
+            "</div>" +
+            "</div>";
         });
-        html += '<div class="diff-actions">' +
+        html +=
+          '<div class="diff-actions">' +
           '<button class="btn btn-sm btn-primary" onclick="commitChanges()">✓ Commit Selected</button>' +
           '<button class="btn btn-sm btn-secondary" onclick="commitAllChanges()">Commit All</button>' +
           '<button class="btn btn-sm btn-secondary" onclick="dismissChanges()">Dismiss</button>' +
-          '</div></div>';
+          "</div></div>";
         return html;
       }
 
       // ═══ COMMIT CHANGES ═══
       function commitChanges() {
         let applied = 0;
-        pendingChanges.forEach(function(c, i) {
-          const cb = document.getElementById('diff-cb-' + i);
+        pendingChanges.forEach(function (c, i) {
+          const cb = document.getElementById("diff-cb-" + i);
           if (cb && cb.checked) {
             if (applyChange(c)) applied++;
           }
         });
         pendingChanges = [];
-        renderEditor(); renderPreview(); autoFit();
+        renderEditor();
+        renderPreview();
+        autoFit();
         if (activeProfile) saveCurrentProfile(true);
-        appendChatMsg('system', '✅ Applied ' + applied + ' change(s) to your CV.');
+        appendChatMsg(
+          "system",
+          "✅ Applied " + applied + " change(s) to your CV.",
+        );
       }
 
       function commitAllChanges() {
         let applied = 0;
-        pendingChanges.forEach(function(c) {
+        pendingChanges.forEach(function (c) {
           if (applyChange(c)) applied++;
         });
         pendingChanges = [];
-        renderEditor(); renderPreview(); autoFit();
+        renderEditor();
+        renderPreview();
+        autoFit();
         if (activeProfile) saveCurrentProfile(true);
-        appendChatMsg('system', '✅ Applied ' + applied + ' change(s) to your CV.');
+        appendChatMsg(
+          "system",
+          "✅ Applied " + applied + " change(s) to your CV.",
+        );
       }
 
       function dismissChanges() {
         pendingChanges = [];
-        appendChatMsg('system', 'Changes dismissed.');
+        appendChatMsg("system", "Changes dismissed.");
       }
 
       function applyChange(c) {
         try {
           // Parse path like "sections[1].jobs[0].bullets[2]"
-          const parts = c.path.replace(/\[(\d+)\]/g, '.$1').split('.');
+          const parts = c.path.replace(/\[(\d+)\]/g, ".$1").split(".");
           let obj = cv;
           for (let i = 0; i < parts.length - 1; i++) {
             const key = isNaN(parts[i]) ? parts[i] : parseInt(parts[i]);
             obj = obj[key];
             if (obj === undefined) return false;
           }
-          const lastKey = isNaN(parts[parts.length-1]) ? parts[parts.length-1] : parseInt(parts[parts.length-1]);
+          const lastKey = isNaN(parts[parts.length - 1])
+            ? parts[parts.length - 1]
+            : parseInt(parts[parts.length - 1]);
           obj[lastKey] = c.after;
           return true;
-        } catch(e) { return false; }
+        } catch (e) {
+          return false;
+        }
       }
 
       // ═══ AI API CALLS ═══
       async function callAI(history) {
         const systemPrompt = buildSystemPrompt();
 
-        if (aiProvider === 'openai' || aiProvider === 'groq') {
+        if (aiProvider === "openai" || aiProvider === "groq" || aiProvider === "openrouter" || aiProvider === "cerebras") {
           return await callOpenAICompatible(systemPrompt, history);
-        } else if (aiProvider === 'claude') {
+        } else if (aiProvider === "claude") {
           return await callClaude(systemPrompt, history);
-        } else if (aiProvider === 'gemini') {
+        } else if (aiProvider === "gemini") {
           return await callGemini(systemPrompt, history);
         }
-        throw new Error('Unknown provider');
+        throw new Error("Unknown provider");
       }
 
       async function callOpenAICompatible(systemPrompt, history) {
         const endpoint = AI_ENDPOINTS[aiProvider];
         const model = AI_MODELS[aiProvider];
-        const messages = [{ role: 'system', content: systemPrompt }];
-        history.forEach(function(m) { messages.push({ role: m.role, content: m.content }); });
+        const messages = [{ role: "system", content: systemPrompt }];
+        history.forEach(function (m) {
+          messages.push({ role: m.role, content: m.content });
+        });
 
         const res = await fetch(endpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + aiApiKey },
-          body: JSON.stringify({ model: model, messages: messages, temperature: 0.7, max_tokens: 4096 })
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + aiApiKey,
+          },
+          body: JSON.stringify({
+            model: model,
+            messages: messages,
+            temperature: 0.7,
+            max_tokens: 4096,
+          }),
         });
-        if (!res.ok) { const err = await res.text(); throw new Error(res.status + ': ' + err.substring(0, 200)); }
+        if (!res.ok) {
+          const err = await res.text();
+          throw new Error(res.status + ": " + err.substring(0, 200));
+        }
         const data = await res.json();
         return data.choices[0].message.content;
       }
 
       async function callClaude(systemPrompt, history) {
-        const messages = history.map(function(m) { return { role: m.role, content: m.content }; });
-        const res = await fetch('https://api.anthropic.com/v1/messages', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-api-key': aiApiKey,
-            'anthropic-version': '2023-06-01',
-            'anthropic-dangerous-direct-browser-access': 'true'
-          },
-          body: JSON.stringify({ model: AI_MODELS.claude, system: systemPrompt, messages: messages, max_tokens: 4096 })
+        const messages = history.map(function (m) {
+          return { role: m.role, content: m.content };
         });
-        if (!res.ok) { const err = await res.text(); throw new Error(res.status + ': ' + err.substring(0, 200)); }
+        const res = await fetch("https://api.anthropic.com/v1/messages", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": aiApiKey,
+            "anthropic-version": "2023-06-01",
+            "anthropic-dangerous-direct-browser-access": "true",
+          },
+          body: JSON.stringify({
+            model: AI_MODELS.claude,
+            system: systemPrompt,
+            messages: messages,
+            max_tokens: 4096,
+          }),
+        });
+        if (!res.ok) {
+          const err = await res.text();
+          throw new Error(res.status + ": " + err.substring(0, 200));
+        }
         const data = await res.json();
         return data.content[0].text;
       }
 
       async function callGemini(systemPrompt, history) {
         const contents = [];
-        contents.push({ role: 'user', parts: [{ text: systemPrompt + '\n\n(System prompt loaded. Respond to user messages below.)' }] });
-        contents.push({ role: 'model', parts: [{ text: 'Understood.' }] });
-        history.forEach(function(m) {
-          contents.push({ role: m.role === 'user' ? 'user' : 'model', parts: [{ text: m.content }] });
+        contents.push({
+          role: "user",
+          parts: [
+            {
+              text:
+                systemPrompt +
+                "\n\n(System prompt loaded. Respond to user messages below.)",
+            },
+          ],
         });
-        const url = 'https://generativelanguage.googleapis.com/v1beta/models/' + AI_MODELS.gemini + ':generateContent?key=' + aiApiKey;
+        contents.push({ role: "model", parts: [{ text: "Understood." }] });
+        history.forEach(function (m) {
+          contents.push({
+            role: m.role === "user" ? "user" : "model",
+            parts: [{ text: m.content }],
+          });
+        });
+        const url =
+          "https://generativelanguage.googleapis.com/v1beta/models/" +
+          AI_MODELS.gemini +
+          ":generateContent?key=" +
+          aiApiKey;
         const res = await fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ contents: contents, generationConfig: { temperature: 0.7, maxOutputTokens: 4096 } })
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: contents,
+            generationConfig: { temperature: 0.7, maxOutputTokens: 4096 },
+          }),
         });
-        if (!res.ok) { const err = await res.text(); throw new Error(res.status + ': ' + err.substring(0, 200)); }
+        if (!res.ok) {
+          const err = await res.text();
+          throw new Error(res.status + ": " + err.substring(0, 200));
+        }
         const data = await res.json();
         return data.candidates[0].content.parts[0].text;
       }
