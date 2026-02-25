@@ -679,6 +679,21 @@
         border-radius: 1px;
       }
 
+      /* ═══ PRINT BORDER GUIDE ═══ */
+      .print-border {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        pointer-events: none;
+        z-index: 6;
+        display: none;
+        border: 2px solid rgba(239, 68, 68, 0.4);
+        border-radius: 2px;
+      }
+      .print-border.visible { display: block; }
+
       /* ═══ PRINT ═══ */
       @page {
         size: A4;
@@ -693,7 +708,8 @@
         body {
           margin: 0 !important;
           padding: 0 !important;
-          background: #fff !important;
+          background:,
+        .print-border #fff !important;
           width: 210mm !important;
           height: 297mm !important;
           overflow: hidden !important;
@@ -889,10 +905,15 @@
               <span class="style-val" id="style-line-height-val">auto</span>
               <button class="auto-btn active" id="btn-auto-lineheight" onclick="toggleAuto('lineHeight')">A</button>
             </div>
-            <!-- Row 8: Guides toggle -->
-            <div class="style-row">
-              <label>Print Area</label>
-              <button class="auto-btn" id="btn-guides" onclick="toggleGuides()" style="padding:2px 8px;font-size:9px;">Show Guides</button>
+            <!-- Row 8: Visual guides -->
+            <div class="style-row" style="gap:10px;">
+              <label style="min-width:auto;">Guides</label>
+              <label style="font-size:9px;display:flex;align-items:center;gap:3px;cursor:pointer;min-width:auto;">
+                <input type="checkbox" id="chk-margins" onchange="toggleGuides('margins')" style="margin:0;"/> Margins
+              </label>
+              <label style="font-size:9px;display:flex;align-items:center;gap:3px;cursor:pointer;min-width:auto;">
+                <input type="checkbox" id="chk-printborder" onchange="toggleGuides('printborder')" style="margin:0;"/> Print Border
+              </label>
             </div>
           </div>
         </div>
@@ -900,6 +921,7 @@
         <div class="paper-wrapper">
           <div class="paper" id="paper">
             <!-- Rendered CV goes here -->
+          <div class="print-border" id="print-border"></div>
           </div>
           <div class="overflow-line" id="overflow-line"></div>
           <div class="margin-guide" id="margin-guide">
@@ -1048,7 +1070,8 @@
               },
             ],
           };
-
+,
+            showPrintBorder: false
           let cv = JSON.parse(JSON.stringify(DEFAULT_CV));
           let zoomLevel = 65;
           let debounceTimer = null;
@@ -1866,30 +1889,10 @@
             const zoom = Math.max(20, Math.min(200, Math.round(scale * 100)));
             setZoom(zoom);
           }
-
-          // ═══════════════════════════════════════════════════════
-          // STYLE / TYPOGRAPHY CONTROLS
-          // ═══════════════════════════════════════════════════════
-          function toggleStylePanel() {
-            const panel = document.getElementById('style-panel');
-            panel.classList.toggle('collapsed');
-            setTimeout(autoZoom, 50);
-          }
-
-          function setStyleFont(prop, val) {
-            userStyle[prop] = val;
-            cv.style = JSON.parse(JSON.stringify(userStyle));
-            renderPreview();
-            schedulePreview();
-          }
-
-          function setStyleVal(prop, val) {
-            // When user moves a slider, lock that value
-            userStyle[prop] = val;
-            // Update display
+userStyle[prop] = val;
             updateStyleValDisplay(prop, val);
-            // Mark auto button as inactive
-            const btnId = {bodySize:'btn-auto-fontsize', bulletGap:'btn-auto-para', sectionGap:'btn-auto-section', margins:'btn-auto-margins', lineHeight:'btn-auto-lineheight'}[prop];
+            const btnMap = {bodySize:'btn-auto-fontsize', titleSize:'btn-auto-titlesize', bulletGap:'btn-auto-para', sectionGap:'btn-auto-section', margins:'btn-auto-margins', lineHeight:'btn-auto-lineheight'};
+            const btnId = btnMap[prop];
             if (btnId) document.getElementById(btnId).classList.remove('active');
             cv.style = JSON.parse(JSON.stringify(userStyle));
             renderPreview();
@@ -1897,27 +1900,30 @@
           }
 
           function toggleAuto(prop) {
+            const btnMap = {bodySize:'btn-auto-fontsize', titleSize:'btn-auto-titlesize', bulletGap:'btn-auto-para', sectionGap:'btn-auto-section', margins:'btn-auto-margins', lineHeight:'btn-auto-lineheight'};
             if (userStyle[prop] === null) {
-              // Switch from auto to manual: use current BASE value as starting point
-              const defaults = {bodySize: 7.5, bulletGap: 0.5, sectionGap: 5, margins: 10, lineHeight: 1.35};
+              const defaults = {bodySize: 7.5, titleSize: 9.5, bulletGap: 0.5, sectionGap: 5, margins: 10, lineHeight: 1.35};
+              const defaults = {bodySize: 7.5, titleSize: 9.5, bulletGap: 0.5, sectionGap: 5, margins: 10, lineHeight: 1.35};
+              const defaults = {bodySize: 7.5, titleSize: 9.5, bulletGap: 0.5, sectionGap: 5, margins: 10, lineHeight: 1.35};
               userStyle[prop] = defaults[prop];
-              document.getElementById({bodySize:'btn-auto-fontsize', bulletGap:'btn-auto-para', sectionGap:'btn-auto-section', margins:'btn-auto-margins', lineHeight:'btn-auto-lineheight'}[prop]).classList.remove('active');
+              document.getElementById(btnMap[prop]).classList.remove('active');
             } else {
               userStyle[prop] = null;
-              document.getElementById({bodySize:'btn-auto-fontsize', bulletGap:'btn-auto-para', sectionGap:'btn-auto-section', margins:'btn-auto-margins', lineHeight:'btn-auto-lineheight'}[prop]).classList.add('active');
-            }
-            updateStyleValDisplay(prop, userStyle[prop]);
-            cv.style = JSON.parse(JSON.stringify(userStyle));
-            renderPreview();
+              document.getElementById(btnMap
             schedulePreview();
           }
 
           function updateStyleValDisplay(prop, val) {
             const map = {
               bodySize: 'style-font-size-val',
-              bulletGap: 'style-para-gap-val',
-              sectionGap: 'style-section-gap-val',
-              margins: 'style-margins-val',
+              titleSize: 'style-titlene-height-val',
+              letterSpacing: 'style-letter-spacing-val'
+            };nst map = {
+              bodySize: 'style-font-size-val',
+              titleSize: 'style-title-size-val',
+              nst map = {
+              bodySize: 'style-font-size-val',
+              titleSize: 'style-titlens-val',
               lineHeight: 'style-line-height-val',
               letterSpacing: 'style-letter-spacing-val'
             };
@@ -1927,7 +1933,13 @@
               el.textContent = 'auto';
             } else if (prop === 'letterSpacing') {
               el.textContent = val.toFixed(2) + 'px';
-            } else if (prop === 'bodySize') {
+            } else if (prop === 'bodySize' || prop === 'titleementById(map[prop]);
+            if (!el) return;
+            if (val === null) {
+              el.textContent = 'auto';
+            } else if (prop === 'letterSpacing') {
+              el.textContent = val.toFixed(2) + 'px';
+            } else if (prop === 'bodySize' || prop === 'titleSize') {
               el.textContent = val.toFixed(1) + 'pt';
             } else if (prop === 'lineHeight') {
               el.textContent = val.toFixed(2);
@@ -1941,56 +1953,35 @@
           function syncStyleUI() {
             // Sync font dropdowns
             const bf = document.getElementById('style-body-font');
-            const tf = document.getElementById('style-title-font');
-            if (bf) { for (const opt of bf.options) { if (opt.value === userStyle.bodyFont) opt.selected = true; } }
-            if (tf) { for (const opt of tf.options) { if (opt.value === userStyle.titleFont) opt.selected = true; } }
-            // Sync letter spacing slider
-            document.getElementById('style-letter-spacing').value = userStyle.letterSpacing * 100;
-            updateStyleValDisplay('letterSpacing', userStyle.letterSpacing);
-            // Sync each auto-adjustable slider
-            const syncSlider = (prop, sliderId, btnId, defVal) => {
-              const slider = document.getElementById(sliderId);
-              const btn = document.getElementById(btnId);
-              if (userStyle[prop] !== null) {
-                slider.value = userStyle[prop] * 10;
-                btn.classList.remove('active');
-                updateStyleValDisplay(prop, userStyle[prop]);
-              } else {
-                slider.value = defVal * 10;
-                btn.classList.add('active');
-                updateStyleValDisplay(prop, null);
-              }
-            };
+            co
             syncSlider('bodySize', 'style-font-size', 'btn-auto-fontsize', 7.5);
+            syncSlider('titleSize', 'style-title-size', 'btn-auto-titlesize', 9.5);
             syncSlider('bulletGap', 'style-para-gap', 'btn-auto-para', 0.5);
             syncSlider('sectionGap', 'style-section-gap', 'btn-auto-section', 5);
             syncSlider('margins', 'style-margins', 'btn-auto-margins', 10);
             syncSlider('lineHeight', 'style-line-height', 'btn-auto-lineheight', 1.35);
-            // Guides button
-            const guidesBtn = document.getElementById('btn-guides');
-            if (userStyle.showGuides) {
-              guidesBtn.classList.add('active');
-              guidesBtn.textContent = 'Hide Guides';
-              document.getElementById('margin-guide').classList.add('visible');
-            } else {
-              guidesBtn.classList.remove('active');
-              guidesBtn.textContent = 'Show Guides';
-              document.getElementById('margin-guide').classList.remove('visible');
-            }
+            // Sync checkboxes
+            document.getElementById('chk-margins').checked = !!userStyle.showGuides;
+            document.getElementById('margin-guide').classList.toggle('visible', !!userStyle.showGuides);
+            document.getElementById('chk-printborder').checked = !!userStyle.showPrintBorder;
+            document.getElementById('print-border').classList.toggle('visible', !!userStyle.showPrintBorder);
           }
 
-          function toggleGuides() {
-            userStyle.showGuides = !userStyle.showGuides;
-            const guide = document.getElementById('margin-guide');
-            const btn = document.getElementById('btn-guides');
-            if (userStyle.showGuides) {
-              guide.classList.add('visible');
-              btn.classList.add('active');
-              btn.textContent = 'Hide Guides';
-            } else {
-              guide.classList.remove('visible');
-              btn.classList.remove('active');
-              btn.textContent = 'Show Guides';
+          function toggleGuides(type) {
+            if (type === 'margins') {
+              userStyle.showGuides = document.getElementById('chk-margins').checked;
+              document.getElementById('margin-guide').classList.toggle('visible', userStyle.showGuides);
+            } else if (type === 'printborder') {
+              userStyle.showPrintBorder = document.getElementById('chk-printborder').checked;
+              document.getElementById('print-border').classList.toggle('visible', userStyle.showPrintBorder)
+
+          function toggleGuides(type) {
+            if (type === 'margins') {
+              userStyle.showGuides = document.getElementById('chk-margins').checked;
+              document.getElementById('margin-guide').classList.toggle('visible', userStyle.showGuides);
+            } else if (type === 'printborder') {
+              userStyle.showPrintBorder = document.getElementById('chk-printborder').checked;
+              document.getElementById('print-border').classList.toggle('visible', userStyle.showPrintBorder);
             }
             cv.style = JSON.parse(JSON.stringify(userStyle));
           }
