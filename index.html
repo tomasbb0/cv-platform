@@ -5912,20 +5912,12 @@
           // "+ New CV" card always first
           var newCard = document.createElement("div");
           newCard.className = "cv-card new-cv-card";
-          newCard.style.cssText =
-            "display:flex;flex-direction:column;align-items:center;gap:8px;cursor:default";
-          var newBtnHTML =
-            '<div onclick="hideDashboard();showNewCVModal()" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;width:100%">' +
-            '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>' +
-            '<span style="font-size:12px;font-weight:600">Create New CV</span></div>';
-          if (activeProfile) {
-            newBtnHTML +=
-              '<div style="border-top:1px solid var(--border);width:100%;padding-top:8px;margin-top:2px">' +
-              '<button onclick="event.stopPropagation();hideDashboard();replicateActiveCV()" style="background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--muted);font-size:10px;padding:4px 10px;cursor:pointer;font-family:inherit;width:100%;display:flex;align-items:center;justify-content:center;gap:4px">' +
-              '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>' +
-              "Duplicate Active</button></div>";
-          }
-          newCard.innerHTML = newBtnHTML;
+          newCard.innerHTML =
+            '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span style="font-size:12px;font-weight:600">Create New CV</span>';
+          newCard.onclick = function () {
+            hideDashboard();
+            showNewCVModal();
+          };
           grid.appendChild(newCard);
 
           filtered.forEach(function (name) {
