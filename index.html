@@ -2103,9 +2103,10 @@
             <div class="config-body">
               <label>AI Provider</label>
               <select id="ai-provider" onchange="onProviderChange()">
-                <option value="groq" selected>
-                  Groq — Free Cloud (Llama 3.3 70B)
+                <option value="ollama" selected>
+                  🏠 Local / Ollama — Free, No API Key
                 </option>
+                <option value="groq">Groq — Free Cloud (Llama 3.3 70B)</option>
                 <option value="cerebras">
                   Cerebras — Free Cloud (ultra-fast)
                 </option>
@@ -2118,9 +2119,6 @@
                 <option value="openai">OpenAI — Paid (GPT-4o)</option>
                 <option value="claude">
                   Anthropic Claude — Paid (Sonnet/Opus)
-                </option>
-                <option value="ollama">
-                  🏠 Local / Ollama — Offline, No API Key
                 </option>
               </select>
               <a
@@ -5431,7 +5429,7 @@
         // AI CHAT ASSISTANT
         // ═══════════════════════════════════════════════════════
         var aiConnected = false;
-        var aiProvider = "groq";
+        var aiProvider = "ollama";
         var agentMode = true; // show inline suggestions on editor
         var aiApiKey = "";
         var chatHistory = []; // {role, content}
@@ -5442,7 +5440,7 @@
         var ollamaModel = ""; // selected Ollama model
 
         // Dual-model system: CHAT model (fast) for conversation, EDIT model (best) for CV changes
-        const AI_CHAT_MODELS = {
+        var AI_CHAT_MODELS = {
           openai: "gpt-4o-mini",
           gemini: "gemini-2.5-flash",
           claude: "claude-sonnet-4-20250514",
@@ -5452,7 +5450,7 @@
           ollama: "auto", // resolved at runtime from ollamaModel
         };
 
-        const AI_EDIT_MODELS = {
+        var AI_EDIT_MODELS = {
           openai: "gpt-4o",
           gemini: "gemini-2.5-pro",
           claude: "claude-opus-4-20250514",
@@ -5463,7 +5461,7 @@
         };
 
         // 🧠 Premium Thinking: reasoning/extended thinking models
-        const AI_THINKING_MODELS = {
+        var AI_THINKING_MODELS = {
           openai: "o3",
           gemini: "gemini-2.5-pro", // same model, but with thinkingConfig
           claude: "claude-opus-4-20250514", // same model, but with extended thinking
@@ -5473,7 +5471,7 @@
           ollama: "auto",
         };
 
-        const AI_MODEL_LABELS = {
+        var AI_MODEL_LABELS = {
           openai: {
             chat: "GPT-4o Mini",
             edit: "GPT-4o",
@@ -5511,7 +5509,7 @@
           },
         };
 
-        const AI_ENDPOINTS = {
+        var AI_ENDPOINTS = {
           openai: "https://api.openai.com/v1/chat/completions",
           gemini: null, // special handling
           claude: "https://api.anthropic.com/v1/messages",
@@ -5523,7 +5521,7 @@
 
         // ═══ OLLAMA MODEL DETECTION ═══
         // Ranked preference for Ollama models (best first)
-        const OLLAMA_MODEL_RANK = [
+        var OLLAMA_MODEL_RANK = [
           "qwen2.5:72b",
           "llama3.3:70b",
           "deepseek-r1:70b",
@@ -5629,7 +5627,7 @@
           b.style.display = p.classList.contains("collapsed") ? "" : "none";
         }
 
-        const AI_KEY_URLS = {
+        var AI_KEY_URLS = {
           groq: "https://console.groq.com",
           cerebras: "https://cloud.cerebras.ai",
           openrouter: "https://openrouter.ai/keys",
@@ -5654,7 +5652,7 @@
             : "";
           // Update "Get free key" link
           const keyLink = document.getElementById("get-key-link");
-          if (AI_KEY_URLS[aiProvider]) {
+          if (AI_KEY_URLS && AI_KEY_URLS[aiProvider]) {
             keyLink.href = AI_KEY_URLS[aiProvider];
             keyLink.style.display = "";
             const isFree = [
@@ -5677,7 +5675,7 @@
           ).checked;
           const label = document.getElementById("thinking-label");
           if (premiumThinking) {
-            const modelName = AI_MODEL_LABELS[aiProvider].thinking;
+            const modelName = AI_MODEL_LABELS && AI_MODEL_LABELS[aiProvider] ? AI_MODEL_LABELS[aiProvider].thinking : "thinking model";
             label.textContent = "ON — " + modelName;
             label.style.color = "#f59e0b";
           } else {
