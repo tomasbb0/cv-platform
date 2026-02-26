@@ -1795,14 +1795,14 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 12px 32px;
+        padding: 0 20px;
+        height: 48px;
         border-bottom: 1px solid var(--border);
         background: #0a0a0a;
         position: sticky;
         top: 0;
         z-index: 510;
         flex-shrink: 0;
-        min-height: 48px;
         box-sizing: border-box;
       }
       .dashboard-header .logo {
@@ -3041,6 +3041,7 @@
               onclick="showJobContextModal()"
               title="Set target job for AI tailoring"
               id="toolbar-job-context-btn"
+              style="max-width: 200px; overflow: hidden; white-space: nowrap"
             >
               <svg
                 width="12"
@@ -3056,7 +3057,15 @@
                 <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
                 <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
               </svg>
-              <span id="job-context-label">Job Context</span>
+              <span
+                id="job-context-label"
+                style="
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                  white-space: nowrap;
+                "
+                >Job Context</span
+              >
             </button>
             <button
               class="btn btn-secondary btn-sm"
@@ -5785,16 +5794,25 @@
 
         function updateJobContextLabel() {
           var label = document.getElementById("job-context-label");
+          var btn = document.getElementById("toolbar-job-context-btn");
           if (!label) return;
           if (jobContext.title || jobContext.company) {
             var txt = jobContext.title || "";
             if (jobContext.company)
               txt += (txt ? " @ " : "") + jobContext.company;
+            // Truncate to keep the button compact
+            if (txt.length > 24) txt = txt.substring(0, 22) + "…";
             label.textContent = txt;
             label.style.color = "#22c55e";
+            // Show full text on hover
+            if (btn)
+              btn.title =
+                (jobContext.title || "") +
+                (jobContext.company ? " @ " + jobContext.company : "");
           } else {
             label.textContent = "Job Context";
             label.style.color = "";
+            if (btn) btn.title = "Set target job for AI tailoring";
           }
         }
 
@@ -5871,12 +5889,20 @@
           // "+ New CV" card always first
           var newCard = document.createElement("div");
           newCard.className = "cv-card new-cv-card";
-          newCard.innerHTML =
-            '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span style="font-size:12px;font-weight:600">Create New CV</span>';
-          newCard.onclick = function () {
-            hideDashboard();
-            showNewCVModal();
-          };
+          newCard.style.cssText =
+            "display:flex;flex-direction:column;align-items:center;gap:8px;cursor:default";
+          var newBtnHTML =
+            '<div onclick="hideDashboard();showNewCVModal()" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;width:100%">' +
+            '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>' +
+            '<span style="font-size:12px;font-weight:600">Create New CV</span></div>';
+          if (activeProfile) {
+            newBtnHTML +=
+              '<div style="border-top:1px solid var(--border);width:100%;padding-top:8px;margin-top:2px">' +
+              '<button onclick="event.stopPropagation();hideDashboard();replicateActiveCV()" style="background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--muted);font-size:10px;padding:4px 10px;cursor:pointer;font-family:inherit;width:100%;display:flex;align-items:center;justify-content:center;gap:4px">' +
+              '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>' +
+              "Duplicate Active</button></div>";
+          }
+          newCard.innerHTML = newBtnHTML;
           grid.appendChild(newCard);
 
           filtered.forEach(function (name) {
@@ -6835,7 +6861,10 @@
           const msgs = document.getElementById("chat-messages");
           msgs.innerHTML = "";
           var greeting = hasJobContext()
-            ? "Ready to optimize for " + (jobContext.title || "your target role") + (jobContext.company ? " at " + jobContext.company : "") + ". What would you like to improve?"
+            ? "Ready to optimize for " +
+              (jobContext.title || "your target role") +
+              (jobContext.company ? " at " + jobContext.company : "") +
+              ". What would you like to improve?"
             : "What role are you targeting? This helps me tailor every suggestion.";
           appendChatMsg("assistant", greeting);
         }
@@ -7067,18 +7096,20 @@ CRITICAL RULES:
 ═══════════════════════════════════════
 ⚡ CONTEXT-FIRST APPROACH (MANDATORY)
 ═══════════════════════════════════════
-` + (hasJobContext() ?
-`TARGET JOB CONTEXT IS ALREADY SET (see "TARGET JOB CONTEXT" section in the CV data below).
+` +
+            (hasJobContext()
+              ? `TARGET JOB CONTEXT IS ALREADY SET (see "TARGET JOB CONTEXT" section in the CV data below).
 Do NOT ask the user what role they are targeting — you ALREADY HAVE THIS INFORMATION.
 Use this context to tailor every suggestion. Reference the target role/company naturally.
-When greeting the user, say something like: "Ready to optimize for [role] at [company]. What would you like to improve?"` :
-`There is NO target job context set yet.
+When greeting the user, say something like: "Ready to optimize for [role] at [company]. What would you like to improve?"`
+              : `There is NO target job context set yet.
 Your FIRST response to any CV-related request MUST ask:
 - "What role are you targeting?" (job title)
 - "Which company?" (optional but helpful)
 Only AFTER getting this context should you start making suggestions.
 If the user says "improve my CV" without context, ask for the target role first.
-If the user just says "hi", respond briefly and ask what role they're targeting.`) + `
+If the user just says "hi", respond briefly and ask what role they're targeting.`) +
+            `
 
 ` +
             (agentMode
