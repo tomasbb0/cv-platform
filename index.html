@@ -2388,6 +2388,110 @@
                   >ON — auto-applies edits</span
                 >
               </div>
+              <!-- Advanced Model Settings -->
+              <details style="margin-top: 8px">
+                <summary
+                  style="
+                    font-size: 10px;
+                    color: var(--muted);
+                    cursor: pointer;
+                    user-select: none;
+                  "
+                >
+                  ⚙ Advanced Model Settings
+                </summary>
+                <div
+                  style="
+                    margin-top: 6px;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 6px;
+                  "
+                >
+                  <div style="display: flex; align-items: center; gap: 6px">
+                    <label
+                      style="
+                        font-size: 10px;
+                        color: var(--muted);
+                        min-width: 55px;
+                        margin: 0;
+                      "
+                      >Chat:</label
+                    >
+                    <select
+                      id="model-chat"
+                      style="
+                        flex: 1;
+                        font-size: 10px;
+                        padding: 3px 6px;
+                        background: var(--panel);
+                        color: var(--text);
+                        border: 1px solid var(--border);
+                        border-radius: 4px;
+                      "
+                      onchange="onCustomModelChange('chat', this.value)"
+                    ></select>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 6px">
+                    <label
+                      style="
+                        font-size: 10px;
+                        color: var(--muted);
+                        min-width: 55px;
+                        margin: 0;
+                      "
+                      >Edit:</label
+                    >
+                    <select
+                      id="model-edit"
+                      style="
+                        flex: 1;
+                        font-size: 10px;
+                        padding: 3px 6px;
+                        background: var(--panel);
+                        color: var(--text);
+                        border: 1px solid var(--border);
+                        border-radius: 4px;
+                      "
+                      onchange="onCustomModelChange('edit', this.value)"
+                    ></select>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 6px">
+                    <label
+                      style="
+                        font-size: 10px;
+                        color: var(--muted);
+                        min-width: 55px;
+                        margin: 0;
+                      "
+                      >Thinking:</label
+                    >
+                    <select
+                      id="model-thinking"
+                      style="
+                        flex: 1;
+                        font-size: 10px;
+                        padding: 3px 6px;
+                        background: var(--panel);
+                        color: var(--text);
+                        border: 1px solid var(--border);
+                        border-radius: 4px;
+                      "
+                      onchange="onCustomModelChange('thinking', this.value)"
+                    ></select>
+                  </div>
+                  <div
+                    style="
+                      font-size: 9px;
+                      color: var(--muted);
+                      font-style: italic;
+                    "
+                    id="model-note"
+                  >
+                    Connect to see available models
+                  </div>
+                </div>
+              </details>
             </div>
           </details>
           <div class="chat-messages" id="chat-messages">
@@ -3434,6 +3538,22 @@
             resizeTimer = setTimeout(autoZoom, 200);
           });
           // Initialize AI provider UI state (show/hide Ollama row etc.)
+          // Restore saved provider from localStorage
+          try {
+            var savedProvider = localStorage.getItem("cv-ai-provider");
+            if (savedProvider) {
+              var provSel = document.getElementById("ai-provider");
+              if (provSel) {
+                // Check if this provider exists in the select
+                var opts = Array.from(provSel.options).map(function (o) {
+                  return o.value;
+                });
+                if (opts.includes(savedProvider)) {
+                  provSel.value = savedProvider;
+                }
+              }
+            }
+          } catch (e) {}
           onProviderChange();
         }
 
@@ -5848,6 +5968,187 @@
           } else {
             keyLink.style.display = "none";
           }
+          // Restore saved API key for this provider
+          if (!isOllama) {
+            try {
+              var savedKeys = JSON.parse(
+                localStorage.getItem("cv-ai-keys") || "{}",
+              );
+              var keyInput = document.getElementById("ai-api-key");
+              if (keyInput && savedKeys[aiProvider]) {
+                keyInput.value = savedKeys[aiProvider];
+              } else if (keyInput) {
+                keyInput.value = "";
+              }
+            } catch (e) {}
+          }
+          // Update advanced model selectors
+          updateModelSelectors();
+        }
+
+        // Available models per provider (populated after connect or from defaults)
+        var availableModels = {};
+
+        function updateModelSelectors() {
+          var chatSel = document.getElementById("model-chat");
+          var editSel = document.getElementById("model-edit");
+          var thinkingSel = document.getElementById("model-thinking");
+          var note = document.getElementById("model-note");
+          if (!chatSel || !editSel || !thinkingSel) return;
+
+          // Build model options from available models or defaults
+          var models =
+            availableModels[aiProvider] || getDefaultModels(aiProvider);
+          var currentChat =
+            (AI_CHAT_MODELS && AI_CHAT_MODELS[aiProvider]) || "";
+          var currentEdit =
+            (AI_EDIT_MODELS && AI_EDIT_MODELS[aiProvider]) || "";
+          var currentThinking =
+            (AI_THINKING_MODELS && AI_THINKING_MODELS[aiProvider]) || "";
+
+          function fillSelect(sel, current) {
+            sel.innerHTML = "";
+            models.forEach(function (m) {
+              var opt = document.createElement("option");
+              opt.value = m;
+              opt.textContent = m;
+              if (m === current) opt.selected = true;
+              sel.appendChild(opt);
+            });
+            // If current model not in list, add it
+            if (current && !models.includes(current)) {
+              var opt = document.createElement("option");
+              opt.value = current;
+              opt.textContent = current + " (current)";
+              opt.selected = true;
+              sel.insertBefore(opt, sel.firstChild);
+            }
+          }
+
+          fillSelect(chatSel, currentChat);
+          fillSelect(editSel, currentEdit);
+          fillSelect(thinkingSel, currentThinking);
+
+          if (availableModels[aiProvider]) {
+            note.textContent = models.length + " models available";
+          } else {
+            note.textContent =
+              "Showing defaults — connect to fetch available models";
+          }
+        }
+
+        function getDefaultModels(provider) {
+          // Return the hardcoded models as options
+          var list = [];
+          if (AI_CHAT_MODELS && AI_CHAT_MODELS[provider])
+            list.push(AI_CHAT_MODELS[provider]);
+          if (
+            AI_EDIT_MODELS &&
+            AI_EDIT_MODELS[provider] &&
+            !list.includes(AI_EDIT_MODELS[provider])
+          )
+            list.push(AI_EDIT_MODELS[provider]);
+          if (
+            AI_THINKING_MODELS &&
+            AI_THINKING_MODELS[provider] &&
+            !list.includes(AI_THINKING_MODELS[provider])
+          )
+            list.push(AI_THINKING_MODELS[provider]);
+          return list;
+        }
+
+        function onCustomModelChange(role, model) {
+          if (!model) return;
+          if (role === "chat" && AI_CHAT_MODELS)
+            AI_CHAT_MODELS[aiProvider] = model;
+          if (role === "edit" && AI_EDIT_MODELS)
+            AI_EDIT_MODELS[aiProvider] = model;
+          if (role === "thinking" && AI_THINKING_MODELS)
+            AI_THINKING_MODELS[aiProvider] = model;
+          // Update labels
+          if (AI_MODEL_LABELS && AI_MODEL_LABELS[aiProvider]) {
+            var short = model.split("/").pop().split(":")[0];
+            AI_MODEL_LABELS[aiProvider][role] = short;
+          }
+          // Save custom model choices
+          try {
+            var saved = JSON.parse(
+              localStorage.getItem("cv-ai-models") || "{}",
+            );
+            if (!saved[aiProvider]) saved[aiProvider] = {};
+            saved[aiProvider][role] = model;
+            localStorage.setItem("cv-ai-models", JSON.stringify(saved));
+          } catch (e) {}
+        }
+
+        async function fetchAvailableModels(provider, key) {
+          try {
+            if (provider === "groq") {
+              var resp = await fetch("https://api.groq.com/openai/v1/models", {
+                headers: { Authorization: "Bearer " + key },
+                signal: AbortSignal.timeout(8000),
+              });
+              if (resp.ok) {
+                var data = await resp.json();
+                return data.data
+                  .map(function (m) {
+                    return m.id;
+                  })
+                  .sort();
+              }
+            } else if (provider === "openai") {
+              var resp = await fetch("https://api.openai.com/v1/models", {
+                headers: { Authorization: "Bearer " + key },
+                signal: AbortSignal.timeout(8000),
+              });
+              if (resp.ok) {
+                var data = await resp.json();
+                return data.data
+                  .filter(function (m) {
+                    return (
+                      m.id.includes("gpt") ||
+                      m.id.includes("o3") ||
+                      m.id.includes("o1") ||
+                      m.id.includes("o4")
+                    );
+                  })
+                  .map(function (m) {
+                    return m.id;
+                  })
+                  .sort();
+              }
+            } else if (provider === "cerebras") {
+              var resp = await fetch("https://api.cerebras.ai/v1/models", {
+                headers: { Authorization: "Bearer " + key },
+                signal: AbortSignal.timeout(8000),
+              });
+              if (resp.ok) {
+                var data = await resp.json();
+                return data.data
+                  .map(function (m) {
+                    return m.id;
+                  })
+                  .sort();
+              }
+            } else if (provider === "openrouter") {
+              var resp = await fetch("https://openrouter.ai/api/v1/models", {
+                signal: AbortSignal.timeout(8000),
+              });
+              if (resp.ok) {
+                var data = await resp.json();
+                return data.data
+                  .filter(function (m) {
+                    return m.id.includes("free") || m.pricing?.prompt === "0";
+                  })
+                  .map(function (m) {
+                    return m.id;
+                  })
+                  .sort()
+                  .slice(0, 50);
+              }
+            }
+          } catch (e) {}
+          return null;
         }
 
         function onThinkingToggle() {
@@ -6028,7 +6329,46 @@
           }
 
           aiConnected = true;
-          var labels = AI_MODEL_LABELS[aiProvider];
+          // Save API key per provider in localStorage
+          if (aiProvider !== "ollama" && aiApiKey) {
+            try {
+              var savedKeys = JSON.parse(
+                localStorage.getItem("cv-ai-keys") || "{}",
+              );
+              savedKeys[aiProvider] = aiApiKey;
+              localStorage.setItem("cv-ai-keys", JSON.stringify(savedKeys));
+              localStorage.setItem("cv-ai-provider", aiProvider);
+            } catch (e) {}
+          }
+          // Fetch available models in background
+          if (aiProvider !== "ollama") {
+            fetchAvailableModels(aiProvider, aiApiKey).then(function (models) {
+              if (models && models.length > 0) {
+                availableModels[aiProvider] = models;
+                updateModelSelectors();
+              }
+            });
+          }
+          // Restore any saved custom model choices
+          try {
+            var savedModels = JSON.parse(
+              localStorage.getItem("cv-ai-models") || "{}",
+            );
+            if (savedModels[aiProvider]) {
+              if (savedModels[aiProvider].chat && AI_CHAT_MODELS)
+                AI_CHAT_MODELS[aiProvider] = savedModels[aiProvider].chat;
+              if (savedModels[aiProvider].edit && AI_EDIT_MODELS)
+                AI_EDIT_MODELS[aiProvider] = savedModels[aiProvider].edit;
+              if (savedModels[aiProvider].thinking && AI_THINKING_MODELS)
+                AI_THINKING_MODELS[aiProvider] =
+                  savedModels[aiProvider].thinking;
+            }
+          } catch (e) {}
+          updateModelSelectors();
+          var labels =
+            AI_MODEL_LABELS && AI_MODEL_LABELS[aiProvider]
+              ? AI_MODEL_LABELS[aiProvider]
+              : { chat: "chat", edit: "edit", thinking: "thinking" };
           var statusText = "● Connected";
           if (aiProvider === "ollama") {
             statusText += " — 🏠 " + ollamaModel;
