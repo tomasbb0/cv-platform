@@ -7,6 +7,7 @@
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <style>
       :root {
         --bg: #0f0f0f;
@@ -3490,6 +3491,7 @@
           } else {
             alert("Saved! Use 'Save As' to save with a tag.");
           }
+          syncToCloud();
         }
 
         // ═══════════════════════════════════════════════════════
@@ -3503,8 +3505,9 @@
           }
         }
 
-        function setProfiles(profiles) {
+        function setProfiles(profiles, skipCloudSync) {
           localStorage.setItem(PROFILES_KEY, JSON.stringify(profiles));
+          if (!skipCloudSync) syncToCloud();
         }
 
         function loadProfileList() {
@@ -4724,28 +4727,38 @@ INTERACTION STYLE
         // FIREBASE AUTH
         // ═══════════════════════════════════════════════════════
         const FIREBASE_CONFIG = {
-          apiKey: "AIzaSyB_placeholder_replace_me",
+          apiKey: "AIzaSyCp-emrGDenZW_s4PSvVBC9QSfPGP8LOl4",
           authDomain: "topresume-ai.firebaseapp.com",
           projectId: "topresume-ai",
-          storageBucket: "topresume-ai.appspot.com",
-          messagingSenderId: "000000000000",
-          appId: "1:000000000000:web:placeholder",
+          storageBucket: "topresume-ai.firebasestorage.app",
+          messagingSenderId: "505461475975",
+          appId: "1:505461475975:web:effee4613a17593a848622",
         };
 
         let firebaseApp = null;
         let firebaseAuth = null;
+        let firebaseDb = null;
         let currentUser = null;
+        let cloudSyncEnabled = false;
+        let syncDebounceTimer = null;
 
         function initFirebase() {
           try {
             firebaseApp = firebase.initializeApp(FIREBASE_CONFIG);
             firebaseAuth = firebase.auth();
-            firebaseAuth.onAuthStateChanged(function (user) {
+            firebaseDb = firebase.firestore();
+            firebaseAuth.onAuthStateChanged(async function (user) {
               currentUser = user;
               updateAuthUI(user);
+              if (user) {
+                cloudSyncEnabled = true;
+                await loadFromCloud();
+              } else {
+                cloudSyncEnabled = false;
+              }
             });
           } catch (e) {
-            console.log("Firebase not configured yet:", e.message);
+            console.log("Firebase init error:", e.message);
           }
         }
 
@@ -4767,17 +4780,27 @@ INTERACTION STYLE
         async function signInWithGoogle() {
           try {
             if (!firebaseAuth) {
-              alert(
-                "Firebase not configured yet.\\n\\nTo enable login:\\n1. Create a Firebase project at console.firebase.google.com\\n2. Enable Google sign-in under Authentication\\n3. Update FIREBASE_CONFIG in the code",
-              );
-              return;
+              initFirebase();
+              if (!firebaseAuth) {
+                alert(
+                  "Firebase failed to initialize. Check console for errors.",
+                );
+                return;
+              }
             }
             const provider = new firebase.auth.GoogleAuthProvider();
             await firebaseAuth.signInWithPopup(provider);
           } catch (e) {
             if (e.code !== "auth/popup-closed-by-user") {
               console.error("Auth error:", e);
-              alert("Sign in failed: " + e.message);
+              if (e.code === "auth/unauthorized-domain") {
+                alert(
+                  "This domain is not authorized for sign-in.\\nGo to Firebase Console → Authentication → Settings → Authorized domains, and add: " +
+                    window.location.hostname,
+                );
+              } else {
+                alert("Sign in failed: " + e.message);
+              }
             }
           }
         }
@@ -4785,8 +4808,102 @@ INTERACTION STYLE
         async function signOutUser() {
           try {
             if (firebaseAuth) await firebaseAuth.signOut();
+            cloudSyncEnabled = false;
           } catch (e) {
             console.error("Sign out error:", e);
+          }
+        }
+
+        // ═══════════════════════════════════════════════════════
+        // CLOUD SYNC (FIRESTORE)
+        // ═══════════════════════════════════════════════════════
+        async function syncToCloud() {
+          if (!cloudSyncEnabled || !currentUser || !firebaseDb) return;
+          // Debounce: wait 2s after last change before syncing
+          clearTimeout(syncDebounceTimer);
+          syncDebounceTimer = setTimeout(async () => {
+            try {
+              const profiles = getProfiles();
+              const activeProfile = localStorage.getItem(ACTIVE_KEY) || "";
+              const currentCv = JSON.stringify(cv);
+              await firebaseDb.collection("users").doc(currentUser.uid).set(
+                {
+                  profiles: profiles,
+                  activeProfile: activeProfile,
+                  currentDraft: currentCv,
+                  lastSync: firebase.firestore.FieldValue.serverTimestamp(),
+                  email: currentUser.email,
+                  displayName: currentUser.displayName,
+                },
+                { merge: true },
+              );
+              console.log("Synced to cloud");
+            } catch (e) {
+              console.error("Cloud sync error:", e);
+            }
+          }, 2000);
+        }
+
+        async function loadFromCloud() {
+          if (!currentUser || !firebaseDb) return;
+          try {
+            const doc = await firebaseDb
+              .collection("users")
+              .doc(currentUser.uid)
+              .get();
+            if (!doc.exists) {
+              // First time user - push local data to cloud
+              await syncToCloud();
+              return;
+            }
+            const data = doc.data();
+            if (!data.profiles) return;
+
+            // Merge cloud profiles with local profiles
+            const localProfiles = getProfiles();
+            const cloudProfiles = data.profiles;
+            let merged = false;
+            Object.keys(cloudProfiles).forEach((name) => {
+              if (!localProfiles[name]) {
+                localProfiles[name] = cloudProfiles[name];
+                merged = true;
+              }
+            });
+            // Also push any local-only profiles to the merge
+            Object.keys(localProfiles).forEach((name) => {
+              if (!cloudProfiles[name]) {
+                merged = true;
+              }
+            });
+
+            if (merged || Object.keys(cloudProfiles).length > 0) {
+              // Use cloud as source of truth, but keep local-only profiles
+              const finalProfiles = Object.assign(
+                {},
+                cloudProfiles,
+                localProfiles,
+              );
+              setProfiles(finalProfiles, true); // true = skip cloud sync
+            }
+
+            // Restore active profile from cloud if none locally
+            if (data.activeProfile && !localStorage.getItem(ACTIVE_KEY)) {
+              localStorage.setItem(ACTIVE_KEY, data.activeProfile);
+            }
+
+            // Reload UI
+            loadProfileList();
+            const activeName = localStorage.getItem(ACTIVE_KEY);
+            if (activeName) {
+              loadProfile(activeName, true);
+            }
+            console.log(
+              "Loaded from cloud (" +
+                Object.keys(data.profiles).length +
+                " profiles)",
+            );
+          } catch (e) {
+            console.error("Cloud load error:", e);
           }
         }
 
@@ -4864,7 +4981,7 @@ INTERACTION STYLE
           document.getElementById("profile-select").value = name;
         }
 
-        let newCVMode = ""; // 'doc' or 'linkedin'
+        var newCVMode = ""; // 'doc' or 'linkedin'
 
         function newCVFromDoc() {
           newCVMode = "doc";
