@@ -1324,11 +1324,12 @@
         position: absolute;
         top: 0;
         left: 0;
-        right: 0;
-        bottom: 0;
+        width: 100%;
+        height: 100%;
         pointer-events: none;
         z-index: 5;
         display: none;
+        transform-origin: top left;
       }
       .margin-guide.visible {
         display: block;
@@ -3052,7 +3053,7 @@
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                style="vertical-align: -1px"
+                style="vertical-align: -1px; flex-shrink: 0"
               >
                 <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
                 <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
@@ -3857,6 +3858,25 @@
             }
           } catch (e) {}
           onProviderChange();
+          // Auto-connect if a saved API key exists for the current provider
+          (async function () {
+            try {
+              var prov = document.getElementById("ai-provider").value;
+              if (prov === "ollama") {
+                // Ollama auto-connects via startOllamaAutoSetup if needed
+              } else {
+                var savedKeys = JSON.parse(
+                  localStorage.getItem("cv-ai-keys") || "{}",
+                );
+                if (savedKeys[prov]) {
+                  document.getElementById("ai-api-key").value = savedKeys[prov];
+                  await connectAI();
+                }
+              }
+            } catch (e) {
+              console.warn("Auto-connect failed:", e);
+            }
+          })();
           // Restore job context label
           updateJobContextLabel();
           // Initialize undo system with loaded CV state
@@ -4724,6 +4744,9 @@
           if (sliderEl) sliderEl.value = zoomLevel;
           document.getElementById("paper").style.transform =
             `scale(${zoomLevel / 100})`;
+          // Sync margin guide to same zoom transform
+          var mg = document.getElementById("margin-guide");
+          if (mg) mg.style.transform = `scale(${zoomLevel / 100})`;
         }
 
         function autoZoom() {
