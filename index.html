@@ -593,8 +593,15 @@
         background: #dc2626;
       }
       .btn-sm {
-        padding: 4px 8px;
+        padding: 4px 10px;
         font-size: 10px;
+        min-height: 28px;
+        box-sizing: border-box;
+        border: 1px solid transparent;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        line-height: 1;
       }
 
       /* ═══ STATUS BAR ═══ */
@@ -1463,19 +1470,22 @@
       }
 
       /* ═══ DANGER BUTTON ═══ */
-      .btn-danger {
+      .btn-danger.btn-sm {
         background: transparent;
         color: #ef4444;
         border: 1px solid #ef444430;
       }
-      .btn-danger:hover {
+      .btn-danger.btn-sm:hover {
         background: #ef444420;
         border-color: #ef4444;
       }
 
       /* ═══ ICON BUTTON ═══ */
       .btn-icon {
-        padding: 5px 8px;
+        padding: 4px;
+        min-width: 28px;
+        min-height: 28px;
+        justify-content: center;
       }
       .btn-icon:disabled {
         opacity: 0.3;
@@ -1493,13 +1503,15 @@
         background: #333;
         color: #e0e0e0;
         border: 1px solid #444;
-        border-radius: 4px;
-        padding: 5px 10px;
+        border-radius: 6px;
+        padding: 4px 10px;
         font-size: 11px;
         font-weight: 600;
         font-family: inherit;
         max-width: 220px;
         min-width: 100px;
+        min-height: 28px;
+        box-sizing: border-box;
         cursor: pointer;
         transition: border-color 0.15s;
       }
@@ -4245,7 +4257,8 @@
           list.innerHTML = "";
           // Add "Unsaved Draft" option
           var draftItem = document.createElement("button");
-          draftItem.className = "profile-dropdown-item" + (!activeProfile ? " active" : "");
+          draftItem.className =
+            "profile-dropdown-item" + (!activeProfile ? " active" : "");
           draftItem.textContent = "— Unsaved Draft —";
           draftItem.onclick = function () {
             hideProfileDropdown();
@@ -4255,10 +4268,17 @@
           // Add all profiles
           names.forEach(function (name) {
             var item = document.createElement("button");
-            item.className = "profile-dropdown-item" + (name === activeProfile ? " active" : "");
+            item.className =
+              "profile-dropdown-item" +
+              (name === activeProfile ? " active" : "");
             var tags = getProfileTags(name);
-            item.innerHTML = '<span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + name + '</span>' +
-              (tags.length ? '<span class="tags-hint">' + tags.join(", ") + '</span>' : '');
+            item.innerHTML =
+              '<span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' +
+              name +
+              "</span>" +
+              (tags.length
+                ? '<span class="tags-hint">' + tags.join(", ") + "</span>"
+                : "");
             item.onclick = function () {
               hideProfileDropdown();
               onProfileSelectChange(name);
