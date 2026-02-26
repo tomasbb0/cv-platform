@@ -5809,7 +5809,7 @@
         }
 
         var AI_KEY_URLS = {
-          groq: "https://console.groq.com",
+          groq: "https://console.groq.com/keys",
           cerebras: "https://cloud.cerebras.ai",
           openrouter: "https://openrouter.ai/keys",
           gemini: "https://aistudio.google.com/apikey",
@@ -5874,6 +5874,93 @@
           el.textContent = text;
         }
 
+        async function validateApiKey(provider, key) {
+          // Make a minimal API call to verify the key works
+          try {
+            if (
+              provider === "openai" ||
+              provider === "groq" ||
+              provider === "openrouter" ||
+              provider === "cerebras"
+            ) {
+              var endpoint = AI_ENDPOINTS[provider];
+              var resp = await fetch(endpoint, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: "Bearer " + key,
+                },
+                body: JSON.stringify({
+                  model: AI_CHAT_MODELS[provider],
+                  messages: [{ role: "user", content: "Hi" }],
+                  max_tokens: 1,
+                }),
+                signal: AbortSignal.timeout(10000),
+              });
+              if (resp.status === 401 || resp.status === 403) return false;
+              if (resp.ok) return true;
+              // Some providers return 400 for bad model but key is still valid
+              var body = await resp.text();
+              if (
+                body.includes("invalid") &&
+                (body.includes("key") ||
+                  body.includes("api_key") ||
+                  body.includes("token"))
+              )
+                return false;
+              return true; // if it's a 400 for other reasons, key is likely valid
+            } else if (provider === "claude") {
+              var resp = await fetch("https://api.anthropic.com/v1/messages", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  "x-api-key": key,
+                  "anthropic-version": "2023-06-01",
+                  "anthropic-dangerous-direct-browser-access": "true",
+                },
+                body: JSON.stringify({
+                  model: AI_CHAT_MODELS[provider],
+                  max_tokens: 1,
+                  messages: [{ role: "user", content: "Hi" }],
+                }),
+                signal: AbortSignal.timeout(10000),
+              });
+              if (resp.status === 401 || resp.status === 403) return false;
+              return true;
+            } else if (provider === "gemini") {
+              var model = AI_CHAT_MODELS[provider];
+              var url =
+                "https://generativelanguage.googleapis.com/v1beta/models/" +
+                model +
+                ":generateContent?key=" +
+                key;
+              var resp = await fetch(url, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  contents: [{ parts: [{ text: "Hi" }] }],
+                  generationConfig: { maxOutputTokens: 1 },
+                }),
+                signal: AbortSignal.timeout(10000),
+              });
+              if (resp.status === 400 || resp.status === 403) {
+                var body = await resp.text();
+                if (
+                  body.includes("API_KEY_INVALID") ||
+                  body.includes("PERMISSION_DENIED")
+                )
+                  return false;
+              }
+              return resp.ok;
+            }
+            return true;
+          } catch (e) {
+            if (e.name === "TimeoutError" || e.name === "AbortError")
+              throw new Error("Timed out — check your internet");
+            throw e;
+          }
+        }
+
         async function connectAI() {
           const keyInput = document.getElementById("ai-api-key");
           aiProvider = document.getElementById("ai-provider").value;
@@ -5916,6 +6003,26 @@
             aiApiKey = keyInput.value.trim();
             if (!aiApiKey) {
               updateAIStatus("error", "● Enter an API key");
+              return;
+            }
+            // Validate API key with a lightweight test call
+            updateAIStatus("disconnected", "● Validating key...");
+            try {
+              var valid = await validateApiKey(aiProvider, aiApiKey);
+              if (!valid) {
+                updateAIStatus(
+                  "error",
+                  "● Invalid API key — check and try again",
+                );
+                aiConnected = false;
+                return;
+              }
+            } catch (e) {
+              updateAIStatus(
+                "error",
+                "● Connection failed: " + (e.message || "unknown error"),
+              );
+              aiConnected = false;
               return;
             }
           }
@@ -6238,7 +6345,10 @@ AGENT MODE RULES:
           } else {
             modelType = "chat";
           }
-          const modelLabel = (AI_MODEL_LABELS && AI_MODEL_LABELS[aiProvider]) ? AI_MODEL_LABELS[aiProvider][modelType] : modelType;
+          const modelLabel =
+            AI_MODEL_LABELS && AI_MODEL_LABELS[aiProvider]
+              ? AI_MODEL_LABELS[aiProvider][modelType]
+              : modelType;
           const modeTag =
             modelType === "thinking"
               ? " 🧠 deep reasoning"
