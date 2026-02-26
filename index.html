@@ -2013,22 +2013,38 @@
             <div class="config-body">
               <label>AI Provider</label>
               <select id="ai-provider" onchange="onProviderChange()">
-                <option value="ollama" selected>
-                  🏠 Local / Ollama — Free, No API Key
-                </option>
-                <option value="groq">Groq — Free (Llama 3.3 70B)</option>
-                <option value="openrouter">
-                  OpenRouter — Free (Llama 3.3 / Gemini / Qwen)
+                <option value="groq" selected>
+                  Groq — Free Cloud (Llama 3.3 70B)
                 </option>
                 <option value="cerebras">
-                  Cerebras — Free (Llama 3.3 70B, ultra-fast)
+                  Cerebras — Free Cloud (ultra-fast)
+                </option>
+                <option value="openrouter">
+                  OpenRouter — Free Cloud (multi-model)
                 </option>
                 <option value="gemini">
-                  Google Gemini — Free tier (2.5 Flash)
+                  Google Gemini — Free tier (2.5 Flash/Pro)
                 </option>
-                <option value="openai">OpenAI (GPT-4o)</option>
-                <option value="claude">Anthropic Claude (Sonnet 4)</option>
+                <option value="openai">OpenAI — Paid (GPT-4o)</option>
+                <option value="claude">
+                  Anthropic Claude — Paid (Sonnet/Opus)
+                </option>
+                <option value="ollama">
+                  🏠 Local / Ollama — Offline, No API Key
+                </option>
               </select>
+              <a
+                id="get-key-link"
+                href="https://console.groq.com"
+                target="_blank"
+                style="
+                  font-size: 10px;
+                  color: var(--accent);
+                  margin-top: 3px;
+                  display: block;
+                "
+                >Get free API key →</a
+              >
               <div id="ollama-model-row" style="margin-top: 6px">
                 <div class="ollama-setup" id="ollama-setup">
                   <div class="ollama-step" id="ollama-step-1">
@@ -2160,6 +2176,54 @@
                   id="thinking-label"
                   style="font-size: 9px; color: var(--muted)"
                   >Off — faster responses</span
+                >
+              </div>
+              <div
+                style="
+                  margin-top: 4px;
+                  display: flex;
+                  align-items: center;
+                  gap: 8px;
+                "
+              >
+                <label
+                  style="
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 5px;
+                    cursor: pointer;
+                    font-size: 11px;
+                    color: var(--text);
+                    margin: 0;
+                  "
+                >
+                  <input
+                    type="checkbox"
+                    id="ai-agent-mode"
+                    onchange="agentMode = this.checked; document.getElementById('agent-label').textContent = this.checked ? 'ON — auto-applies edits' : 'Off — review before applying'; document.getElementById('agent-label').style.color = this.checked ? '#22c55e' : 'var(--muted)'"
+                    checked
+                    style="accent-color: #22c55e; cursor: pointer"
+                  />
+                  <svg
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    style="vertical-align: -1px; flex-shrink: 0"
+                  >
+                    <path d="M12 20h9" />
+                    <path
+                      d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"
+                    />
+                  </svg>
+                  Agent Mode
+                </label>
+                <span id="agent-label" style="font-size: 9px; color: #22c55e"
+                  >ON — auto-applies edits</span
                 >
               </div>
             </div>
@@ -5203,7 +5267,8 @@
         // AI CHAT ASSISTANT
         // ═══════════════════════════════════════════════════════
         var aiConnected = false;
-        var aiProvider = "ollama";
+        var aiProvider = "groq";
+        var agentMode = true; // auto-apply changes without asking
         var aiApiKey = "";
         var chatHistory = []; // {role, content}
         var chatAttachments = []; // {name, text}
@@ -5389,6 +5454,16 @@
           b.style.display = p.classList.contains("collapsed") ? "" : "none";
         }
 
+        const AI_KEY_URLS = {
+          groq: "https://console.groq.com",
+          cerebras: "https://cloud.cerebras.ai",
+          openrouter: "https://openrouter.ai/keys",
+          gemini: "https://aistudio.google.com/apikey",
+          openai: "https://platform.openai.com/api-keys",
+          claude: "https://console.anthropic.com",
+          ollama: null,
+        };
+
         function onProviderChange() {
           aiProvider = document.getElementById("ai-provider").value;
           aiConnected = false;
@@ -5402,6 +5477,23 @@
           document.getElementById("api-key-row").style.display = isOllama
             ? "none"
             : "";
+          // Update "Get free key" link
+          const keyLink = document.getElementById("get-key-link");
+          if (AI_KEY_URLS[aiProvider]) {
+            keyLink.href = AI_KEY_URLS[aiProvider];
+            keyLink.style.display = "";
+            const isFree = [
+              "groq",
+              "cerebras",
+              "openrouter",
+              "gemini",
+            ].includes(aiProvider);
+            keyLink.textContent = isFree
+              ? "Get free API key →"
+              : "Get API key →";
+          } else {
+            keyLink.style.display = "none";
+          }
         }
 
         function onThinkingToggle() {
@@ -5483,7 +5575,7 @@
           msgs.innerHTML = "";
           appendChatMsg(
             "assistant",
-            "Hi Tomás! 👋 I can see your active CV. What would you like to change? You can:\n\n• Paste a job description to tailor your CV\n• Ask me to improve specific bullets\n• Attach context documents\n• Request formatting changes\n\nWhat would you like to do?",
+            "Ready. Paste a job description to tailor your CV, or tell me what to change.",
           );
         }
 
@@ -5680,8 +5772,50 @@ INTERACTION STYLE
 - Be direct and confident. No hedging. No "you might consider..." — say "Change this to X because Y."
 - If a suggestion requires user input (e.g., confirming a metric), flag it clearly with [CONFIRM: ...]
 
+CRITICAL RULES:
+- NEVER repeat the same content more than once. If you find yourself listing the same section twice, STOP.
+- Keep responses under 800 words. Be surgical, not verbose.
+- NEVER dump raw JSON from the CV back at the user. Only show relevant snippets.
+- When greeting the user, be brief: 1-2 sentences max, then ask what they want to change.
+- If the user says "hi" or similar, respond in 1 sentence and ask for their goal.
+- ALWAYS output json:changes blocks when the user asks for any CV modification. This is an AI-powered editor — make the edits, don't just describe them.
+
 ` + buildCVContext()
           );
+        }
+
+        // ═══ LOOP DETECTION ═══
+        function detectAndTruncateLoop(text) {
+          // Detect repeated blocks (same 80+ char substring appearing 3+ times)
+          if (text.length < 500) return text;
+          // Check for repeated JSON skills blocks (common failure mode)
+          const chunks = text.split("\n\n");
+          const seen = {};
+          let cleanChunks = [];
+          let loopDetected = false;
+          for (const chunk of chunks) {
+            const key = chunk.trim().substring(0, 120);
+            if (key.length > 60) {
+              seen[key] = (seen[key] || 0) + 1;
+              if (seen[key] > 2) {
+                loopDetected = true;
+                continue; // skip repeated chunk
+              }
+            }
+            cleanChunks.push(chunk);
+          }
+          let result = cleanChunks.join("\n\n");
+          // Hard cap at 4000 chars for safety
+          if (result.length > 4000) {
+            result =
+              result.substring(0, 4000) + "\n\n[Response truncated — too long]";
+            loopDetected = true;
+          }
+          if (loopDetected) {
+            result +=
+              "\n\n⚠️ *Repetitive content was detected and removed. Try a more specific question, or switch to a better model.*";
+          }
+          return result;
         }
 
         // ═══ SEND MESSAGE ═══
@@ -5722,7 +5856,9 @@ INTERACTION STYLE
           );
 
           try {
-            const response = await callAI(chatHistory, modelType);
+            let response = await callAI(chatHistory, modelType);
+            // Loop detection — truncate garbage responses
+            response = detectAndTruncateLoop(response);
             thinkingDiv.remove();
 
             // Parse response for changes
@@ -5738,7 +5874,26 @@ INTERACTION STYLE
                 .trim();
               try {
                 pendingChanges = JSON.parse(changesMatch[1]);
-                changesHTML = renderDiffBlocks(pendingChanges);
+                // Agent mode: auto-apply changes immediately
+                if (agentMode && pendingChanges.length > 0) {
+                  let applied = 0;
+                  pendingChanges.forEach(function (c) {
+                    if (applyChange(c)) applied++;
+                  });
+                  renderEditor();
+                  renderPreview();
+                  autoFit();
+                  if (activeProfile) saveCurrentProfile(true);
+                  changesHTML =
+                    '<div style="margin-top:8px;padding:8px 10px;background:#22c55e15;border:1px solid #22c55e30;border-radius:6px;font-size:11px;color:#22c55e"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><polyline points="20 6 9 17 4 12"/></svg> Agent applied ' +
+                    applied +
+                    " of " +
+                    pendingChanges.length +
+                    " changes to your CV</div>";
+                  pendingChanges = [];
+                } else {
+                  changesHTML = renderDiffBlocks(pendingChanges);
+                }
               } catch (e) {
                 changesHTML =
                   '<div class="chat-msg system">⚠️ Could not parse changes</div>';
