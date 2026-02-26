@@ -3063,7 +3063,27 @@
               onclick="toggleStylePanel()"
               title="Typography & Layout settings"
             >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                style="vertical-align: -1px"
+              >
+                <line x1="4" y1="21" x2="4" y2="14" />
+                <line x1="4" y1="10" x2="4" y2="3" />
+                <line x1="12" y1="21" x2="12" y2="12" />
+                <line x1="12" y1="8" x2="12" y2="3" />
+                <line x1="20" y1="21" x2="20" y2="16" />
+                <line x1="20" y1="12" x2="20" y2="3" />
+                <line x1="1" y1="14" x2="7" y2="14" />
+                <line x1="9" y1="8" x2="15" y2="8" />
+                <line x1="17" y1="16" x2="23" y2="16" />
+              </svg>
               Layout
             </button>
             <div style="flex: 1"></div>
@@ -7219,7 +7239,11 @@ Example format:
             chatHistory.push({ role: "assistant", content: response });
           } catch (err) {
             thinkingDiv.remove();
-            appendChatMsg("system", "❌ Error: " + err.message);
+            var chatErr = err.message || 'Something went wrong';
+            // Additional friendliness for common patterns
+            if (chatErr.match(/Failed to fetch|NetworkError|net::/i)) chatErr = 'Network error — check your internet connection';
+            if (chatErr.match(/AbortError|abort/i)) chatErr = 'Request was cancelled';
+            appendChatMsg("system", "⚠️ " + chatErr);
           }
 
           aiStreaming = false;
@@ -7475,6 +7499,32 @@ Example format:
         }
 
         // ═══ AI API CALLS ═══
+        function friendlyAIError(status, rawText) {
+          // Try to extract message from JSON error body
+          var msg = '';
+          try {
+            var j = JSON.parse(rawText);
+            msg = (j.error && (j.error.message || j.error.type)) || j.message || '';
+          } catch(e) {
+            msg = rawText || '';
+          }
+          msg = msg.substring(0, 300);
+
+          // Translate common errors to plain English
+          if (status === 401 || status === 403) return 'Invalid API key — double-check you copied the full key from your provider dashboard';
+          if (msg.match(/not a chat model|not supported.*chat/i)) return 'Wrong model type — this model doesn\'t support chat. Try switching to a different model in Advanced Settings';
+          if (msg.match(/rate.?limit|too many requests|quota/i)) return 'Rate limit hit — wait a minute and try again, or upgrade your plan';
+          if (msg.match(/context.?length|too.?long|maximum.*tokens/i)) return 'Message too long — try shortening your CV or asking a simpler question';
+          if (msg.match(/model.*not found|does not exist|invalid.*model/i)) return 'Model not found — the selected model may have been removed. Try a different one in Advanced Settings';
+          if (msg.match(/billing|payment|insufficient.*funds|plan/i)) return 'Billing issue — check your account has credits/payment set up';
+          if (msg.match(/content.*policy|safety|blocked|filtered/i)) return 'Response blocked by content filter — try rephrasing your request';
+          if (status === 429) return 'Too many requests — wait a moment and try again';
+          if (status === 500 || status === 502 || status === 503) return 'Provider is having issues — try again in a few minutes';
+          if (status === 404) return 'Endpoint not found — the model or API URL may be incorrect. Try a different model';
+          // Fallback: show a short version
+          return 'API error (' + status + '): ' + (msg.length > 100 ? msg.substring(0, 100) + '…' : msg);
+        }
+
         async function callAI(history, modelType) {
           const systemPrompt = buildSystemPrompt();
           let models;
@@ -7552,7 +7602,7 @@ Example format:
           });
           if (!res.ok) {
             const err = await res.text();
-            throw new Error(res.status + ": " + err.substring(0, 200));
+            throw new Error(friendlyAIError(res.status, err));
           }
           const data = await res.json();
           return data.choices[0].message.content;
@@ -7583,7 +7633,7 @@ Example format:
           });
           if (!res.ok) {
             const err = await res.text();
-            throw new Error(res.status + ": " + err.substring(0, 200));
+            throw new Error(friendlyAIError(res.status, err));
           }
           const data = await res.json();
           // With extended thinking, find the text block (skip thinking blocks)
@@ -7636,7 +7686,7 @@ Example format:
           });
           if (!res.ok) {
             const err = await res.text();
-            throw new Error(res.status + ": " + err.substring(0, 200));
+            throw new Error(friendlyAIError(res.status, err));
           }
           const data = await res.json();
           // Gemini with thinking returns thought + response parts
