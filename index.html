@@ -4,6 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TopResume.ai — CV Editor Platform</title>
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0a0a'/%3E%3Crect x='0.5' y='0.5' width='31' height='31' rx='5.5' fill='none' stroke='%23222' stroke-width='1'/%3E%3Ctext x='8' y='22' font-family='system-ui,-apple-system,sans-serif' font-size='16' font-weight='800' fill='%233b82f6'%3Et%3C/text%3E%3Ctext x='18' y='22' font-family='system-ui,-apple-system,sans-serif' font-size='16' font-weight='800' fill='white'%3Er%3C/text%3E%3C/svg%3E"
+    />
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -540,19 +545,18 @@
 
       /* ═══ TOOLBAR ═══ */
       .toolbar {
-        padding: 12px 16px;
+        padding: 8px 16px;
         background: var(--panel);
         border-bottom: 1px solid var(--border);
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 8px;
         flex-shrink: 0;
       }
       .toolbar h1 {
         font-size: 14px;
         font-weight: 700;
         letter-spacing: 0.5px;
-        flex: 1;
       }
       .toolbar h1 span {
         color: var(--accent);
@@ -1416,46 +1420,411 @@
           position: static !important;
         }
       }
+
+      /* ═══ SIGN IN DROPDOWN ═══ */
+      .sign-in-wrapper {
+        position: relative;
+      }
+      .sign-in-dropdown {
+        display: none;
+        position: absolute;
+        top: 100%;
+        right: 0;
+        margin-top: 6px;
+        background: #1e1e1e;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 6px;
+        min-width: 220px;
+        z-index: 200;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      }
+      .sign-in-dropdown.open {
+        display: block;
+      }
+      .sign-in-option {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        padding: 10px 12px;
+        border: none;
+        border-radius: 6px;
+        background: transparent;
+        color: var(--text);
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        font-family: inherit;
+        transition: background 0.15s;
+      }
+      .sign-in-option:hover {
+        background: #2a2a2a;
+      }
+
+      /* ═══ DANGER BUTTON ═══ */
+      .btn-danger {
+        background: transparent;
+        color: #ef4444;
+        border: 1px solid #ef444430;
+      }
+      .btn-danger:hover {
+        background: #ef444420;
+        border-color: #ef4444;
+      }
+
+      /* ═══ ICON BUTTON ═══ */
+      .btn-icon {
+        padding: 5px 8px;
+      }
+      .btn-icon:disabled {
+        opacity: 0.3;
+        cursor: default;
+      }
+
+      /* ═══ DASHBOARD OVERLAY ═══ */
+      .dashboard-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: var(--bg);
+        z-index: 500;
+        overflow-y: auto;
+      }
+      .dashboard-overlay.open {
+        display: block;
+      }
+      .dashboard-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 32px;
+        border-bottom: 1px solid var(--border);
+        background: #0a0a0a;
+      }
+      .dashboard-header .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+      }
+      .dashboard-content {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 32px;
+      }
+      .dashboard-search {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 24px;
+      }
+      .dashboard-search input {
+        flex: 1;
+        padding: 10px 14px;
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        color: var(--text);
+        font-size: 14px;
+        font-family: inherit;
+        outline: none;
+      }
+      .dashboard-search input:focus {
+        border-color: var(--accent);
+      }
+      .dashboard-tags {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+      }
+      .tag-pill {
+        padding: 4px 12px;
+        border-radius: 20px;
+        background: #222;
+        border: 1px solid var(--border);
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .tag-pill:hover,
+      .tag-pill.active {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+      }
+      .cv-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 16px;
+      }
+      .cv-card {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 16px;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .cv-card:hover {
+        border-color: var(--accent);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      }
+      .cv-card-title {
+        font-size: 14px;
+        font-weight: 700;
+        margin-bottom: 6px;
+        color: var(--text);
+      }
+      .cv-card-subtitle {
+        font-size: 11px;
+        color: var(--muted);
+        margin-bottom: 10px;
+      }
+      .cv-card-tags {
+        display: flex;
+        gap: 4px;
+        flex-wrap: wrap;
+      }
+      .cv-card-tags .tag-pill {
+        font-size: 9px;
+        padding: 2px 8px;
+      }
+      .cv-card.new-cv-card {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 8px;
+        border-style: dashed;
+        color: var(--muted);
+        min-height: 100px;
+      }
+      .cv-card.new-cv-card:hover {
+        color: var(--accent);
+        border-color: var(--accent);
+      }
+
+      /* ═══ TAG EDITOR MODAL ══ */
+      .tag-editor-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 600;
+        display: none;
+        align-items: center;
+        justify-content: center;
+      }
+      .tag-editor-modal.open {
+        display: flex;
+      }
+      .tag-editor-box {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 24px;
+        min-width: 320px;
+        max-width: 400px;
+      }
+      .tag-editor-box h3 {
+        font-size: 14px;
+        margin-bottom: 12px;
+      }
+      .tag-editor-box input {
+        width: 100%;
+        padding: 8px 12px;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        color: var(--text);
+        font-size: 12px;
+        font-family: inherit;
+        margin-bottom: 10px;
+      }
+      .tag-editor-box .existing-tags {
+        display: flex;
+        gap: 4px;
+        flex-wrap: wrap;
+        margin-bottom: 12px;
+      }
+      .tag-editor-box .tag-removable {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 3px 8px;
+        background: var(--accent);
+        color: #fff;
+        border-radius: 12px;
+        font-size: 10px;
+        font-weight: 500;
+      }
+      .tag-editor-box .tag-removable .remove-tag {
+        cursor: pointer;
+        opacity: 0.7;
+        font-size: 12px;
+      }
+      .tag-editor-box .tag-removable .remove-tag:hover {
+        opacity: 1;
+      }
+
+      /* ═══ DELETE CONFIRM MODAL ═══ */
+      .confirm-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 600;
+        display: none;
+        align-items: center;
+        justify-content: center;
+      }
+      .confirm-modal.open {
+        display: flex;
+      }
+      .confirm-box {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 24px;
+        min-width: 320px;
+        text-align: center;
+      }
+      .confirm-box h3 {
+        font-size: 14px;
+        margin-bottom: 8px;
+      }
+      .confirm-box p {
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 16px;
+      }
+      .confirm-box .confirm-actions {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+      }
+
+      /* ═══ OLLAMA SETUP STEPPER ═══ */
+      .ollama-setup {
+        margin-top: 8px;
+      }
+      .ollama-step {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        margin-bottom: 6px;
+        font-size: 10px;
+        color: var(--muted);
+      }
+      .ollama-step .step-icon {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: #333;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 8px;
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
+      .ollama-step.done .step-icon {
+        background: #22c55e;
+        color: #fff;
+      }
+      .ollama-step.active .step-icon {
+        background: #f59e0b;
+        color: #fff;
+      }
+      .ollama-step.error .step-icon {
+        background: #ef4444;
+        color: #fff;
+      }
     </style>
   </head>
   <body>
     <!-- ═══ TOP NAV BAR ═══ -->
     <div class="app-wrapper">
       <nav class="top-nav">
-        <a class="logo" href="#">
+        <a
+          class="logo"
+          href="#"
+          onclick="
+            showDashboard();
+            return false;
+          "
+          title="Dashboard"
+        >
           <div class="logo-mark">
-            <span class="t">T</span><span class="r">R</span>
+            <span class="t">t</span><span class="r">r</span>
           </div>
           <div class="logo-text">
             top<span>resume</span><span class="domain">.ai</span>
           </div>
         </a>
         <div class="auth-section" id="auth-section">
-          <button
-            class="auth-btn primary"
-            id="auth-login-btn"
-            onclick="signInWithGoogle()"
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-              <path
-                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1z"
-                fill="#4285F4"
-              />
-              <path
-                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                fill="#34A853"
-              />
-              <path
-                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                fill="#FBBC05"
-              />
-              <path
-                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                fill="#EA4335"
-              />
-            </svg>
-            Sign in with Google
-          </button>
+          <div class="sign-in-wrapper" id="sign-in-wrapper">
+            <button
+              class="auth-btn primary"
+              id="auth-login-btn"
+              onclick="toggleSignInMenu()"
+            >
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                <polyline points="10 17 15 12 10 7" />
+                <line x1="15" y1="12" x2="3" y2="12" />
+              </svg>
+              Sign in
+            </button>
+            <div class="sign-in-dropdown" id="sign-in-dropdown">
+              <button class="sign-in-option" onclick="signInWithGoogle()">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1z"
+                    fill="#4285F4"
+                  />
+                  <path
+                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                    fill="#34A853"
+                  />
+                  <path
+                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                    fill="#FBBC05"
+                  />
+                  <path
+                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                    fill="#EA4335"
+                  />
+                </svg>
+                Continue with Google
+              </button>
+            </div>
+          </div>
           <div class="user-info" id="auth-user-info" style="display: none">
             <img class="user-avatar" id="auth-avatar" src="" alt="" />
             <span class="user-name" id="auth-name"></span>
@@ -1468,18 +1837,64 @@
         <!-- ═══ FAR LEFT: AI CHAT ═══ -->
         <div class="chat-panel" id="chat-panel">
           <div class="chat-header">
-            <h2>🤖 <span>AI</span> ASSISTANT</h2>
+            <h2>
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                style="vertical-align: -2px; margin-right: 4px"
+              >
+                <path
+                  d="M12 2a4 4 0 0 0-4 4v2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10a2 2 0 0 0-2-2h-2V6a4 4 0 0 0-4-4z"
+                />
+                <circle cx="9" cy="14" r="1" fill="currentColor" />
+                <circle cx="15" cy="14" r="1" fill="currentColor" /></svg
+              ><span>AI</span> Assistant
+            </h2>
             <button
               class="btn btn-sm btn-secondary"
               onclick="toggleChatPanel()"
               title="Hide chat"
             >
-              ✕
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
             </button>
           </div>
           <details class="chat-config" id="chat-config">
             <summary>
-              <span id="ai-status-compact">⚙ AI Config</span>
+              <span id="ai-status-compact"
+                ><svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  style="vertical-align: -1px; margin-right: 3px"
+                >
+                  <circle cx="12" cy="12" r="3" />
+                  <path
+                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
+                  />
+                </svg>
+                Setup</span
+              >
             </summary>
             <div class="config-body">
               <label>AI Provider</label>
@@ -1501,7 +1916,27 @@
                 <option value="claude">Anthropic Claude (Sonnet 4)</option>
               </select>
               <div id="ollama-model-row" style="margin-top: 6px">
-                <label style="font-size: 11px">Ollama Model</label>
+                <div class="ollama-setup" id="ollama-setup">
+                  <div class="ollama-step" id="ollama-step-1">
+                    <div class="step-icon">1</div>
+                    <div>Checking if Ollama is installed…</div>
+                  </div>
+                  <div class="ollama-step" id="ollama-step-2">
+                    <div class="step-icon">2</div>
+                    <div>Starting Ollama server…</div>
+                  </div>
+                  <div class="ollama-step" id="ollama-step-3">
+                    <div class="step-icon">3</div>
+                    <div>Detecting available models…</div>
+                  </div>
+                  <div class="ollama-step" id="ollama-step-4">
+                    <div class="step-icon">4</div>
+                    <div>Connecting…</div>
+                  </div>
+                </div>
+                <label style="font-size: 11px; margin-top: 8px; display: block"
+                  >Model</label
+                >
                 <div style="display: flex; gap: 4px; align-items: center">
                   <select
                     id="ollama-model-select"
@@ -1509,33 +1944,40 @@
                       flex: 1;
                       font-size: 11px;
                       padding: 4px 6px;
-                      background: var(--surface);
+                      background: var(--panel);
                       color: var(--text);
                       border: 1px solid var(--border);
                       border-radius: 4px;
                     "
                   >
-                    <option value="">Click "Detect Models" →</option>
+                    <option value="">No models detected</option>
                   </select>
-                  <button
-                    class="btn btn-sm"
-                    onclick="detectOllamaModels()"
-                    style="
-                      font-size: 10px;
-                      padding: 2px 8px;
-                      white-space: nowrap;
-                    "
-                  >
-                    🔍 Detect
-                  </button>
                 </div>
                 <div
                   id="ollama-status"
                   style="font-size: 9px; color: var(--muted); margin-top: 3px"
+                ></div>
+                <button
+                  class="btn btn-sm btn-primary"
+                  onclick="startOllamaAutoSetup()"
+                  id="ollama-start-btn"
+                  style="margin-top: 8px; width: 100%"
                 >
-                  Install Ollama: <code>brew install ollama</code> then
-                  <code>ollama pull qwen2.5:32b</code>
-                </div>
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    style="vertical-align: -1px"
+                  >
+                    <polygon points="5 3 19 12 5 21 5 3" />
+                  </svg>
+                  Start Local AI
+                </button>
               </div>
               <div id="api-key-row">
                 <label>API Key</label>
@@ -1544,15 +1986,20 @@
                   id="ai-api-key"
                   placeholder="Paste your API key..."
                 />
-              </div>
-              <div class="connect-row">
-                <button class="btn btn-sm btn-primary" onclick="connectAI()">
+                <button
+                  class="btn btn-sm btn-primary"
+                  onclick="connectAI()"
+                  style="margin-top: 6px; width: 100%"
+                >
                   Connect
                 </button>
-                <span class="connect-status disconnected" id="ai-status"
-                  >● Not connected</span
-                >
               </div>
+              <span
+                class="connect-status disconnected"
+                id="ai-status"
+                style="display: block; margin-top: 6px; font-size: 10px"
+                >● Not connected</span
+              >
               <div
                 style="
                   margin-top: 8px;
@@ -1578,7 +2025,22 @@
                     onchange="onThinkingToggle()"
                     style="accent-color: #f59e0b; cursor: pointer"
                   />
-                  🧠 Premium Thinking
+                  <svg
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    style="vertical-align: -1px; flex-shrink: 0"
+                  >
+                    <path
+                      d="M12 2a4 4 0 0 1 4 4v1h1a3 3 0 0 1 0 6h-1v1a4 4 0 0 1-8 0v-1H7a3 3 0 0 1 0-6h1V6a4 4 0 0 1 4-4z"
+                    />
+                  </svg>
+                  Premium Thinking
                 </label>
                 <span
                   id="thinking-label"
@@ -1601,7 +2063,20 @@
                 onclick="document.getElementById('chat-file-input').click()"
                 title="Attach document"
               >
-                📎
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"
+                  />
+                </svg>
               </button>
               <input
                 type="file"
@@ -1629,7 +2104,15 @@
                 onclick="sendMessage()"
                 disabled
               >
-                ▶
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  stroke="none"
+                >
+                  <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+                </svg>
               </button>
             </div>
           </div>
@@ -1673,90 +2156,168 @@
           id="toggle-chat-btn"
           onclick="toggleChatPanel()"
         >
-          💬 AI Chat
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            style="vertical-align: -2px"
+          >
+            <path
+              d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+            />
+          </svg>
+          AI Chat
         </button>
 
         <!-- ═══ CENTER: EDITOR ═══ -->
         <div class="editor-panel" id="editor-panel">
           <div class="toolbar">
-            <h1><span>CV</span> EDITOR</h1>
+            <button
+              class="btn btn-sm btn-icon"
+              onclick="showDashboard()"
+              title="Dashboard"
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                <polyline points="9 22 9 12 15 12 15 22" />
+              </svg>
+            </button>
             <select
               id="profile-select"
-              onchange="loadProfile(this.value)"
+              onchange="onProfileSelectChange(this.value)"
               style="
                 background: #333;
                 color: #e0e0e0;
                 border: 1px solid #444;
                 border-radius: 4px;
-                padding: 3px 6px;
-                font-size: 10px;
+                padding: 5px 8px;
+                font-size: 11px;
+                font-weight: 600;
                 font-family: inherit;
-                max-width: 130px;
+                max-width: 180px;
+                min-width: 100px;
               "
             ></select>
             <button
-              class="btn btn-sm"
-              onclick="showNewCVModal()"
-              title="Create new CV"
-              style="background: #22c55e; color: #fff; font-size: 11px"
-            >
-              + New CV
-            </button>
-            <button
               class="btn btn-primary btn-sm"
               onclick="saveCurrentProfile()"
-              title="Save current profile (⌘S)"
+              title="Save (⌘S)"
             >
-              💾
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                style="vertical-align: -1px"
+              >
+                <path
+                  d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"
+                />
+                <polyline points="17 21 17 13 7 13 7 21" />
+                <polyline points="7 3 7 8 15 8" />
+              </svg>
+              Save
             </button>
             <button
               class="btn btn-secondary btn-sm"
               onclick="saveAsProfile()"
-              title="Save as new tag"
+              title="Save as new version"
             >
               Save As…
             </button>
             <button
-              class="btn btn-secondary btn-sm"
-              onclick="deleteProfile()"
-              title="Delete selected profile"
+              class="btn btn-danger btn-sm"
+              id="delete-profile-btn"
+              onclick="confirmDeleteProfile()"
+              title="Delete this CV"
             >
-              🗑
+              Delete
             </button>
-            <span
-              id="profile-indicator"
-              style="
-                font-size: 10px;
-                color: #3b82f6;
-                font-weight: 600;
-                max-width: 120px;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-              "
-            ></span>
+            <span id="profile-indicator" style="display: none"></span>
+            <div style="flex: 1"></div>
+            <button
+              class="btn btn-secondary btn-sm btn-icon"
+              onclick="undoCV()"
+              title="Undo (⌘Z)"
+              id="undo-btn"
+              disabled
+            >
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="1 4 1 10 7 10" />
+                <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
+              </svg>
+            </button>
+            <button
+              class="btn btn-secondary btn-sm btn-icon"
+              onclick="redoCV()"
+              title="Redo (⌘⇧Z)"
+              id="redo-btn"
+              disabled
+            >
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="23 4 23 10 17 10" />
+                <path d="M20.49 15a9 9 0 1 1-2.13-9.36L23 10" />
+              </svg>
+            </button>
             <button class="btn btn-primary btn-sm" onclick="exportPDF()">
-              📄 PDF
-            </button>
-            <button
-              class="btn btn-secondary btn-sm"
-              onclick="exportProfiles()"
-              title="Export all profiles as JSON"
-            >
-              ⬇ Backup
-            </button>
-            <button
-              class="btn btn-secondary btn-sm"
-              onclick="importProfiles()"
-              title="Import profiles from JSON"
-            >
-              ⬆ Restore
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                style="vertical-align: -1px"
+              >
+                <path
+                  d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                />
+                <polyline points="14 2 14 8 20 8" />
+                <line x1="16" y1="13" x2="8" y2="13" />
+                <line x1="16" y1="17" x2="8" y2="17" />
+              </svg>
+              PDF
             </button>
             <button class="btn btn-secondary btn-sm" onclick="addSection()">
-              +
-            </button>
-            <button class="btn btn-secondary btn-sm" onclick="resetToDefault()">
-              Reset
+              + Section
             </button>
           </div>
           <div class="editor-content" id="editor"></div>
@@ -3470,6 +4031,8 @@
         }
 
         function schedulePreview() {
+          // Push undo snapshot before saving changes
+          if (typeof pushUndoSnapshot === "function") pushUndoSnapshot();
           clearTimeout(debounceTimer);
           debounceTimer = setTimeout(() => {
             renderPreview();
@@ -3897,10 +4460,476 @@
             e.preventDefault();
             saveCurrentProfile();
           }
+          if ((e.metaKey || e.ctrlKey) && e.key === "z" && !e.shiftKey) {
+            e.preventDefault();
+            undoCV();
+          }
+          if ((e.metaKey || e.ctrlKey) && e.key === "z" && e.shiftKey) {
+            e.preventDefault();
+            redoCV();
+          }
         });
+
+        // ═══════════════════════════════════════════════════════
+        // UNDO / REDO SYSTEM
+        // ═══════════════════════════════════════════════════════
+        var undoStack = [];
+        var redoStack = [];
+        var lastSnapshotJSON = "";
+
+        function pushUndoSnapshot() {
+          var snap = JSON.stringify(cv);
+          if (snap === lastSnapshotJSON) return; // no change
+          undoStack.push(lastSnapshotJSON);
+          if (undoStack.length > 50) undoStack.shift();
+          redoStack = [];
+          lastSnapshotJSON = snap;
+          updateUndoRedoButtons();
+        }
+
+        function undoCV() {
+          if (undoStack.length === 0) return;
+          redoStack.push(JSON.stringify(cv));
+          var prev = undoStack.pop();
+          cv = JSON.parse(prev);
+          lastSnapshotJSON = prev;
+          renderEditor();
+          renderPreview();
+          updateUndoRedoButtons();
+        }
+
+        function redoCV() {
+          if (redoStack.length === 0) return;
+          undoStack.push(JSON.stringify(cv));
+          var next = redoStack.pop();
+          cv = JSON.parse(next);
+          lastSnapshotJSON = next;
+          renderEditor();
+          renderPreview();
+          updateUndoRedoButtons();
+        }
+
+        function updateUndoRedoButtons() {
+          var ub = document.getElementById("undo-btn");
+          var rb = document.getElementById("redo-btn");
+          if (ub) ub.disabled = undoStack.length === 0;
+          if (rb) rb.disabled = redoStack.length === 0;
+        }
+
+        // Hook into editor changes to push snapshots
+        var _origAutoSave = typeof autoSave === "function" ? autoSave : null;
+        // We'll monkey-patch later after init
+
+        // ═══════════════════════════════════════════════════════
+        // SIGN IN DROPDOWN
+        // ═══════════════════════════════════════════════════════
+        function toggleSignInMenu() {
+          var dd = document.getElementById("sign-in-dropdown");
+          dd.classList.toggle("open");
+        }
+        // Close dropdown on outside click
+        document.addEventListener("click", function (e) {
+          var wrapper = document.getElementById("sign-in-wrapper");
+          var dd = document.getElementById("sign-in-dropdown");
+          if (wrapper && dd && !wrapper.contains(e.target)) {
+            dd.classList.remove("open");
+          }
+        });
+
+        // ═══════════════════════════════════════════════════════
+        // PROFILE SELECT WITH "+ New CV" OPTION
+        // ═══════════════════════════════════════════════════════
+        function onProfileSelectChange(val) {
+          if (val === "__new__") {
+            document.getElementById("profile-select").value =
+              activeProfile || "";
+            showNewCVModal();
+            return;
+          }
+          loadProfile(val);
+        }
+
+        // Override loadProfileList to add "+ New CV" as first option
+        var _origLoadProfileList = loadProfileList;
+        function loadProfileListWithNew() {
+          var sel = document.getElementById("profile-select");
+          var profiles = getProfiles();
+          var names = Object.keys(profiles).sort();
+          sel.innerHTML = "";
+          // Add "+ New CV" as first option
+          var newOpt = document.createElement("option");
+          newOpt.value = "__new__";
+          newOpt.textContent = "+ Create New CV";
+          newOpt.style.color = "#22c55e";
+          newOpt.style.fontWeight = "600";
+          sel.appendChild(newOpt);
+          // separator
+          var sep = document.createElement("option");
+          sep.disabled = true;
+          sep.textContent = "───────────";
+          sel.appendChild(sep);
+          // profiles
+          names.forEach(function (name) {
+            var opt = document.createElement("option");
+            opt.value = name;
+            opt.textContent = name;
+            var tags = getProfileTags(name);
+            if (tags.length > 0)
+              opt.textContent += "  [" + tags.join(", ") + "]";
+            if (name === activeProfile) opt.selected = true;
+            sel.appendChild(opt);
+          });
+          // If no active profile, leave on first real profile
+          if (activeProfile && names.includes(activeProfile)) {
+            sel.value = activeProfile;
+          } else if (names.length > 0) {
+            // don't auto-select __new__
+          }
+          updateProfileIndicator();
+        }
+        // Replace the original
+        loadProfileList = loadProfileListWithNew;
+
+        // ═══════════════════════════════════════════════════════
+        // DELETE CONFIRMATION (POPUP)
+        // ═══════════════════════════════════════════════════════
+        var pendingDeleteName = null;
+
+        function confirmDeleteProfile() {
+          var sel = document.getElementById("profile-select");
+          var name = sel.value;
+          if (!name || name === "__new__") {
+            showToast("Select a CV to delete.");
+            return;
+          }
+          pendingDeleteName = name;
+          document.getElementById("delete-confirm-msg").textContent =
+            'Are you sure you want to delete "' +
+            name +
+            '"? This cannot be undone.';
+          document.getElementById("delete-confirm-modal").classList.add("open");
+        }
+
+        function hideDeleteConfirm() {
+          document
+            .getElementById("delete-confirm-modal")
+            .classList.remove("open");
+          pendingDeleteName = null;
+        }
+
+        function executeDeleteProfile() {
+          if (!pendingDeleteName) return;
+          var profiles = getProfiles();
+          delete profiles[pendingDeleteName];
+          // Also delete tags
+          var allTags = getProfileTagsMap();
+          delete allTags[pendingDeleteName];
+          localStorage.setItem("cv-profile-tags", JSON.stringify(allTags));
+          setProfiles(profiles);
+          if (activeProfile === pendingDeleteName) {
+            activeProfile = null;
+            localStorage.removeItem(ACTIVE_KEY);
+          }
+          loadProfileList();
+          showToast("Deleted: " + pendingDeleteName);
+          hideDeleteConfirm();
+        }
+
+        // ═══════════════════════════════════════════════════════
+        // TAG SYSTEM
+        // ═══════════════════════════════════════════════════════
+        function getProfileTagsMap() {
+          try {
+            return JSON.parse(localStorage.getItem("cv-profile-tags") || "{}");
+          } catch (e) {
+            return {};
+          }
+        }
+
+        function getProfileTags(profileName) {
+          var map = getProfileTagsMap();
+          return map[profileName] || [];
+        }
+
+        function setProfileTags(profileName, tags) {
+          var map = getProfileTagsMap();
+          map[profileName] = tags;
+          localStorage.setItem("cv-profile-tags", JSON.stringify(map));
+          syncToCloud();
+        }
+
+        function getAllUniqueTags() {
+          var map = getProfileTagsMap();
+          var s = new Set();
+          Object.values(map).forEach(function (tags) {
+            tags.forEach(function (t) {
+              s.add(t);
+            });
+          });
+          return Array.from(s).sort();
+        }
+
+        // Tag editor modal
+        var tagEditorProfile = null;
+
+        function openTagEditor(profileName) {
+          tagEditorProfile = profileName;
+          document.getElementById("tag-editor-profile-name").textContent =
+            profileName;
+          renderTagEditor();
+          document.getElementById("tag-editor-modal").classList.add("open");
+          document.getElementById("tag-editor-input").focus();
+        }
+
+        function closeTagEditor() {
+          document.getElementById("tag-editor-modal").classList.remove("open");
+          tagEditorProfile = null;
+          // Refresh dashboard if open
+          if (
+            document
+              .getElementById("dashboard-overlay")
+              .classList.contains("open")
+          ) {
+            renderDashboard();
+          }
+          loadProfileList();
+        }
+
+        function renderTagEditor() {
+          var container = document.getElementById("tag-editor-tags");
+          var tags = getProfileTags(tagEditorProfile);
+          container.innerHTML = "";
+          tags.forEach(function (t) {
+            var span = document.createElement("span");
+            span.className = "tag-removable";
+            span.innerHTML =
+              t +
+              ' <span class="remove-tag" onclick="removeTagFromProfile(\'' +
+              t.replace(/'/g, "\\'") +
+              "')\">&times;</span>";
+            container.appendChild(span);
+          });
+          if (tags.length === 0) {
+            container.innerHTML =
+              '<span style="font-size:10px;color:var(--muted)">No tags yet</span>';
+          }
+        }
+
+        function addTagToProfile() {
+          var input = document.getElementById("tag-editor-input");
+          var tag = input.value.trim().toLowerCase();
+          if (!tag || !tagEditorProfile) return;
+          var tags = getProfileTags(tagEditorProfile);
+          if (!tags.includes(tag)) {
+            tags.push(tag);
+            setProfileTags(tagEditorProfile, tags);
+          }
+          input.value = "";
+          renderTagEditor();
+        }
+
+        function removeTagFromProfile(tag) {
+          if (!tagEditorProfile) return;
+          var tags = getProfileTags(tagEditorProfile).filter(function (t) {
+            return t !== tag;
+          });
+          setProfileTags(tagEditorProfile, tags);
+          renderTagEditor();
+        }
+
+        // ═══════════════════════════════════════════════════════
+        // DASHBOARD
+        // ═══════════════════════════════════════════════════════
+        var dashboardFilterTag = null;
+
+        function showDashboard() {
+          renderDashboard();
+          document.getElementById("dashboard-overlay").classList.add("open");
+        }
+
+        function hideDashboard() {
+          document.getElementById("dashboard-overlay").classList.remove("open");
+        }
+
+        function renderDashboard() {
+          var profiles = getProfiles();
+          var names = Object.keys(profiles).sort();
+          var query = (
+            document.getElementById("dashboard-search").value || ""
+          ).toLowerCase();
+          var allTags = getAllUniqueTags();
+
+          // Render tag filter pills
+          var tagsContainer = document.getElementById("dashboard-tags");
+          tagsContainer.innerHTML = "";
+          if (allTags.length > 0) {
+            var allPill = document.createElement("span");
+            allPill.className =
+              "tag-pill" + (dashboardFilterTag === null ? " active" : "");
+            allPill.textContent = "All";
+            allPill.onclick = function () {
+              dashboardFilterTag = null;
+              renderDashboard();
+            };
+            tagsContainer.appendChild(allPill);
+            allTags.forEach(function (t) {
+              var pill = document.createElement("span");
+              pill.className =
+                "tag-pill" + (dashboardFilterTag === t ? " active" : "");
+              pill.textContent = t;
+              pill.onclick = function () {
+                dashboardFilterTag = dashboardFilterTag === t ? null : t;
+                renderDashboard();
+              };
+              tagsContainer.appendChild(pill);
+            });
+          }
+
+          // Filter names
+          var filtered = names.filter(function (name) {
+            if (query && !name.toLowerCase().includes(query)) return false;
+            if (dashboardFilterTag) {
+              var tags = getProfileTags(name);
+              if (!tags.includes(dashboardFilterTag)) return false;
+            }
+            return true;
+          });
+
+          // Render grid
+          var grid = document.getElementById("cv-grid");
+          grid.innerHTML = "";
+
+          // "+ New CV" card always first
+          var newCard = document.createElement("div");
+          newCard.className = "cv-card new-cv-card";
+          newCard.innerHTML =
+            '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span style="font-size:12px;font-weight:600">Create New CV</span>';
+          newCard.onclick = function () {
+            hideDashboard();
+            showNewCVModal();
+          };
+          grid.appendChild(newCard);
+
+          filtered.forEach(function (name) {
+            var card = document.createElement("div");
+            card.className = "cv-card";
+            var data = profiles[name];
+            var subtitle = "";
+            if (data && data.contact) {
+              subtitle = data.contact.name || "";
+            }
+            var tags = getProfileTags(name);
+            var tagsHTML = tags
+              .map(function (t) {
+                return '<span class="tag-pill">' + t + "</span>";
+              })
+              .join("");
+
+            card.innerHTML =
+              '<div style="display:flex;justify-content:space-between;align-items:start">' +
+              '<div class="cv-card-title">' +
+              name +
+              "</div>" +
+              '<button class="btn btn-sm btn-icon" onclick="event.stopPropagation();openTagEditor(\'' +
+              name.replace(/'/g, "\\'") +
+              '\')" title="Edit tags" style="padding:2px 5px;font-size:9px;background:transparent;color:var(--muted)">' +
+              '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>' +
+              "</button></div>" +
+              (subtitle
+                ? '<div class="cv-card-subtitle">' + subtitle + "</div>"
+                : "") +
+              (tagsHTML
+                ? '<div class="cv-card-tags">' + tagsHTML + "</div>"
+                : "");
+            card.onclick = function () {
+              hideDashboard();
+              loadProfile(name);
+            };
+            grid.appendChild(card);
+          });
+        }
+
+        function filterDashboard() {
+          renderDashboard();
+        }
+
+        // ═══════════════════════════════════════════════════════
+        // OLLAMA AUTO-SETUP
+        // ═══════════════════════════════════════════════════════
+        async function startOllamaAutoSetup() {
+          var btn = document.getElementById("ollama-start-btn");
+          btn.disabled = true;
+          btn.textContent = "Setting up...";
+
+          // Step 1: Check if Ollama is reachable
+          markOllamaStep(1, "active");
+          var ollamaRunning = false;
+          try {
+            var resp = await fetch("http://localhost:11434/api/tags", {
+              signal: AbortSignal.timeout(3000),
+            });
+            if (resp.ok) ollamaRunning = true;
+          } catch (e) {}
+
+          if (!ollamaRunning) {
+            markOllamaStep(1, "error");
+            document.getElementById("ollama-status").innerHTML =
+              "Ollama is not running. Please install and start it:<br>" +
+              '<code style="font-size:10px">brew install ollama && ollama serve</code><br>' +
+              'Then click "Start Local AI" again.';
+            document.getElementById("ollama-status").style.color = "#ef4444";
+            btn.disabled = false;
+            btn.innerHTML =
+              '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.13-9.36L23 10"/></svg> Retry';
+            return;
+          }
+          markOllamaStep(1, "done");
+
+          // Step 2: Server is already running
+          markOllamaStep(2, "done");
+
+          // Step 3: Detect models
+          markOllamaStep(3, "active");
+          await detectOllamaModels();
+          if (!ollamaModel) {
+            markOllamaStep(3, "error");
+            document.getElementById("ollama-status").innerHTML =
+              "No models found. Install one:<br>" +
+              '<code style="font-size:10px">ollama pull qwen2.5:32b</code><br>' +
+              "Then click Retry.";
+            document.getElementById("ollama-status").style.color = "#f59e0b";
+            btn.disabled = false;
+            btn.innerHTML =
+              '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.13-9.36L23 10"/></svg> Retry';
+            return;
+          }
+          markOllamaStep(3, "done");
+
+          // Step 4: Connect
+          markOllamaStep(4, "active");
+          await connectAI();
+          markOllamaStep(4, "done");
+
+          btn.disabled = false;
+          btn.innerHTML =
+            '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><polyline points="20 6 9 17 4 12"/></svg> Connected!';
+          btn.style.background = "#22c55e";
+        }
+
+        function markOllamaStep(num, state) {
+          var step = document.getElementById("ollama-step-" + num);
+          if (!step) return;
+          step.className = "ollama-step " + state;
+          var icon = step.querySelector(".step-icon");
+          if (state === "done") icon.textContent = "✓";
+          else if (state === "error") icon.textContent = "✕";
+          else if (state === "active") icon.textContent = "…";
+        }
 
         // Start
         init();
+        // Initialize undo system with current state
+        lastSnapshotJSON = JSON.stringify(cv);
 
         // ═══════════════════════════════════════════════════════
         // AI CHAT ASSISTANT
@@ -4763,21 +5792,24 @@ INTERACTION STYLE
         }
 
         function updateAuthUI(user) {
-          const loginBtn = document.getElementById("auth-login-btn");
+          const wrapper = document.getElementById("sign-in-wrapper");
           const userInfo = document.getElementById("auth-user-info");
           if (user) {
-            loginBtn.style.display = "none";
+            if (wrapper) wrapper.style.display = "none";
             userInfo.style.display = "flex";
             document.getElementById("auth-avatar").src = user.photoURL || "";
             document.getElementById("auth-name").textContent =
               user.displayName || user.email || "User";
           } else {
-            loginBtn.style.display = "flex";
+            if (wrapper) wrapper.style.display = "";
             userInfo.style.display = "none";
           }
         }
 
         async function signInWithGoogle() {
+          // Close the dropdown
+          var dd = document.getElementById("sign-in-dropdown");
+          if (dd) dd.classList.remove("open");
           try {
             if (!firebaseAuth) {
               initFirebase();
@@ -4826,17 +5858,26 @@ INTERACTION STYLE
               const profiles = getProfiles();
               const activeProfile = localStorage.getItem(ACTIVE_KEY) || "";
               const currentCv = JSON.stringify(cv);
-              await firebaseDb.collection("users").doc(currentUser.uid).set(
-                {
-                  profiles: profiles,
-                  activeProfile: activeProfile,
-                  currentDraft: currentCv,
-                  lastSync: firebase.firestore.FieldValue.serverTimestamp(),
-                  email: currentUser.email,
-                  displayName: currentUser.displayName,
-                },
-                { merge: true },
-              );
+              await firebaseDb
+                .collection("users")
+                .doc(currentUser.uid)
+                .set(
+                  {
+                    profiles: profiles,
+                    activeProfile: activeProfile,
+                    currentDraft: currentCv,
+                    profileTags: JSON.parse(
+                      localStorage.getItem("cv-profile-tags") || "{}",
+                    ),
+                    aiProvider: aiProvider || "ollama",
+                    aiApiKey:
+                      aiApiKey && aiProvider !== "ollama" ? aiApiKey : "",
+                    lastSync: firebase.firestore.FieldValue.serverTimestamp(),
+                    email: currentUser.email,
+                    displayName: currentUser.displayName,
+                  },
+                  { merge: true },
+                );
               console.log("Synced to cloud");
             } catch (e) {
               console.error("Cloud sync error:", e);
@@ -4889,6 +5930,30 @@ INTERACTION STYLE
             // Restore active profile from cloud if none locally
             if (data.activeProfile && !localStorage.getItem(ACTIVE_KEY)) {
               localStorage.setItem(ACTIVE_KEY, data.activeProfile);
+            }
+
+            // Restore tags from cloud
+            if (data.profileTags) {
+              var localTags = JSON.parse(
+                localStorage.getItem("cv-profile-tags") || "{}",
+              );
+              var cloudTags = data.profileTags;
+              var mergedTags = Object.assign({}, cloudTags, localTags);
+              localStorage.setItem(
+                "cv-profile-tags",
+                JSON.stringify(mergedTags),
+              );
+            }
+
+            // Restore saved API key
+            if (data.aiApiKey && data.aiProvider) {
+              var provSel = document.getElementById("ai-provider");
+              var keyInput = document.getElementById("ai-api-key");
+              if (provSel && keyInput && !keyInput.value) {
+                provSel.value = data.aiProvider;
+                if (data.aiApiKey) keyInput.value = data.aiApiKey;
+                onProviderChange();
+              }
             }
 
             // Reload UI
@@ -5277,5 +6342,116 @@ Make bullet points achievement-focused with action verbs. Preserve all dates, co
       </div>
     </div>
     <!-- end app-wrapper -->
+
+    <!-- ═══ DASHBOARD OVERLAY ═══ -->
+    <div class="dashboard-overlay" id="dashboard-overlay">
+      <div class="dashboard-header">
+        <a
+          class="logo"
+          href="#"
+          onclick="
+            hideDashboard();
+            return false;
+          "
+        >
+          <div class="logo-mark">
+            <span class="t">t</span><span class="r">r</span>
+          </div>
+          <div class="logo-text">
+            top<span>resume</span><span class="domain">.ai</span>
+          </div>
+        </a>
+        <button class="btn btn-secondary btn-sm" onclick="hideDashboard()">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+          Close
+        </button>
+      </div>
+      <div class="dashboard-content">
+        <h2 style="font-size: 20px; font-weight: 700; margin-bottom: 6px">
+          Your CVs
+        </h2>
+        <p style="font-size: 12px; color: var(--muted); margin-bottom: 20px">
+          Select a CV to edit, or create a new one.
+        </p>
+        <div class="dashboard-search">
+          <input
+            type="text"
+            id="dashboard-search"
+            placeholder="Search CVs..."
+            oninput="filterDashboard()"
+          />
+        </div>
+        <div class="dashboard-tags" id="dashboard-tags"></div>
+        <div class="cv-grid" id="cv-grid"></div>
+      </div>
+    </div>
+
+    <!-- ═══ DELETE CONFIRM MODAL ═══ -->
+    <div class="confirm-modal" id="delete-confirm-modal">
+      <div class="confirm-box">
+        <h3>Delete CV</h3>
+        <p id="delete-confirm-msg">
+          Are you sure you want to delete this CV? This cannot be undone.
+        </p>
+        <div class="confirm-actions">
+          <button
+            class="btn btn-secondary btn-sm"
+            onclick="hideDeleteConfirm()"
+          >
+            Cancel
+          </button>
+          <button
+            class="btn btn-sm"
+            style="background: #ef4444; color: #fff"
+            onclick="executeDeleteProfile()"
+          >
+            Delete permanently
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ TAG EDITOR MODAL ═══ -->
+    <div class="tag-editor-modal" id="tag-editor-modal">
+      <div class="tag-editor-box">
+        <h3>Edit Tags — <span id="tag-editor-profile-name"></span></h3>
+        <div class="existing-tags" id="tag-editor-tags"></div>
+        <input
+          type="text"
+          id="tag-editor-input"
+          placeholder="Type a tag and press Enter..."
+          onkeydown="
+            if (event.key === 'Enter') {
+              addTagToProfile();
+              event.preventDefault();
+            }
+          "
+        />
+        <div
+          style="
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+            margin-top: 12px;
+          "
+        >
+          <button class="btn btn-secondary btn-sm" onclick="closeTagEditor()">
+            Done
+          </button>
+        </div>
+      </div>
+    </div>
   </body>
 </html>
