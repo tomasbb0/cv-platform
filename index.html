@@ -7045,19 +7045,24 @@ Your suggestions should be so good that a professional CV writer would be impres
 ═══════════════════════════════════════
 INTERACTION STYLE
 ═══════════════════════════════════════
-- Always show a brief strategic explanation BEFORE the changes block
+- Be CONCISE. Maximum 3-5 suggestions per response unless the user asks for a full review.
+- Always show a 1-2 sentence strategic explanation BEFORE the changes block. No lengthy analysis.
 - Group related changes together (e.g., "Summary Alignment" or "Bullet Impact Boost")
-- If the user pastes a job description, lead with a KEYWORD ANALYSIS table before suggesting changes
+- Do NOT output keyword analysis tables unless the user explicitly asks for one. Just use the keywords silently when crafting suggestions.
 - Be direct and confident. No hedging. No "you might consider..." — say "Change this to X because Y."
 - If a suggestion requires user input (e.g., confirming a metric), flag it clearly with [CONFIRM: ...]
 
 CRITICAL RULES:
 - NEVER repeat the same content more than once. If you find yourself listing the same section twice, STOP.
-- Keep responses under 800 words. Be surgical, not verbose.
+- Keep responses under 400 words total. Be surgical, not verbose.
 - NEVER dump raw JSON from the CV back at the user. Only show relevant snippets.
-- When greeting the user, be brief: 1-2 sentences max, then ask what they want to change.
-- If the user says "hi" or similar, respond in 1 sentence and ask for their goal.
+- When greeting the user, respond in 1 sentence max. If job context exists, say "Ready. Paste a job description or tell me what to change." If not, ask "What role are you targeting?"
+- If the user says "hi" or greets you, respond in 1 SHORT sentence and immediately ask their goal. Do NOT launch into analysis.
+- If the user says something casual/off-topic, respond briefly and redirect to CV work.
 - ALWAYS output json:changes blocks when the user asks for any CV modification. This is an AI-powered editor — make the edits, don't just describe them.
+- NEVER start working without the user asking you to. Wait for a clear request before suggesting changes.
+- If the user redirects you ("you already know", "it's in the context", etc.), acknowledge briefly in 1 sentence and ask what specific changes they want. Do NOT dump all possible improvements at once.
+- When asked to "improve" or "review" the CV, pick the TOP 3 highest-impact changes only. Offer to continue with more if the user wants.
 
 ═══════════════════════════════════════
 ⚡ CONTEXT-FIRST APPROACH (MANDATORY)
@@ -7082,17 +7087,12 @@ Each suggestion shows the current text with a strikethrough and your proposed te
 The user accepts or rejects each one individually.
 
 AGENT MODE RULES:
-1. REVIEW EACH LINE INDIVIDUALLY. Go through the CV field by field:
-   - Professional Summary (sections[0].content)
-   - Each job title and company
-   - EVERY bullet point in work experience
-   - Education details
-   - Skills
-2. For each field, propose a SMALL, SURGICAL tweak — not a rewrite. Improve 1-3 words, tighten phrasing, add a metric, or strengthen the verb.
+1. WAIT for the user to ask for changes before suggesting anything. A greeting or casual message is NOT a request.
+2. When asked to improve, review each field and propose SMALL, SURGICAL tweaks — not rewrites. Improve 1-3 words, tighten phrasing, add a metric, or strengthen the verb.
 3. The "before" field MUST be a PERFECT character-for-character copy of the current text. Copy it exactly from the CV JSON above.
-4. Keep the total number of suggestions to 5-12 per response. Focus on the HIGHEST IMPACT changes.
-5. If the user says "improve" or "review" without specifics, scan the whole CV and pick the 8-10 weakest lines to fix.
-6. Each "after" should be a clear improvement: stronger verb, tighter phrasing, added metric, or better ATS keywords.
+4. Keep suggestions to 3-5 per response. Focus on the HIGHEST IMPACT changes only.
+5. Each "after" should be a clear improvement: stronger verb, tighter phrasing, added metric, or better ATS keywords.
+6. Do NOT output keyword analysis tables. Silently use job description keywords when crafting your suggestions.
 
 🔑 EXPLAIN EACH CHANGE (MANDATORY):
 After the json:changes block, add a numbered explanation list. For EACH suggestion, write:
@@ -7239,10 +7239,12 @@ Example format:
             chatHistory.push({ role: "assistant", content: response });
           } catch (err) {
             thinkingDiv.remove();
-            var chatErr = err.message || 'Something went wrong';
+            var chatErr = err.message || "Something went wrong";
             // Additional friendliness for common patterns
-            if (chatErr.match(/Failed to fetch|NetworkError|net::/i)) chatErr = 'Network error — check your internet connection';
-            if (chatErr.match(/AbortError|abort/i)) chatErr = 'Request was cancelled';
+            if (chatErr.match(/Failed to fetch|NetworkError|net::/i))
+              chatErr = "Network error — check your internet connection";
+            if (chatErr.match(/AbortError|abort/i))
+              chatErr = "Request was cancelled";
             appendChatMsg("system", "⚠️ " + chatErr);
           }
 
@@ -7501,28 +7503,44 @@ Example format:
         // ═══ AI API CALLS ═══
         function friendlyAIError(status, rawText) {
           // Try to extract message from JSON error body
-          var msg = '';
+          var msg = "";
           try {
             var j = JSON.parse(rawText);
-            msg = (j.error && (j.error.message || j.error.type)) || j.message || '';
-          } catch(e) {
-            msg = rawText || '';
+            msg =
+              (j.error && (j.error.message || j.error.type)) || j.message || "";
+          } catch (e) {
+            msg = rawText || "";
           }
           msg = msg.substring(0, 300);
 
           // Translate common errors to plain English
-          if (status === 401 || status === 403) return 'Invalid API key — double-check you copied the full key from your provider dashboard';
-          if (msg.match(/not a chat model|not supported.*chat/i)) return 'Wrong model type — this model doesn\'t support chat. Try switching to a different model in Advanced Settings';
-          if (msg.match(/rate.?limit|too many requests|quota/i)) return 'Rate limit hit — wait a minute and try again, or upgrade your plan';
-          if (msg.match(/context.?length|too.?long|maximum.*tokens/i)) return 'Message too long — try shortening your CV or asking a simpler question';
-          if (msg.match(/model.*not found|does not exist|invalid.*model/i)) return 'Model not found — the selected model may have been removed. Try a different one in Advanced Settings';
-          if (msg.match(/billing|payment|insufficient.*funds|plan/i)) return 'Billing issue — check your account has credits/payment set up';
-          if (msg.match(/content.*policy|safety|blocked|filtered/i)) return 'Response blocked by content filter — try rephrasing your request';
-          if (status === 429) return 'Too many requests — wait a moment and try again';
-          if (status === 500 || status === 502 || status === 503) return 'Provider is having issues — try again in a few minutes';
-          if (status === 404) return 'Endpoint not found — the model or API URL may be incorrect. Try a different model';
+          if (status === 401 || status === 403)
+            return "Invalid API key — double-check you copied the full key from your provider dashboard";
+          if (msg.match(/not a chat model|not supported.*chat/i))
+            return "Wrong model type — this model doesn't support chat. Try switching to a different model in Advanced Settings";
+          if (msg.match(/rate.?limit|too many requests|quota/i))
+            return "Rate limit hit — wait a minute and try again, or upgrade your plan";
+          if (msg.match(/context.?length|too.?long|maximum.*tokens/i))
+            return "Message too long — try shortening your CV or asking a simpler question";
+          if (msg.match(/model.*not found|does not exist|invalid.*model/i))
+            return "Model not found — the selected model may have been removed. Try a different one in Advanced Settings";
+          if (msg.match(/billing|payment|insufficient.*funds|plan/i))
+            return "Billing issue — check your account has credits/payment set up";
+          if (msg.match(/content.*policy|safety|blocked|filtered/i))
+            return "Response blocked by content filter — try rephrasing your request";
+          if (status === 429)
+            return "Too many requests — wait a moment and try again";
+          if (status === 500 || status === 502 || status === 503)
+            return "Provider is having issues — try again in a few minutes";
+          if (status === 404)
+            return "Endpoint not found — the model or API URL may be incorrect. Try a different model";
           // Fallback: show a short version
-          return 'API error (' + status + '): ' + (msg.length > 100 ? msg.substring(0, 100) + '…' : msg);
+          return (
+            "API error (" +
+            status +
+            "): " +
+            (msg.length > 100 ? msg.substring(0, 100) + "…" : msg)
+          );
         }
 
         async function callAI(history, modelType) {
