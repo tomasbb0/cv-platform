@@ -6834,10 +6834,10 @@
           chatHistory = [];
           const msgs = document.getElementById("chat-messages");
           msgs.innerHTML = "";
-          appendChatMsg(
-            "assistant",
-            "Ready. Paste a job description to tailor your CV, or tell me what to change.",
-          );
+          var greeting = hasJobContext()
+            ? "Ready to optimize for " + (jobContext.title || "your target role") + (jobContext.company ? " at " + jobContext.company : "") + ". What would you like to improve?"
+            : "What role are you targeting? This helps me tailor every suggestion.";
+          appendChatMsg("assistant", greeting);
         }
 
         function appendChatMsg(role, text, extraHTML) {
@@ -7056,8 +7056,8 @@ CRITICAL RULES:
 - NEVER repeat the same content more than once. If you find yourself listing the same section twice, STOP.
 - Keep responses under 400 words total. Be surgical, not verbose.
 - NEVER dump raw JSON from the CV back at the user. Only show relevant snippets.
-- When greeting the user, respond in 1 sentence max. If job context exists, say "Ready. Paste a job description or tell me what to change." If not, ask "What role are you targeting?"
-- If the user says "hi" or greets you, respond in 1 SHORT sentence and immediately ask their goal. Do NOT launch into analysis.
+- When greeting the user, respond in 1 sentence max. Do NOT repeat your initial greeting — the app already showed one.
+- If the user says "hi" or greets you, respond in 1 SHORT sentence and ask what they want to change. Do NOT ask what role they're targeting if job context is already set.
 - If the user says something casual/off-topic, respond briefly and redirect to CV work.
 - ALWAYS output json:changes blocks when the user asks for any CV modification. This is an AI-powered editor — make the edits, don't just describe them.
 - NEVER start working without the user asking you to. Wait for a clear request before suggesting changes.
@@ -7067,14 +7067,18 @@ CRITICAL RULES:
 ═══════════════════════════════════════
 ⚡ CONTEXT-FIRST APPROACH (MANDATORY)
 ═══════════════════════════════════════
-BEFORE making any suggestions, ALWAYS check:
-1. Is there a TARGET JOB CONTEXT section in the CV data below? If YES, use it to tailor every suggestion.
-2. If there is NO target job context, your FIRST response MUST ask:
-   - "What role are you targeting?" (job title)
-   - "Which company?" (optional but helpful)
-   - "Any specific requirements from the JD you want me to focus on?"
-   Only AFTER getting this context should you start making suggestions.
-3. If the user asks "improve my CV" or "review" without context and no job context is set, STILL ask for the target role first. Say something like: "I'll review your CV — but first, what position are you targeting? This helps me tailor every suggestion to what the hiring manager is looking for."
+` + (hasJobContext() ?
+`TARGET JOB CONTEXT IS ALREADY SET (see "TARGET JOB CONTEXT" section in the CV data below).
+Do NOT ask the user what role they are targeting — you ALREADY HAVE THIS INFORMATION.
+Use this context to tailor every suggestion. Reference the target role/company naturally.
+When greeting the user, say something like: "Ready to optimize for [role] at [company]. What would you like to improve?"` :
+`There is NO target job context set yet.
+Your FIRST response to any CV-related request MUST ask:
+- "What role are you targeting?" (job title)
+- "Which company?" (optional but helpful)
+Only AFTER getting this context should you start making suggestions.
+If the user says "improve my CV" without context, ask for the target role first.
+If the user just says "hi", respond briefly and ask what role they're targeting.`) + `
 
 ` +
             (agentMode
