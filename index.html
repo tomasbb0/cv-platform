@@ -1005,13 +1005,45 @@
 
       /* ═══ PREVIEW / PAPER ═══ */
       .preview-toolbar {
-        padding: 8px 16px;
+        display: none; /* replaced by overlay zoom controls */
+      }
+      .zoom-controls {
+        position: absolute;
+        top: 10px;
+        left: 10px;
         display: flex;
-        gap: 10px;
+        gap: 4px;
         align-items: center;
-        width: 100%;
-        max-width: 820px;
-        margin-bottom: 10px;
+        z-index: 20;
+        opacity: 0.6;
+        transition: opacity 0.2s;
+      }
+      .zoom-controls:hover {
+        opacity: 1;
+      }
+      .zoom-btn {
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+        border: 1px solid var(--border);
+        background: var(--panel);
+        color: var(--text);
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.1s;
+      }
+      .zoom-btn:hover {
+        background: #333;
+      }
+      .zoom-pct {
+        font-size: 10px;
+        color: var(--muted);
+        min-width: 32px;
+        text-align: center;
       }
       .preview-toolbar .zoom-label {
         font-size: 11px;
@@ -1778,6 +1810,39 @@
         align-items: center;
         gap: 10px;
         text-decoration: none;
+      }
+      .dashboard-header .logo-mark {
+        width: 32px;
+        height: 32px;
+        border-radius: 6px;
+        background: #0a0a0a;
+        border: 1.5px solid #222;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        overflow: hidden;
+      }
+      .dashboard-header .logo-mark .t {
+        color: var(--accent);
+      }
+      .dashboard-header .logo-mark .r {
+        color: #fff;
+      }
+      .dashboard-header .logo-text {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--text);
+        letter-spacing: -0.3px;
+      }
+      .dashboard-header .logo-text span {
+        color: var(--accent);
+      }
+      .dashboard-header .logo-text .domain {
+        color: var(--muted);
+        font-weight: 400;
       }
       .dashboard-content {
         max-width: 900px;
@@ -2812,12 +2877,10 @@
                         class="profile-dropdown-item"
                         onclick="
                           hideProfileDropdown();
-                          showNewCVModal();
-                          setTimeout(function () {
-                            document
-                              .querySelector('[onclick*=newCVFromLinkedIn]')
-                              ?.click();
-                          }, 100);
+                          newCVFromLinkedIn();
+                          document
+                            .getElementById('new-cv-modal')
+                            .classList.add('active');
                         "
                       >
                         <svg
@@ -2842,12 +2905,10 @@
                         class="profile-dropdown-item"
                         onclick="
                           hideProfileDropdown();
-                          showNewCVModal();
-                          setTimeout(function () {
-                            document
-                              .querySelector('[onclick*=newCVFromDocs]')
-                              ?.click();
-                          }, 100);
+                          newCVFromDoc();
+                          document
+                            .getElementById('new-cv-modal')
+                            .classList.add('active');
                         "
                       >
                         <svg
@@ -2997,6 +3058,14 @@
               </svg>
               <span id="job-context-label">Job Context</span>
             </button>
+            <button
+              class="btn btn-secondary btn-sm"
+              onclick="toggleStylePanel()"
+              title="Typography & Layout settings"
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+              Layout
+            </button>
             <div style="flex: 1"></div>
             <button
               class="btn btn-secondary btn-sm btn-icon"
@@ -3083,7 +3152,7 @@
 
         <!-- ═══ RIGHT: PREVIEW ═══ -->
         <div class="preview-panel" id="preview-panel">
-          <div class="preview-toolbar">
+          <div class="preview-toolbar" style="display: none">
             <span class="zoom-label">Zoom:</span>
             <input
               type="range"
@@ -3096,11 +3165,38 @@
             <span class="zoom-label" id="zoom-val">65%</span>
           </div>
 
+          <!-- Zoom overlay controls -->
+          <div class="zoom-controls" id="zoom-controls">
+            <button
+              class="zoom-btn"
+              onclick="setZoom(Math.max(20, zoomLevel - 10))"
+              title="Zoom out"
+            >
+              −
+            </button>
+            <span class="zoom-pct" id="zoom-pct-label">65%</span>
+            <button
+              class="zoom-btn"
+              onclick="setZoom(Math.min(200, zoomLevel + 10))"
+              title="Zoom in"
+            >
+              +
+            </button>
+            <button
+              class="zoom-btn"
+              onclick="autoZoom()"
+              title="Fit to view"
+              style="font-size: 11px; width: auto; padding: 0 6px"
+            >
+              Fit
+            </button>
+          </div>
+
           <!-- ═══ STYLE CONTROLS ═══ -->
           <div class="style-panel collapsed" id="style-panel">
             <div class="style-toggle" onclick="toggleStylePanel()">
               <span class="chevron">▶</span>
-              <span>⚙ Typography &amp; Layout</span>
+              <span>Typography &amp; Layout</span>
             </div>
             <div class="style-body">
               <!-- Row 1: Body Font -->
@@ -4591,8 +4687,12 @@
 
         function setZoom(val) {
           zoomLevel = parseInt(val);
-          document.getElementById("zoom-val").textContent = zoomLevel + "%";
-          document.querySelector(".zoom-slider").value = zoomLevel;
+          var zoomValEl = document.getElementById("zoom-val");
+          if (zoomValEl) zoomValEl.textContent = zoomLevel + "%";
+          var zoomPctEl = document.getElementById("zoom-pct-label");
+          if (zoomPctEl) zoomPctEl.textContent = zoomLevel + "%";
+          var sliderEl = document.querySelector(".zoom-slider");
+          if (sliderEl) sliderEl.value = zoomLevel;
           document.getElementById("paper").style.transform =
             `scale(${zoomLevel / 100})`;
         }
@@ -5789,6 +5889,9 @@
               "<button onclick=\"event.stopPropagation();hideAllCardMenus();openTagEditor('" +
               escapedName +
               '\')" style="display:block;width:100%;padding:8px 12px;border:none;background:transparent;color:#e0e0e0;font-size:11px;text-align:left;cursor:pointer;font-family:inherit">Edit Tags</button>' +
+              "<button onclick=\"event.stopPropagation();hideAllCardMenus();duplicateCV('" +
+              escapedName +
+              '\')" style="display:block;width:100%;padding:8px 12px;border:none;background:transparent;color:#e0e0e0;font-size:11px;text-align:left;cursor:pointer;font-family:inherit">Duplicate</button>' +
               '<div style="border-top:1px solid #333"></div>' +
               "<button onclick=\"event.stopPropagation();hideAllCardMenus();deleteCVFromDashboard('" +
               escapedName +
@@ -5846,6 +5949,26 @@
             cv = JSON.parse(JSON.stringify(DEFAULT_CV));
             renderEditor();
             renderPreview();
+          }
+          loadProfileList();
+          renderDashboard();
+        }
+
+        function duplicateCV(name) {
+          var profiles = getProfiles();
+          if (!profiles[name]) return;
+          var copyName = name + " (copy)";
+          var i = 2;
+          while (profiles[copyName]) {
+            copyName = name + " (copy " + i + ")";
+            i++;
+          }
+          profiles[copyName] = JSON.parse(JSON.stringify(profiles[name]));
+          setProfiles(profiles);
+          // Copy tags too
+          var tags = getProfileTags(name);
+          if (tags.length > 0) {
+            setProfileTags(copyName, tags.slice());
           }
           loadProfileList();
           renderDashboard();
@@ -8050,6 +8173,28 @@ Make bullet points achievement-focused with action verbs. Preserve all dates, co
 
         // Initialize Firebase on load
         initFirebase();
+
+        // ═══════════════════════════════════════════════════════
+        // PINCH-TO-ZOOM & PAN ON PREVIEW
+        // ═══════════════════════════════════════════════════════
+        (function initPreviewGestures() {
+          var previewPanel = document.getElementById("preview-panel");
+          if (!previewPanel) return;
+
+          // Pinch-to-zoom (trackpad gesture sends wheel with ctrlKey)
+          previewPanel.addEventListener(
+            "wheel",
+            function (e) {
+              if (e.ctrlKey || e.metaKey) {
+                e.preventDefault();
+                var delta = e.deltaY > 0 ? -5 : 5;
+                var newZoom = Math.max(20, Math.min(200, zoomLevel + delta));
+                setZoom(newZoom);
+              }
+            },
+            { passive: false },
+          );
+        })();
 
         // Start app AFTER all variable declarations are complete
         init();
