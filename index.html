@@ -553,8 +553,6 @@
         gap: 8px;
         flex-shrink: 0;
         flex-wrap: nowrap;
-        overflow-x: auto;
-        overflow-y: hidden;
         white-space: nowrap;
         position: sticky;
         top: 0;
@@ -1762,9 +1760,15 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 16px 32px;
+        padding: 12px 32px;
         border-bottom: 1px solid var(--border);
         background: #0a0a0a;
+        position: sticky;
+        top: 0;
+        z-index: 510;
+        flex-shrink: 0;
+        min-height: 48px;
+        box-sizing: border-box;
       }
       .dashboard-header .logo {
         display: flex;
@@ -5766,7 +5770,7 @@
           openai: "o3",
           gemini: "gemini-2.5-pro", // same model, but with thinkingConfig
           claude: "claude-opus-4-20250514", // same model, but with extended thinking
-          groq: "deepseek-r1-distill-llama-70b",
+          groq: "qwen/qwen3-32b",
           openrouter: "deepseek/deepseek-r1:free",
           cerebras: "llama-3.3-70b", // no reasoning model on cerebras
           ollama: "auto",
@@ -5791,7 +5795,7 @@
           groq: {
             chat: "Llama 3.3 70B",
             edit: "Llama 3.3 70B",
-            thinking: "DeepSeek R1 70B",
+            thinking: "Qwen3 32B",
           },
           openrouter: {
             chat: "Llama 3.3 70B",
