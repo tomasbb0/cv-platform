@@ -1614,18 +1614,16 @@
       }
       .profile-dropdown-menu {
         display: none;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        margin-top: 4px;
+        position: fixed;
         background: #1e1e1e;
         border: 1px solid var(--border);
         border-radius: 8px;
         padding: 6px;
         min-width: 200px;
         max-width: 240px;
-        z-index: 200;
+        z-index: 99999;
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+        white-space: normal;
       }
       .profile-dropdown-menu.open {
         display: block;
@@ -1752,6 +1750,8 @@
         background: var(--bg);
         z-index: 500;
         overflow-y: auto;
+        white-space: normal;
+        color: var(--text);
       }
       .dashboard-overlay.open {
         display: block;
@@ -1946,6 +1946,67 @@
       }
       .tag-editor-box .tag-removable .remove-tag:hover {
         opacity: 1;
+      }
+
+      /* ═══ JOB CONTEXT MODAL ═══ */
+      .job-context-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 600;
+        display: none;
+        align-items: center;
+        justify-content: center;
+      }
+      .job-context-modal.open {
+        display: flex;
+      }
+      .job-context-box {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 24px;
+        min-width: 380px;
+        max-width: 500px;
+        width: 90%;
+      }
+      .job-context-box h3 {
+        font-size: 14px;
+        margin-bottom: 4px;
+      }
+      .job-context-box p {
+        font-size: 11px;
+        color: var(--muted);
+        margin-bottom: 16px;
+      }
+      .job-context-box label {
+        display: block;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--muted);
+        margin-bottom: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+      }
+      .job-context-box input,
+      .job-context-box textarea {
+        width: 100%;
+        padding: 8px 12px;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        color: var(--text);
+        font-size: 12px;
+        font-family: inherit;
+        margin-bottom: 12px;
+        box-sizing: border-box;
+      }
+      .job-context-box textarea {
+        min-height: 100px;
+        resize: vertical;
       }
 
       /* ═══ DELETE CONFIRM MODAL ═══ */
@@ -2824,6 +2885,52 @@
               Delete
             </button>
             <span id="profile-indicator" style="display: none"></span>
+            <button
+              class="btn btn-secondary btn-sm"
+              onclick="openTagEditorForActive()"
+              title="Edit tags for this CV"
+              id="toolbar-tags-btn"
+            >
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                style="vertical-align: -1px"
+              >
+                <path
+                  d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"
+                />
+                <line x1="7" y1="7" x2="7.01" y2="7" />
+              </svg>
+              Tags
+            </button>
+            <button
+              class="btn btn-secondary btn-sm"
+              onclick="showJobContextModal()"
+              title="Set target job for AI tailoring"
+              id="toolbar-job-context-btn"
+            >
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                style="vertical-align: -1px"
+              >
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+              </svg>
+              <span id="job-context-label">Job Context</span>
+            </button>
             <div style="flex: 1"></div>
             <button
               class="btn btn-secondary btn-sm btn-icon"
@@ -3559,6 +3666,8 @@
             }
           } catch (e) {}
           onProviderChange();
+          // Restore job context label
+          updateJobContextLabel();
         }
 
         // ═══════════════════════════════════════════════════════
@@ -4733,7 +4842,17 @@
 
         function toggleProfileDropdown() {
           var menu = document.getElementById("profile-dropdown-menu");
-          menu.classList.toggle("open");
+          var isOpen = menu.classList.contains("open");
+          if (isOpen) {
+            menu.classList.remove("open");
+            return;
+          }
+          // Position using fixed coords to escape stacking contexts
+          var trigger = document.getElementById("profile-dropdown-trigger");
+          var rect = trigger.getBoundingClientRect();
+          menu.style.top = rect.bottom + 4 + "px";
+          menu.style.left = rect.left + "px";
+          menu.classList.add("open");
         }
         function hideProfileDropdown() {
           var menu = document.getElementById("profile-dropdown-menu");
@@ -5417,6 +5536,85 @@
           });
           setProfileTags(tagEditorProfile, tags);
           renderTagEditor();
+        }
+
+        // ═══ TOOLBAR TAG BUTTON HELPER ═══
+        function openTagEditorForActive() {
+          if (!activeProfile) {
+            alert("Save your CV first before adding tags.");
+            return;
+          }
+          openTagEditor(activeProfile);
+        }
+
+        // ═══════════════════════════════════════════════════════
+        // JOB CONTEXT
+        // ═══════════════════════════════════════════════════════
+        var jobContext = JSON.parse(
+          localStorage.getItem("cv-job-context") || "null",
+        ) || { title: "", company: "", description: "" };
+
+        function showJobContextModal() {
+          document.getElementById("job-ctx-title").value =
+            jobContext.title || "";
+          document.getElementById("job-ctx-company").value =
+            jobContext.company || "";
+          document.getElementById("job-ctx-desc").value =
+            jobContext.description || "";
+          document.getElementById("job-context-modal").classList.add("open");
+          document.getElementById("job-ctx-title").focus();
+          updateJobContextLabel();
+        }
+
+        function hideJobContextModal() {
+          document.getElementById("job-context-modal").classList.remove("open");
+        }
+
+        function saveJobContext() {
+          jobContext.title = document
+            .getElementById("job-ctx-title")
+            .value.trim();
+          jobContext.company = document
+            .getElementById("job-ctx-company")
+            .value.trim();
+          jobContext.description = document
+            .getElementById("job-ctx-desc")
+            .value.trim();
+          localStorage.setItem("cv-job-context", JSON.stringify(jobContext));
+          hideJobContextModal();
+          updateJobContextLabel();
+        }
+
+        function clearJobContext() {
+          jobContext = { title: "", company: "", description: "" };
+          localStorage.removeItem("cv-job-context");
+          document.getElementById("job-ctx-title").value = "";
+          document.getElementById("job-ctx-company").value = "";
+          document.getElementById("job-ctx-desc").value = "";
+          hideJobContextModal();
+          updateJobContextLabel();
+        }
+
+        function updateJobContextLabel() {
+          var label = document.getElementById("job-context-label");
+          if (jobContext.title || jobContext.company) {
+            var txt = jobContext.title || "";
+            if (jobContext.company)
+              txt += (txt ? " @ " : "") + jobContext.company;
+            label.textContent = txt;
+            label.style.color = "#22c55e";
+          } else {
+            label.textContent = "Job Context";
+            label.style.color = "";
+          }
+        }
+
+        function hasJobContext() {
+          return !!(
+            jobContext.title ||
+            jobContext.company ||
+            jobContext.description
+          );
         }
 
         // ═══════════════════════════════════════════════════════
@@ -6469,6 +6667,24 @@
             JSON.stringify(cv, null, 2) +
             "\n```\n\n";
           ctx += "ACTIVE PROFILE: " + (activeProfile || "Unsaved Draft") + "\n";
+          // Include profile tags
+          if (activeProfile) {
+            var tags = getProfileTags(activeProfile);
+            if (tags.length > 0) {
+              ctx += "CV TAGS: " + tags.join(", ") + "\n";
+            }
+          }
+          // Include job context if set
+          if (hasJobContext()) {
+            ctx += "\n═══ TARGET JOB CONTEXT ═══\n";
+            if (jobContext.title)
+              ctx += "Target Role: " + jobContext.title + "\n";
+            if (jobContext.company)
+              ctx += "Target Company: " + jobContext.company + "\n";
+            if (jobContext.description)
+              ctx += "Job Description:\n" + jobContext.description + "\n";
+            ctx += "═══ END JOB CONTEXT ═══\n\n";
+          }
           if (chatAttachments.length > 0) {
             ctx += "\nATTACHED DOCUMENTS:\n";
             chatAttachments.forEach(function (a) {
@@ -6599,6 +6815,18 @@ CRITICAL RULES:
 - If the user says "hi" or similar, respond in 1 sentence and ask for their goal.
 - ALWAYS output json:changes blocks when the user asks for any CV modification. This is an AI-powered editor — make the edits, don't just describe them.
 
+═══════════════════════════════════════
+⚡ CONTEXT-FIRST APPROACH (MANDATORY)
+═══════════════════════════════════════
+BEFORE making any suggestions, ALWAYS check:
+1. Is there a TARGET JOB CONTEXT section in the CV data below? If YES, use it to tailor every suggestion.
+2. If there is NO target job context, your FIRST response MUST ask:
+   - "What role are you targeting?" (job title)
+   - "Which company?" (optional but helpful)
+   - "Any specific requirements from the JD you want me to focus on?"
+   Only AFTER getting this context should you start making suggestions.
+3. If the user asks "improve my CV" or "review" without context and no job context is set, STILL ask for the target role first. Say something like: "I'll review your CV — but first, what position are you targeting? This helps me tailor every suggestion to what the hiring manager is looking for."
+
 ` +
             (agentMode
               ? `
@@ -6621,7 +6849,21 @@ AGENT MODE RULES:
 4. Keep the total number of suggestions to 5-12 per response. Focus on the HIGHEST IMPACT changes.
 5. If the user says "improve" or "review" without specifics, scan the whole CV and pick the 8-10 weakest lines to fix.
 6. Each "after" should be a clear improvement: stronger verb, tighter phrasing, added metric, or better ATS keywords.
-7. Explain your changes in 2-3 sentences BEFORE the json:changes block. Group them (e.g., "Summary tightening", "Bullet impact boost").
+
+🔑 EXPLAIN EACH CHANGE (MANDATORY):
+After the json:changes block, add a numbered explanation list. For EACH suggestion, write:
+**1. [Label]** — Why: [1-2 sentence explanation of why this specific change increases interview chances]
+**2. [Label]** — Why: [explanation]
+...and so on for every change.
+
+Example format:
+\\\`\\\`\\\`json:changes
+[{"path": "sections[1].jobs[0].bullets[0]", "label": "Google bullet 1", "before": "Led team...", "after": "Spearheaded cross-functional team..."}]
+\\\`\\\`\\\`
+
+**Why each change matters:**
+1. **Google bullet 1** — "Spearheaded" signals initiative and ownership, which SDR hiring managers look for. "Cross-functional" adds enterprise complexity that matches the job requirements.
+
 8. NEVER suggest changes where before === after. Every suggestion must actually change something.
 9. Prefer SMALL improvements over rewrites. The user wants to see what you'd tweak, not a new CV.
 `
@@ -7880,6 +8122,57 @@ Make bullet points achievement-focused with action verbs. Preserve all dates, co
           <button class="btn btn-secondary btn-sm" onclick="closeTagEditor()">
             Done
           </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ JOB CONTEXT MODAL ═══ -->
+    <div class="job-context-modal" id="job-context-modal">
+      <div class="job-context-box">
+        <h3>🎯 Target Job Context</h3>
+        <p>
+          Set the target role so AI can tailor your CV specifically for this
+          position.
+        </p>
+        <label for="job-ctx-title">Job Title</label>
+        <input
+          type="text"
+          id="job-ctx-title"
+          placeholder="e.g. Sales Development Representative"
+        />
+        <label for="job-ctx-company">Company</label>
+        <input type="text" id="job-ctx-company" placeholder="e.g. OpenAI" />
+        <label for="job-ctx-desc">Job Description / Key Requirements</label>
+        <textarea
+          id="job-ctx-desc"
+          placeholder="Paste the job description or list the key requirements here..."
+        ></textarea>
+        <div
+          style="
+            display: flex;
+            gap: 8px;
+            justify-content: space-between;
+            margin-top: 4px;
+          "
+        >
+          <button
+            class="btn btn-sm"
+            style="background: #ef4444; color: #fff"
+            onclick="clearJobContext()"
+          >
+            Clear
+          </button>
+          <div style="display: flex; gap: 8px">
+            <button
+              class="btn btn-secondary btn-sm"
+              onclick="hideJobContextModal()"
+            >
+              Cancel
+            </button>
+            <button class="btn btn-primary btn-sm" onclick="saveJobContext()">
+              Save Context
+            </button>
+          </div>
         </div>
       </div>
     </div>
