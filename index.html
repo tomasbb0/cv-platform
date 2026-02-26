@@ -4564,7 +4564,8 @@
           list.innerHTML = "";
           if (names.length === 0) {
             var emptyMsg = document.createElement("div");
-            emptyMsg.style.cssText = "padding:8px 10px;color:var(--muted);font-size:11px;font-style:italic";
+            emptyMsg.style.cssText =
+              "padding:8px 10px;color:var(--muted);font-size:11px;font-style:italic";
             emptyMsg.textContent = "No saved CVs yet";
             list.appendChild(emptyMsg);
           } else {
@@ -4707,13 +4708,17 @@
         function replicateActiveCV() {
           var baseName = activeProfile || "CV";
           var name = prompt(
-            'Name for the replicated CV:',
-            baseName + " (Copy)"
+            "Name for the replicated CV:",
+            baseName + " (Copy)",
           );
           if (!name || !name.trim()) return;
           var tag = name.trim();
           var profiles = getProfiles();
-          if (profiles[tag] && !confirm('A CV named "' + tag + '" already exists. Overwrite?')) return;
+          if (
+            profiles[tag] &&
+            !confirm('A CV named "' + tag + '" already exists. Overwrite?')
+          )
+            return;
           profiles[tag] = JSON.parse(JSON.stringify(cv));
           setProfiles(profiles);
           activeProfile = tag;
@@ -6143,7 +6148,34 @@ CRITICAL RULES:
 - If the user says "hi" or similar, respond in 1 sentence and ask for their goal.
 - ALWAYS output json:changes blocks when the user asks for any CV modification. This is an AI-powered editor — make the edits, don't just describe them.
 
-` + buildCVContext()
+` +
+            (agentMode
+              ? `
+═══════════════════════════════════════
+🤖 AGENT MODE IS ACTIVE — INLINE SUGGESTIONS
+═══════════════════════════════════════
+Agent Mode is ON. Your suggestions appear as inline overlays directly on the CV editor fields.
+Each suggestion shows the current text with a strikethrough and your proposed text below it.
+The user accepts or rejects each one individually.
+
+AGENT MODE RULES:
+1. REVIEW EACH LINE INDIVIDUALLY. Go through the CV field by field:
+   - Professional Summary (sections[0].content)
+   - Each job title and company
+   - EVERY bullet point in work experience
+   - Education details
+   - Skills
+2. For each field, propose a SMALL, SURGICAL tweak — not a rewrite. Improve 1-3 words, tighten phrasing, add a metric, or strengthen the verb.
+3. The "before" field MUST be a PERFECT character-for-character copy of the current text. Copy it exactly from the CV JSON above.
+4. Keep the total number of suggestions to 5-12 per response. Focus on the HIGHEST IMPACT changes.
+5. If the user says "improve" or "review" without specifics, scan the whole CV and pick the 8-10 weakest lines to fix.
+6. Each "after" should be a clear improvement: stronger verb, tighter phrasing, added metric, or better ATS keywords.
+7. Explain your changes in 2-3 sentences BEFORE the json:changes block. Group them (e.g., "Summary tightening", "Bullet impact boost").
+8. NEVER suggest changes where before === after. Every suggestion must actually change something.
+9. Prefer SMALL improvements over rewrites. The user wants to see what you'd tweak, not a new CV.
+`
+              : "") +
+            buildCVContext()
           );
         }
 
@@ -6206,7 +6238,7 @@ CRITICAL RULES:
           } else {
             modelType = "chat";
           }
-          const modelLabel = AI_MODEL_LABELS[aiProvider][modelType];
+          const modelLabel = (AI_MODEL_LABELS && AI_MODEL_LABELS[aiProvider]) ? AI_MODEL_LABELS[aiProvider][modelType] : modelType;
           const modeTag =
             modelType === "thinking"
               ? " 🧠 deep reasoning"
