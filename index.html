@@ -1482,6 +1482,108 @@
         cursor: default;
       }
 
+      /* ═══ PROFILE DROPDOWN ═══ */
+      .profile-dropdown-wrapper {
+        position: relative;
+      }
+      .profile-dropdown-trigger {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: #333;
+        color: #e0e0e0;
+        border: 1px solid #444;
+        border-radius: 4px;
+        padding: 5px 10px;
+        font-size: 11px;
+        font-weight: 600;
+        font-family: inherit;
+        max-width: 220px;
+        min-width: 100px;
+        cursor: pointer;
+        transition: border-color 0.15s;
+      }
+      .profile-dropdown-trigger:hover {
+        border-color: var(--accent);
+      }
+      .profile-dropdown-trigger span {
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .profile-dropdown-menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        margin-top: 4px;
+        background: #1e1e1e;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 6px;
+        min-width: 250px;
+        max-width: 320px;
+        z-index: 200;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      }
+      .profile-dropdown-menu.open {
+        display: block;
+      }
+      .profile-dropdown-section-title {
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 6px 10px 4px;
+      }
+      .profile-dropdown-list {
+        max-height: 300px;
+        overflow-y: auto;
+      }
+      .profile-dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+        padding: 7px 10px;
+        border: none;
+        border-radius: 5px;
+        background: transparent;
+        color: var(--text);
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        font-family: inherit;
+        transition: background 0.1s;
+        text-align: left;
+      }
+      .profile-dropdown-item:hover {
+        background: #2a2a2a;
+      }
+      .profile-dropdown-item.active {
+        background: var(--accent);
+        color: #fff;
+      }
+      .profile-dropdown-item.create-new {
+        color: var(--accent);
+        font-weight: 600;
+      }
+      .profile-dropdown-item.create-new:hover {
+        background: rgba(59, 130, 246, 0.15);
+      }
+      .profile-dropdown-divider {
+        height: 1px;
+        background: var(--border);
+        margin: 4px 6px;
+      }
+      .profile-dropdown-item .tags-hint {
+        font-size: 9px;
+        color: var(--muted);
+        margin-left: auto;
+      }
+
       /* ═══ DASHBOARD OVERLAY ═══ */
       .dashboard-overlay {
         display: none;
@@ -2196,21 +2298,64 @@
                 <polyline points="9 22 9 12 15 12 15 22" />
               </svg>
             </button>
+            <div class="profile-dropdown-wrapper" id="profile-dropdown-wrapper">
+              <button
+                class="profile-dropdown-trigger"
+                id="profile-dropdown-trigger"
+                onclick="toggleProfileDropdown()"
+              >
+                <span id="profile-dropdown-label">— Unsaved Draft —</span>
+                <svg
+                  width="10"
+                  height="10"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </button>
+              <div class="profile-dropdown-menu" id="profile-dropdown-menu">
+                <div class="profile-dropdown-section">
+                  <div class="profile-dropdown-section-title">Open Recent</div>
+                  <div
+                    class="profile-dropdown-list"
+                    id="profile-dropdown-list"
+                  ></div>
+                </div>
+                <div class="profile-dropdown-divider"></div>
+                <button
+                  class="profile-dropdown-item create-new"
+                  onclick="
+                    hideProfileDropdown();
+                    showNewCVModal();
+                  "
+                >
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                  Create New CV
+                </button>
+              </div>
+            </div>
+            <!-- Hidden select for backward compat -->
             <select
               id="profile-select"
+              style="display: none"
               onchange="onProfileSelectChange(this.value)"
-              style="
-                background: #333;
-                color: #e0e0e0;
-                border: 1px solid #444;
-                border-radius: 4px;
-                padding: 5px 8px;
-                font-size: 11px;
-                font-weight: 600;
-                font-family: inherit;
-                max-width: 180px;
-                min-width: 100px;
-              "
             ></select>
             <button
               class="btn btn-primary btn-sm"
@@ -4086,7 +4231,57 @@
             sel.appendChild(opt);
           });
           updateProfileIndicator();
+          // Update custom dropdown
+          updateProfileDropdown();
         }
+
+        function updateProfileDropdown() {
+          var label = document.getElementById("profile-dropdown-label");
+          var list = document.getElementById("profile-dropdown-list");
+          if (!label || !list) return;
+          label.textContent = activeProfile || "— Unsaved Draft —";
+          var profiles = getProfiles();
+          var names = Object.keys(profiles).sort();
+          list.innerHTML = "";
+          // Add "Unsaved Draft" option
+          var draftItem = document.createElement("button");
+          draftItem.className = "profile-dropdown-item" + (!activeProfile ? " active" : "");
+          draftItem.textContent = "— Unsaved Draft —";
+          draftItem.onclick = function () {
+            hideProfileDropdown();
+            onProfileSelectChange("");
+          };
+          list.appendChild(draftItem);
+          // Add all profiles
+          names.forEach(function (name) {
+            var item = document.createElement("button");
+            item.className = "profile-dropdown-item" + (name === activeProfile ? " active" : "");
+            var tags = getProfileTags(name);
+            item.innerHTML = '<span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + name + '</span>' +
+              (tags.length ? '<span class="tags-hint">' + tags.join(", ") + '</span>' : '');
+            item.onclick = function () {
+              hideProfileDropdown();
+              onProfileSelectChange(name);
+            };
+            list.appendChild(item);
+          });
+        }
+
+        function toggleProfileDropdown() {
+          var menu = document.getElementById("profile-dropdown-menu");
+          menu.classList.toggle("open");
+        }
+        function hideProfileDropdown() {
+          var menu = document.getElementById("profile-dropdown-menu");
+          if (menu) menu.classList.remove("open");
+        }
+        // Close on outside click
+        document.addEventListener("click", function (e) {
+          var wrapper = document.getElementById("profile-dropdown-wrapper");
+          if (wrapper && !wrapper.contains(e.target)) {
+            hideProfileDropdown();
+          }
+        });
 
         function updateProfileIndicator() {
           const ind = document.getElementById("profile-indicator");
@@ -4856,10 +5051,13 @@
         // ═══════════════════════════════════════════════════════
         // OLLAMA AUTO-SETUP
         // ═══════════════════════════════════════════════════════
+        var ollamaAutoRetryTimer = null;
+
         async function startOllamaAutoSetup() {
           var btn = document.getElementById("ollama-start-btn");
           btn.disabled = true;
           btn.textContent = "Setting up...";
+          clearInterval(ollamaAutoRetryTimer);
 
           // Step 1: Check if Ollama is reachable
           markOllamaStep(1, "active");
@@ -4873,14 +5071,28 @@
 
           if (!ollamaRunning) {
             markOllamaStep(1, "error");
-            document.getElementById("ollama-status").innerHTML =
-              "Ollama is not running. Please install and start it:<br>" +
-              '<code style="font-size:10px">brew install ollama && ollama serve</code><br>' +
-              'Then click "Start Local AI" again.';
-            document.getElementById("ollama-status").style.color = "#ef4444";
+            var statusEl = document.getElementById("ollama-status");
+            statusEl.innerHTML =
+              '<span style="color:#ef4444;font-weight:600">Ollama is not running.</span><br>' +
+              '<span style="color:var(--muted)">Open Terminal and run:</span><br>' +
+              '<div style="display:flex;gap:4px;margin-top:4px"><code id="ollama-cmd" style="font-size:10px;flex:1;background:#111;padding:4px 8px;border-radius:4px;color:#e0e0e0;word-break:break-all">brew install ollama && ollama serve</code>' +
+              '<button class="btn btn-sm btn-secondary" onclick="copyOllamaCmd()" style="font-size:9px;padding:2px 8px;white-space:nowrap" id="copy-cmd-btn">Copy</button></div>' +
+              '<div style="margin-top:6px;color:var(--accent);font-size:9px">Waiting for Ollama to start — will auto-connect...</div>';
             btn.disabled = false;
             btn.innerHTML =
-              '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.13-9.36L23 10"/></svg> Retry';
+              '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.13-9.36L23 10"/></svg> Retry Now';
+            // Auto-poll every 3 seconds
+            ollamaAutoRetryTimer = setInterval(async function () {
+              try {
+                var r = await fetch("http://localhost:11434/api/tags", {
+                  signal: AbortSignal.timeout(2000),
+                });
+                if (r.ok) {
+                  clearInterval(ollamaAutoRetryTimer);
+                  startOllamaAutoSetup(); // re-run full setup
+                }
+              } catch (e) {}
+            }, 3000);
             return;
           }
           markOllamaStep(1, "done");
@@ -4893,14 +5105,31 @@
           await detectOllamaModels();
           if (!ollamaModel) {
             markOllamaStep(3, "error");
-            document.getElementById("ollama-status").innerHTML =
-              "No models found. Install one:<br>" +
-              '<code style="font-size:10px">ollama pull qwen2.5:32b</code><br>' +
-              "Then click Retry.";
-            document.getElementById("ollama-status").style.color = "#f59e0b";
+            var statusEl = document.getElementById("ollama-status");
+            statusEl.innerHTML =
+              '<span style="color:#f59e0b;font-weight:600">No models found.</span><br>' +
+              '<span style="color:var(--muted)">Run in Terminal:</span><br>' +
+              '<div style="display:flex;gap:4px;margin-top:4px"><code id="ollama-cmd" style="font-size:10px;flex:1;background:#111;padding:4px 8px;border-radius:4px;color:#e0e0e0">ollama pull llama3.1:8b</code>' +
+              '<button class="btn btn-sm btn-secondary" onclick="copyOllamaCmd()" style="font-size:9px;padding:2px 8px;white-space:nowrap" id="copy-cmd-btn">Copy</button></div>' +
+              '<div style="margin-top:6px;color:var(--accent);font-size:9px">Waiting for model download — will auto-connect...</div>';
             btn.disabled = false;
             btn.innerHTML =
-              '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.13-9.36L23 10"/></svg> Retry';
+              '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.13-9.36L23 10"/></svg> Retry Now';
+            // Auto-poll every 5 seconds for models
+            ollamaAutoRetryTimer = setInterval(async function () {
+              try {
+                var r = await fetch("http://localhost:11434/api/tags", {
+                  signal: AbortSignal.timeout(2000),
+                });
+                if (r.ok) {
+                  var data = await r.json();
+                  if (data.models && data.models.length > 0) {
+                    clearInterval(ollamaAutoRetryTimer);
+                    startOllamaAutoSetup(); // re-run full setup
+                  }
+                }
+              } catch (e) {}
+            }, 5000);
             return;
           }
           markOllamaStep(3, "done");
@@ -4914,6 +5143,25 @@
           btn.innerHTML =
             '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><polyline points="20 6 9 17 4 12"/></svg> Connected!';
           btn.style.background = "#22c55e";
+          document.getElementById("ollama-status").innerHTML =
+            '<span style="color:#22c55e">Connected to ' +
+            (ollamaModel || "Ollama") +
+            "</span>";
+        }
+
+        function copyOllamaCmd() {
+          var cmd = document.getElementById("ollama-cmd");
+          if (cmd) {
+            navigator.clipboard.writeText(cmd.textContent).then(function () {
+              var btn = document.getElementById("copy-cmd-btn");
+              if (btn) {
+                btn.textContent = "Copied!";
+                setTimeout(function () {
+                  btn.textContent = "Copy";
+                }, 2000);
+              }
+            });
+          }
         }
 
         function markOllamaStep(num, state) {
